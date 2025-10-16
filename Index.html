@@ -341,7 +341,7 @@
 
         function renderNotes() {
             document.getElementById('contentArea').innerHTML = `<h2>📌 Note</h2>
-                <textarea id="notesArea" placeholder="Note personali..." style="width: 100%; min-height: 200px; padding: 15px; border: 2px solid var(--primary); border-radius: 8px; background: #f5f7ff;"></textarea>
+                <textarea id="notesArea" placeholder="Note personali..." style="width: 100%; min-height: 200px; padding: 15px; border: 2px solid var(--primary); border-radius: 8px; background: #f5f7ff; color: #333;"></textarea>
                 <button class="btn" onclick="saveNotes()" style="margin-top: 15px; width: 100%;">💾 Salva</button>`;
             document.getElementById('notesArea').value = appState.notes.text || '';
         }
