@@ -1,19 +1,12 @@
-# MentoreStudio Environment Variables
-# Copia questo file in .env.local e compila con i tuoi dati
-
-# OpenAI API Key
-# Ottieni da: https://platform.openai.com/api-keys
-OPENAI_API_KEY=your_openai_api_key_here
-
-# Vercel URLs (auto-configurate da Vercel)
-NEXT_PUBLIC_API_URL=https://mentorestudio.vercel.app
-NODE_ENV=production
-
-# Model Configuration
-OPENAI_MODEL=gpt-3.5-turbo
-# Opzioni: gpt-3.5-turbo, gpt-4, gpt-4-turbo
-
-# API Settings
-API_TIMEOUT=30000
-MAX_TOKENS=2000
-TEMPERATURE=0.7
+{
+  "name": "mentorestudio",
+  "version": "1.0.0",
+  "description": "Il tuo mentore personale per lo studio intelligente",
+  "main": "index.html",
+  "dependencies": {
+    "openai": "^4.52.0"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
