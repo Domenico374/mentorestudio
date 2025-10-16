@@ -1,7 +1,6 @@
 {
   "version": 2,
   "framework": "static",
-  "public": ".",
   "buildCommand": "npm install",
   "functions": {
     "api/generate.js": {
