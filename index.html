@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MentoreStudio - Il tuo mentore personale per lo studio intelligente">
+    <title>📚 MentoreStudio - Studia Intelligente</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --success: #4caf50;
+            --danger: #f44336;
+            --bg-light: #f5f7ff;
+            --bg-dark: #1a1a2e;
+            --text-dark: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+        }
+
+        body.dark-mode { background: #0f0f1e; }
+
+        .app-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        body.dark-mode .header { background: #2a2a3e; color: var(--text-dark); }
+
+        h1 { font-size: 1.8em; color: var(--primary); }
+        body.dark-mode h1 { color: var(--accent); }
+
+        .toggle-btn, .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: var(--primary);
+            color: white;
+        }
+
+        .toggle-btn:hover, .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+        .upload-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        body.dark-mode .upload-section { background: #2a2a3e; color: var(--text-dark); }
+
+        input[type="file"] {
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        body.dark-mode input[type="file"] { background: #1a1a2e; color: var(--text-dark); border-color: var(--secondary); }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        body.dark-mode .tabs { background: #2a2a3e; }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            background: #f0f0f0;
+            color: #333;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        body.dark-mode .tab-btn { background: #1a1a2e; color: var(--text-dark); }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        .content-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 500px;
+            animation: fadeIn 0.3s;
+        }
+
+        body.dark-mode .content-area { background: #2a2a3e; color: var(--text-dark); }
+
+        .hidden { display: none !important; }
+
+        .section { margin-bottom: 30px; }
+
+        .section h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        body.dark-mode .section h2 { color: var(--accent); border-color: var(--accent); }
+
+        .card {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            margin: 10px 0;
+        }
+
+        body.dark-mode .card { background: #1a1a2e; border-left-color: var(--accent); }
+
+        .flashcard { perspective: 1000px; height: 300px; cursor: pointer; margin: 20px 0; }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard-inner.flipped { transform: rotateY(180deg); }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .flashcard-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+        .flashcard-back { background: linear-gradient(135deg, var(--accent), #f5576c); color: white; transform: rotateY(180deg); }
+
+        .quiz-option {
+            background: var(--bg-light);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        body.dark-mode .quiz-option { background: #1a1a2e; }
+
+        .quiz-option:hover { background: #e8eaff; }
+        .quiz-option.correct { border-color: var(--success); background: #c8e6c9; }
+        .quiz-option.incorrect { border-color: var(--danger); background: #ffcdd2; }
+
+        .progress-bar { background: #e0e0e0; height: 10px; border-radius: 5px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { background: linear-gradient(90deg, var(--primary), var(--secondary)); height: 100%; transition: width 0.3s; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value { font-size: 2em; font-weight: bold; }
+        .stat-label { font-size: 0.9em; margin-top: 5px; }
+
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+        }
+
+        body.dark-mode .search-box { background: #1a1a2e; color: var(--text-dark); border-color: var(--secondary); }
+
+        .loading { text-align: center; padding: 40px; }
+
+        .spinner {
+            border: 4px solid var(--bg-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .mind-map { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0; }
+        .mind-map-node { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 15px 20px; border-radius: 8px; font-weight: bold; }
+
+        .glossary-item { background: var(--bg-light); padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid var(--accent); }
+        body.dark-mode .glossary-item { background: #1a1a2e; }
+
+        .glossary-term { font-weight: bold; color: var(--primary); }
+
+        .timeline-item { display: flex; margin: 20px 0; padding-left: 40px; position: relative; }
+        .timeline-item::before { content: ''; position: absolute; left: 0; top: 0; width: 20px; height: 20px; background: var(--primary); border-radius: 50%; border: 3px solid white; }
+
+        .controls { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>📚 MentoreStudio</h1>
+            <button class="toggle-btn" onclick="toggleDarkMode()">🌙</button>
+        </div>
+
+        <div class="upload-section" id="uploadSection">
+            <h2>🚀 Carica il tuo PDF per iniziare</h2>
+            <input type="file" id="pdfFile" accept=".pdf">
+            <button class="btn" onclick="loadPDF()" style="margin-top: 15px; width: 100%; max-width: 400px;">📂 Carica e Genera</button>
+            <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Nessuna chiave API necessaria - tutto è gestito dal server</p>
+        </div>
+
+        <div id="mainApp" class="hidden">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('summary', event)">📝 Riassunto</button>
+                <button class="tab-btn" onclick="switchTab('highlights', event)">⭐ Punti Salienti</button>
+                <button class="tab-btn" onclick="switchTab('glossary', event)">📖 Glossario</button>
+                <button class="tab-btn" onclick="switchTab('timeline', event)">📅 Timeline</button>
+                <button class="tab-btn" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
+                <button class="tab-btn" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
+                <button class="tab-btn" onclick="switchTab('quiz', event)">❓ Quiz</button>
+                <button class="tab-btn" onclick="switchTab('stats', event)">📊 Statistiche</button>
+                <button class="tab-btn" onclick="switchTab('notes', event)">📌 Note</button>
+            </div>
+            <div class="content-area" id="contentArea"></div>
+        </div>
+    </div>
+
+    <script>
+        let appState = { pdfText: '', data: null, currentFlashcard: 0, currentQuiz: 0, quizScore: 0, stats: { quizzes: 0, topScores: [] }, notes: {}, darkMode: localStorage.getItem('darkMode') === 'true' };
+
+        if (appState.darkMode) document.body.classList.add('dark-mode');
+
+        function toggleDarkMode() { appState.darkMode = !appState.darkMode; document.body.classList.toggle('dark-mode'); localStorage.setItem('darkMode', appState.darkMode); }
+
+        async function loadPDF() {
+            const file = document.getElementById('pdfFile').files[0];
+            if (!file) { alert('Seleziona un PDF'); return; }
+            showLoading();
+            try { const text = await extractPDFText(file); appState.pdfText = text; await generateContent(); } 
+            catch (e) { alert('Errore: ' + e.message); document.getElementById('contentArea').innerHTML = '<p style="color: red;">Errore: ' + e.message + '</p>'; }
+        }
+
+        async function extractPDFText(file) {
+            const reader = new FileReader();
+            return new Promise((resolve) => {
+                reader.onload = async (e) => {
+                    const pdf = await pdfjsLib.getDocument(e.target.result).promise;
+                    let text = '';
+                    for (let i = 0; i < pdf.numPages; i++) {
+                        const page = await pdf.getPage(i + 1);
+                        const content = await page.getTextContent();
+                        text += content.items.map(x => x.str).join(' ') + '\n';
+                    }
+                    resolve(text);
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        function showLoading() { document.getElementById('uploadSection').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); document.getElementById('contentArea').innerHTML = '<div class="loading"><div class="spinner"></div><p>🤖 Generando contenuti con AI...</p></div>'; }
+
+        async function generateContent() {
+            try {
+                const response = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: appState.pdfText }) });
+                if (!response.ok) throw new Error('Errore server: ' + response.status);
+                appState.data = await response.json();
+                document.getElementById('uploadSection').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                switchTab('summary');
+            } catch (e) { alert('❌ Errore: ' + e.message); document.getElementById('contentArea').innerHTML = '<p style="color: red;">Errore: ' + e.message + '</p>'; }
+        }
+
+        function switchTab(tab, e) {
+            if (e) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); }
+            switch(tab) {
+                case 'summary': renderSummary(); break;
+                case 'highlights': renderHighlights(); break;
+                case 'glossary': renderGlossary(); break;
+                case 'timeline': renderTimeline(); break;
+                case 'mindmap': renderMindMap(); break;
+                case 'flashcards': renderFlashcards(); break;
+                case 'quiz': renderQuiz(); break;
+                case 'stats': renderStats(); break;
+                case 'notes': renderNotes(); break;
+            }
+        }
+
+        function renderSummary() {
+            document.getElementById('contentArea').innerHTML = `
+                <div class="section">
+                    <h2>📝 Riassunto Breve</h2>
+                    <div class="card"><p>${appState.data.summary_short}</p></div>
+                </div>
+                <div class="section">
+                    <h2>📖 Riassunto Completo</h2>
+                    <div class="card"><p>${appState.data.summary_long}</p></div>
+                </div>
+            `;
+        }
+
+        function renderHighlights() {
+            let html = '<h2>⭐ Punti Salienti</h2>';
+            appState.data.highlights.forEach((h, i) => { html += `<div class="card"><strong>${i+1}.</strong> ${h}</div>`; });
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function renderGlossary() {
+            let html = '<input type="text" class="search-box" id="glossarySearch" placeholder="🔍 Cerca termine..." onkeyup="filterGlossary()">';
+            appState.data.glossary.forEach(item => { html += `<div class="glossary-item"><div class="glossary-term">${item.term}</div><p>${item.definition}</p></div>`; });
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function filterGlossary() {
+            const search = document.getElementById('glossarySearch').value.toLowerCase();
+            document.querySelectorAll('.glossary-item').forEach(item => { item.style.display = item.textContent.toLowerCase().includes(search) ? '' : 'none'; });
+        }
+
+        function renderTimeline() {
+            let html = '<div>';
+            appState.data.timeline.forEach(item => { html += `<div class="timeline-item"><div><strong>${item.date}</strong><p>${item.event}</p></div></div>`; });
+            html += '</div>';
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function renderMindMap() {
+            let html = '<div class="mind-map">';
+            appState.data.mind_map.forEach(concept => { html += `<div class="mind-map-node">${concept}</div>`; });
+            html += '</div>';
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function renderFlashcards() {
+            const fc = appState.data.flashcards[appState.currentFlashcard];
+            const progress = ((appState.currentFlashcard + 1) / appState.data.flashcards.length * 100).toFixed(0);
+            let html = `<div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div><p style="text-align: center; margin-bottom: 20px;">Flashcard ${appState.currentFlashcard + 1}/${appState.data.flashcards.length}</p><div class="flashcard" onclick="this.querySelector('.flashcard-inner').classList.toggle('flipped')"><div class="flashcard-inner"><div class="flashcard-front">${fc.q}</div><div class="flashcard-back">${fc.a}</div></div></div><div class="controls"><button class="btn" onclick="prevFlashcard()" ${appState.currentFlashcard === 0 ? 'disabled' : ''}>← Indietro</button><button class="btn" onclick="nextFlashcard()" ${appState.currentFlashcard === appState.data.flashcards.length - 1 ? 'disabled' : ''}>Avanti →</button></div>`;
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function nextFlashcard() { if (appState.currentFlashcard < appState.data.flashcards.length - 1) { appState.currentFlashcard++; renderFlashcards(); } }
+        function prevFlashcard() { if (appState.currentFlashcard > 0) { appState.currentFlashcard--; renderFlashcards(); } }
+
+        function renderQuiz() {
+            const q = appState.data.quiz[appState.currentQuiz];
+            const progress = ((appState.currentQuiz + 1) / appState.data.quiz.length * 100).toFixed(0);
+            let html = `<div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div><p style="text-align: center;">Quiz ${appState.currentQuiz + 1}/${appState.data.quiz.length}</p><h3 style="margin: 30px 0;">${q.q}</h3>`;
+            q.options.forEach((opt, i) => { html += `<div class="quiz-option" onclick="checkAnswer(${i}, ${q.correct})">${opt}</div>`; });
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function checkAnswer(selected, correct) { if (selected === correct) { appState.quizScore++; alert('✅ Corretto!'); } else { alert('❌ Sbagliato!'); } nextQuiz(); }
+
+        function nextQuiz() {
+            if (appState.currentQuiz < appState.data.quiz.length - 1) { appState.currentQuiz++; renderQuiz(); } 
+            else {
+                const percentage = (appState.quizScore / appState.data.quiz.length * 100).toFixed(1);
+                appState.stats.topScores.push(percentage);
+                localStorage.setItem('quizStats', JSON.stringify(appState.stats));
+                document.getElementById('contentArea').innerHTML = `<h2 style="text-align: center; color: var(--primary);">🏆 Quiz Completato!</h2><div class="stats-grid"><div class="stat-box"><div class="stat-value">${appState.quizScore}/${appState.data.quiz.length}</div><div class="stat-label">Risposte Corrette</div></div><div class="stat-box"><div class="stat-value">${percentage}%</div><div class="stat-label">Percentuale</div></div></div><button class="btn" onclick="location.reload()" style="width: 100%; margin-top: 20px;">🔄 Ricomincia</button>`;
+            }
+        }
+
+        function renderStats() {
+            const saved = JSON.parse(localStorage.getItem('quizStats') || '{"topScores":[]}');
+            const avgScore = saved.topScores.length > 0 ? (saved.topScores.reduce((a,b) => parseFloat(a)+parseFloat(b)) / saved.topScores.length).toFixed(1) : 0;
+            let html = `<div class="stats-grid"><div class="stat-box"><div class="stat-value">${saved.topScores.length}</div><div class="stat-label">Quiz Completati</div></div><div class="stat-box"><div class="stat-value">${avgScore}%</div><div class="stat-label">Punteggio Medio</div></div></div><h3 style="margin: 30px 0;">Top 5 Risultati</h3>`;
+            saved.topScores.slice(0, 5).forEach((score, i) => { html += `<div class="card"><strong>#${i+1}</strong> ${score}%</div>`; });
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function renderNotes() {
+            document.getElementById('contentArea').innerHTML = `<h2>📌 Le Tue Note</h2><textarea id="notesArea" placeholder="Scrivi le tue note qui..." style="width: 100%; min-height: 200px; padding: 15px; border: 2px solid var(--primary); border-radius: 8px;"></textarea><div class="controls"><button class="btn" onclick="saveNotes()">💾 Salva Note</button></div>`;
+            document.getElementById('notesArea').value = appState.notes.text || '';
+        }
+
+        function saveNotes() { appState.notes.text = document.getElementById('notesArea').value; localStorage.setItem('notes', JSON.stringify(appState.notes)); alert('✅ Note salvate!'); }
+
+        const saved = localStorage.getItem('quizStats');
+        if (saved) appState.stats = JSON.parse(saved);
+        const notes = localStorage.getItem('notes');
+        if (notes) appState.notes = JSON.parse(notes);
+    </script>
+</body>
+</html>
