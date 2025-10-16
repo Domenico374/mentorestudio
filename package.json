@@ -1,0 +1,24 @@
+{
+  "name": "mentorestudio",
+  "version": "1.0.0",
+  "description": "Il tuo mentore personale per lo studio intelligente",
+  "type": "module",
+  "main": "api/generate.js",
+  "dependencies": {
+    "openai": "^4.52.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Build successful'"
+  },
+  "keywords": [
+    "study",
+    "pdf",
+    "ai",
+    "flashcards",
+    "quiz"
+  ],
+  "author": "",
+  "license": "MIT"
+}
