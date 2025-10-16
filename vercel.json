@@ -1,17 +1,32 @@
 {
-  "name": "mentorestudio",
   "version": 2,
-  "buildCommand": "npm install",
   "framework": "static",
   "public": ".",
-  "env": {
-    "OPENAI_API_KEY": "@openai_api_key"
-  }
+  "buildCommand": "npm install",
+  "functions": {
+    "api/generate.js": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 30,
+      "memory": 1024
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,OPTIONS,POST,PUT,DELETE"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type"
+        }
+      ]
+    }
+  ]
 }
-```
-
-### 📄 **.env.example:**
-```
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-3.5-turbo
-NODE_ENV=production
