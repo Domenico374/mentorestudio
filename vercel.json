@@ -1,0 +1,17 @@
+{
+  "name": "mentorestudio",
+  "version": 2,
+  "buildCommand": "npm install",
+  "framework": "static",
+  "public": ".",
+  "env": {
+    "OPENAI_API_KEY": "@openai_api_key"
+  }
+}
+```
+
+### 📄 **.env.example:**
+```
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-3.5-turbo
+NODE_ENV=production
