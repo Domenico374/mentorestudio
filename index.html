@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MentoreStudio - Il tuo mentore personale per lo studio intelligente">
+    <title>📚 MentoreStudio - Studia Intelligente</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --success: #4caf50;
+            --danger: #f44336;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        body.dark-mode { background: #0f0f1e; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        body.dark-mode .header { background: #2a2a3e; color: #e0e0e0; }
+        h1 { font-size: 1.8em; color: var(--primary); }
+        body.dark-mode h1 { color: var(--accent); }
+        .toggle-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .upload-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        body.dark-mode .upload-section { background: #2a2a3e; color: #e0e0e0; }
+        input[type="password"], input[type="file"] {
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+        }
+        body.dark-mode input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        body.dark-mode .tabs { background: #2a2a3e; }
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        body.dark-mode .tab-btn { background: #1a1a2e; color: #e0e0e0; }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .content-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 500px;
+        }
+        body.dark-mode .content-area { background: #2a2a3e; color: #e0e0e0; }
+        .hidden { display: none !important; }
+        .section { margin-bottom: 30px; }
+        .section h2 { color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        body.dark-mode .section h2 { color: var(--accent); border-color: var(--accent); }
+        .card { background: #f5f7ff; padding: 20px; border-radius: 10px; margin: 10px 0; border-left: 4px solid var(--primary); }
+        body.dark-mode .card { background: #1a1a2e; border-left-color: var(--accent); }
+        .loading { text-align: center; padding: 40px; }
+        .spinner { border: 4px solid #f0f0f0; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .progress-bar { background: #e0e0e0; height: 10px; border-radius: 5px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { background: var(--primary); height: 100%; transition: width 0.3s; }
+        .flashcard { perspective: 1000px; height: 300px; cursor: pointer; margin: 20px 0; }
+        .flashcard-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flashcard-inner.flipped { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center; border-radius: 10px; font-size: 1.2em; font-weight: bold; }
+        .flashcard-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+        .flashcard-back { background: linear-gradient(135deg, var(--accent), #f5576c); color: white; transform: rotateY(180deg); }
+        .controls { display: flex; gap: 10px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
+        .quiz-option { background: #f5f7ff; padding: 15px; margin: 10px 0; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s; }
+        body.dark-mode .quiz-option { background: #1a1a2e; }
+        .quiz-option:hover { background: #e8eaff; }
+        .quiz-option.correct { border-color: var(--success); background: #c8e6c9; }
+        .quiz-option.incorrect { border-color: var(--danger); background: #ffcdd2; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0; }
+        .stat-box { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px; border-radius: 10px; text-align: center; }
+        .stat-value { font-size: 2em; font-weight: bold; }
+        .stat-label { font-size: 0.9em; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 MentoreStudio</h1>
+            <button class="toggle-btn" onclick="toggleDarkMode()">🌙</button>
+        </div>
+
+        <div class="upload-section" id="uploadSection">
+            <h2>🚀 Carica il tuo PDF per iniziare</h2>
+            <input type="password" id="apiKey" placeholder="🔑 Incolla la tua chiave OpenAI">
+            <p style="font-size: 0.9em; margin: 10px 0;">Non hai una chiave? <a href="https://platform.openai.com/api-keys" target="_blank" style="color: var(--primary);">Generane una gratis</a></p>
+            <input type="file" id="pdfFile" accept=".pdf">
+            <button class="btn" onclick="loadPDF()" style="width: 100%; max-width: 400px;">📂 Carica e Genera</button>
+        </div>
+
+        <div id="mainApp" class="hidden">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('summary', event)">📝 Riassunto</button>
+                <button class="tab-btn" onclick="switchTab('highlights', event)">⭐ Punti Salienti</button>
+                <button class="tab-btn" onclick="switchTab('glossary', event)">📖 Glossario</button>
+                <button class="tab-btn" onclick="switchTab('timeline', event)">📅 Timeline</button>
+                <button class="tab-btn" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
+                <button class="tab-btn" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
+                <button class="tab-btn" onclick="switchTab('quiz', event)">❓ Quiz</button>
+                <button class="tab-btn" onclick="switchTab('stats', event)">📊 Statistiche</button>
+                <button class="tab-btn" onclick="switchTab('notes', event)">📌 Note</button>
+            </div>
+            <div class="content-area" id="contentArea"></div>
+        </div>
+    </div>
+
+    <script>
+        let appState = {
+            pdfText: '',
+            data: null,
+            currentFlashcard: 0,
+            currentQuiz: 0,
+            quizScore: 0,
+            stats: { quizzes: 0, topScores: [] },
+            notes: {},
+            darkMode: localStorage.getItem('darkMode') === 'true'
+        };
+
+        if (appState.darkMode) document.body.classList.add('dark-mode');
+
+        function toggleDarkMode() {
+            appState.darkMode = !appState.darkMode;
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', appState.darkMode);
+        }
+
+        async function loadPDF() {
+            const apiKey = document.getElementById('apiKey').value;
+            const file = document.getElementById('pdfFile').files[0];
+            if (!apiKey || !file) { alert('Inserisci chiave API e seleziona un PDF'); return; }
+            showLoading();
+            try {
+                const text = await extractPDFText(file);
+                appState.pdfText = text;
+                await generateContent(apiKey);
+            } catch (e) {
+                alert('Errore: ' + e.message);
+                document.getElementById('contentArea').innerHTML = '<p style="color: red;">Errore: ' + e.message + '</p>';
+            }
+        }
+
+        async function extractPDFText(file) {
+            const reader = new FileReader();
+            return new Promise((resolve) => {
+                reader.onload = async (e) => {
+                    const pdf = await pdfjsLib.getDocument(e.target.result).promise;
+                    let text = '';
+                    for (let i = 0; i < Math.min(pdf.numPages, 5); i++) {
+                        const page = await pdf.getPage(i + 1);
+                        const content = await page.getTextContent();
+                        text += content.items.map(x => x.str).join(' ') + '\n';
+                    }
+                    resolve(text);
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        function showLoading() {
+            document.getElementById('uploadSection').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('contentArea').innerHTML = '<div class="loading"><div class="spinner"></div><p>🤖 Generando contenuti...</p></div>';
+        }
+
+        async function generateContent(apiKey) {
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [{
+                            role: 'user',
+                            content: `Analizza questo testo e genera JSON con: summary_short, summary_long, highlights (array 5 items), glossary (array 3 items con term/definition), timeline (array 2 items con date/event), mind_map (array 3), flashcards (array 3 con q/a), quiz (array 3 con q/options/correct):\n\n${appState.pdfText.substring(0, 3000)}`
+                        }],
+                        temperature: 0.7
+                    })
+                });
+                const result = await response.json();
+                if (!result.choices) throw new Error(result.error?.message || 'Errore API');
+                const jsonMatch = result.choices[0].message.content.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) throw new Error('JSON non trovato');
+                appState.data = JSON.parse(jsonMatch[0]);
+                switchTab('summary');
+            } catch (e) {
+                alert('Errore: ' + e.message);
+                document.getElementById('contentArea').innerHTML = '<p style="color: red;">Errore: ' + e.message + '</p>';
+            }
+        }
+
+        function switchTab(tab, e) {
+            if (e) {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+            }
+            switch(tab) {
+                case 'summary': renderSummary(); break;
+                case 'highlights': renderHighlights(); break;
+                case 'glossary': renderGlossary(); break;
+                case 'timeline': renderTimeline(); break;
+                case 'mindmap': renderMindMap(); break;
+                case 'flashcards': renderFlashcards(); break;
+                case 'quiz': renderQuiz(); break;
+                case 'stats': renderStats(); break;
+                case 'notes': renderNotes(); break;
+            }
+        }
+
+        function renderSummary() {
+            document.getElementById('contentArea').innerHTML = `
+                <div class="section"><h2>📝 Riassunto Breve</h2><div class="card">${appState.data.summary_short}</div></div>
+                <div class="section"><h2>📖 Riassunto Completo</h2><div class="card">${appState.data.summary_long}</div></div>
+            `;
+        }
+
+        function renderHighlights() {
+            let html = '<h2>⭐ Punti Salienti</h2>';
+            appState.data.highlights.forEach((h, i) => { html += `<div class="card"><strong>${i+1}.</strong> ${h}</div>`; });
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function renderGlossary() {
+            let html = '<h2>📖 Glossario</h2>';
+            appState.data.glossary.forEach(item => { html += `<div class="card"><strong>${item.term}</strong><p>${item.definition}</p></div>`; });
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function renderTimeline() {
+            let html = '<h2>📅 Timeline</h2>';
+            appState.data.timeline.forEach(item => { html += `<div class="card"><strong>${item.date}</strong><p>${item.event}</p></div>`; });
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function renderMindMap() {
+            let html = '<h2>🧠 Mappa Mentale</h2><div style="display: flex; flex-wrap: wrap; gap: 15px;">';
+            appState.data.mind_map.forEach(c => { html += `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 15px 20px; border-radius: 8px; font-weight: bold;">${c}</div>`; });
+            html += '</div>';
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function renderFlashcards() {
+            const fc = appState.data.flashcards[appState.currentFlashcard];
+            const prog = ((appState.currentFlashcard + 1) / appState.data.flashcards.length * 100).toFixed(0);
+            let html = `<div class="progress-bar"><div class="progress-fill" style="width: ${prog}%"></div></div>
+                <p style="text-align: center;">Flashcard ${appState.currentFlashcard + 1}/${appState.data.flashcards.length}</p>
+                <div class="flashcard" onclick="this.querySelector('.flashcard-inner').classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">${fc.q}</div>
+                        <div class="flashcard-back">${fc.a}</div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="btn" onclick="prevFlash()" ${appState.currentFlashcard === 0 ? 'disabled' : ''}>← Indietro</button>
+                    <button class="btn" onclick="nextFlash()" ${appState.currentFlashcard === appState.data.flashcards.length - 1 ? 'disabled' : ''}>Avanti →</button>
+                </div>`;
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function nextFlash() { if (appState.currentFlashcard < appState.data.flashcards.length - 1) { appState.currentFlashcard++; renderFlashcards(); } }
+        function prevFlash() { if (appState.currentFlashcard > 0) { appState.currentFlashcard--; renderFlashcards(); } }
+
+        function renderQuiz() {
+            const q = appState.data.quiz[appState.currentQuiz];
+            const prog = ((appState.currentQuiz + 1) / appState.data.quiz.length * 100).toFixed(0);
+            let html = `<div class="progress-bar"><div class="progress-fill" style="width: ${prog}%"></div></div>
+                <p style="text-align: center;">Quiz ${appState.currentQuiz + 1}/${appState.data.quiz.length}</p>
+                <h3 style="margin: 30px 0;">${q.q}</h3>`;
+            q.options.forEach((o, i) => { html += `<div class="quiz-option" onclick="checkAns(${i}, ${q.correct})">${o}</div>`; });
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function checkAns(sel, corr) {
+            if (sel === corr) { appState.quizScore++; alert('✅ Corretto!'); } else { alert('❌ Sbagliato!'); }
+            nextQuiz();
+        }
+
+        function nextQuiz() {
+            if (appState.currentQuiz < appState.data.quiz.length - 1) { appState.currentQuiz++; renderQuiz(); }
+            else {
+                const perc = (appState.quizScore / appState.data.quiz.length * 100).toFixed(1);
+                appState.stats.topScores.push(perc);
+                localStorage.setItem('quizStats', JSON.stringify(appState.stats));
+                document.getElementById('contentArea').innerHTML = `<h2 style="text-align: center;">🏆 Completato!</h2>
+                    <div class="stats-grid">
+                        <div class="stat-box"><div class="stat-value">${appState.quizScore}/${appState.data.quiz.length}</div><div class="stat-label">Corrette</div></div>
+                        <div class="stat-box"><div class="stat-value">${perc}%</div><div class="stat-label">Percentuale</div></div>
+                    </div>`;
+            }
+        }
+
+        function renderStats() {
+            const saved = JSON.parse(localStorage.getItem('quizStats') || '{"topScores":[]}');
+            const avg = saved.topScores.length > 0 ? (saved.topScores.reduce((a,b) => parseFloat(a)+parseFloat(b)) / saved.topScores.length).toFixed(1) : 0;
+            let html = `<div class="stats-grid"><div class="stat-box"><div class="stat-value">${saved.topScores.length}</div><div class="stat-label">Quiz</div></div>
+                <div class="stat-box"><div class="stat-value">${avg}%</div><div class="stat-label">Media</div></div></div><h3 style="margin: 30px 0;">Top 5</h3>`;
+            saved.topScores.slice(0, 5).forEach((s, i) => { html += `<div class="card"><strong>#${i+1}</strong> ${s}%</div>`; });
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function renderNotes() {
+            document.getElementById('contentArea').innerHTML = `<h2>📌 Note</h2>
+                <textarea id="notesArea" placeholder="Note personali..." style="width: 100%; min-height: 200px; padding: 15px; border: 2px solid var(--primary); border-radius: 8px;"></textarea>
+                <button class="btn" onclick="saveNotes()" style="margin-top: 15px; width: 100%;">💾 Salva</button>`;
+            document.getElementById('notesArea').value = appState.notes.text || '';
+        }
+
+        function saveNotes() {
+            appState.notes.text = document.getElementById('notesArea').value;
+            localStorage.setItem('notes', JSON.stringify(appState.notes));
+            alert('✅ Salvate!');
+        }
+
+        const saved = localStorage.getItem('quizStats');
+        if (saved) appState.stats = JSON.parse(saved);
+        const notes = localStorage.getItem('notes');
+        if (notes) appState.notes = JSON.parse(notes);
+    </script>
+</body>
+</html>
