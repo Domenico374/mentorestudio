@@ -64,6 +64,16 @@
             max-width: 400px;
         }
         body.dark-mode input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
+        .subject-select {
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            font-size: 1em;
+        }
+        body.dark-mode .subject-select { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
         .btn {
             padding: 12px 25px;
             border: none;
@@ -111,6 +121,15 @@
         body.dark-mode .section h2 { color: var(--accent); border-color: var(--accent); }
         .card { background: #f5f7ff; padding: 20px; border-radius: 10px; margin: 10px 0; border-left: 4px solid var(--primary); }
         body.dark-mode .card { background: #1a1a2e; border-left-color: var(--accent); }
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        body.dark-mode .search-box { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
         .loading { text-align: center; padding: 40px; }
         .spinner { border: 4px solid #f0f0f0; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -128,6 +147,12 @@
         .quiz-option:hover { background: #e8eaff; }
         .quiz-option.correct { border-color: var(--success); background: #c8e6c9; }
         .quiz-option.incorrect { border-color: var(--danger); background: #ffcdd2; }
+        .note-section { background: #fff3cd; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #ffc107; }
+        body.dark-mode .note-section { background: #3d3d1a; color: #e0e0e0; }
+        .note-input { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9em; }
+        body.dark-mode .note-input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
+        .key-concept { display: inline-block; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 4px 10px; border-radius: 15px; margin: 3px; font-size: 0.85em; }
+        .highlight { background: linear-gradient(120deg, #ffd89b, #19547b); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -142,9 +167,17 @@
 
         <div class="upload-section" id="uploadSection">
             <h2>🚀 Carica il tuo PDF per iniziare</h2>
+            <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Seleziona la materia:</label>
+            <select id="subjectSelect" class="subject-select">
+                <option value="Generale">Generale</option>
+                <option value="Storia">Storia</option>
+                <option value="Matematica">Matematica</option>
+                <option value="Biologia">Biologia</option>
+                <option value="Diritto">Diritto</option>
+            </select>
             <input type="file" id="pdfFile" accept=".pdf">
             <button class="btn" onclick="loadPDF()" style="width: 100%; max-width: 400px;">📂 Carica e Genera</button>
-            <p style="font-size: 0.9em; margin-top: 10px; color: #666;">Nessuna chiave API necessaria</p>
+            <p style="font-size: 0.9em; margin-top: 10px; color: #666;">Nessuna chiave API necessaria • Tutto salvato offline</p>
         </div>
 
         <div id="mainApp" class="hidden">
@@ -156,7 +189,6 @@
                 <button class="tab-btn" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
                 <button class="tab-btn" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
                 <button class="tab-btn" onclick="switchTab('quiz', event)">❓ Quiz</button>
-                <button class="tab-btn" onclick="switchTab('notes', event)">📌 Note</button>
             </div>
             <div class="content-area" id="contentArea"></div>
         </div>
@@ -169,7 +201,7 @@
             currentFlashcard: 0,
             currentQuiz: 0,
             quizScore: 0,
-            notes: {},
+            notes: JSON.parse(localStorage.getItem('flashcardNotes')) || {},
             darkMode: localStorage.getItem('darkMode') === 'true'
         };
 
@@ -221,10 +253,11 @@
 
         async function generateContent() {
             try {
+                const subject = document.getElementById('subjectSelect').value;
                 const response = await fetch('/api/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: appState.pdfText })
+                    body: JSON.stringify({ text: appState.pdfText, subject: subject })
                 });
 
                 if (!response.ok) throw new Error('Errore server: ' + response.status);
@@ -249,7 +282,6 @@
                 case 'mindmap': renderMindMap(); break;
                 case 'flashcards': renderFlashcards(); break;
                 case 'quiz': renderQuiz(); break;
-                case 'notes': renderNotes(); break;
             }
         }
 
@@ -262,25 +294,45 @@
 
         function renderHighlights() {
             let html = '<h2>⭐ Punti Salienti</h2>';
-            (appState.data.highlights || []).forEach((h, i) => { html += `<div class="card"><strong>${i+1}.</strong> ${h}</div>`; });
+            (appState.data.highlights || []).forEach((h, i) => { 
+                html += `<div class="card"><strong>${i+1}.</strong> <span class="key-concept">${h}</span></div>`; 
+            });
             document.getElementById('contentArea').innerHTML = html;
         }
 
         function renderGlossary() {
             let html = '<h2>📖 Glossario</h2>';
-            (appState.data.glossary || []).forEach(item => { html += `<div class="card"><strong>${item.term}</strong><p>${item.definition}</p></div>`; });
+            html += '<input type="text" class="search-box" id="glossarySearch" placeholder="🔍 Cerca un termine..." onkeyup="filterGlossary()">';
+            html += '<div id="glossaryContent">';
+            (appState.data.glossary || []).forEach(item => { 
+                html += `<div class="card" data-term="${item.term.toLowerCase()}"><strong>${item.term}</strong><p>${item.definition}</p></div>`; 
+            });
+            html += '</div>';
             document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function filterGlossary() {
+            const searchTerm = document.getElementById('glossarySearch').value.toLowerCase();
+            const cards = document.querySelectorAll('#glossaryContent .card');
+            cards.forEach(card => {
+                const term = card.getAttribute('data-term');
+                card.style.display = term.includes(searchTerm) ? 'block' : 'none';
+            });
         }
 
         function renderTimeline() {
             let html = '<h2>📅 Timeline</h2>';
-            (appState.data.timeline || []).forEach(item => { html += `<div class="card"><strong>${item.date}</strong><p>${item.event}</p></div>`; });
+            (appState.data.timeline || []).forEach(item => { 
+                html += `<div class="card"><strong class="highlight">${item.date}</strong><p>${item.event}</p></div>`; 
+            });
             document.getElementById('contentArea').innerHTML = html;
         }
 
         function renderMindMap() {
             let html = '<h2>🧠 Mappa Mentale</h2><div style="display: flex; flex-wrap: wrap; gap: 15px;">';
-            (appState.data.mind_map || []).forEach(c => { html += `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 15px 20px; border-radius: 8px; font-weight: bold;">${c}</div>`; });
+            (appState.data.mind_map || []).forEach(c => { 
+                html += `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 15px 20px; border-radius: 8px; font-weight: bold;">${c}</div>`; 
+            });
             html += '</div>';
             document.getElementById('contentArea').innerHTML = html;
         }
@@ -288,6 +340,9 @@
         function renderFlashcards() {
             const fc = appState.data.flashcards[appState.currentFlashcard];
             const prog = ((appState.currentFlashcard + 1) / appState.data.flashcards.length * 100).toFixed(0);
+            const noteKey = `note_${appState.currentFlashcard}`;
+            const note = appState.notes[noteKey] || '';
+            
             let html = `<div class="progress-bar"><div class="progress-fill" style="width: ${prog}%"></div></div>
                 <p style="text-align: center;">Flashcard ${appState.currentFlashcard + 1}/${appState.data.flashcards.length}</p>
                 <div class="flashcard" onclick="this.querySelector('.flashcard-inner').classList.toggle('flipped')">
@@ -296,6 +351,11 @@
                         <div class="flashcard-back">${fc.a || 'Risposta'}</div>
                     </div>
                 </div>
+                <div class="note-section">
+                    <strong>📝 Le tue note su questa carta:</strong>
+                    <textarea class="note-input" id="flashcardNote" placeholder="Aggiungi note personali..." style="max-height: 100px;">${note}</textarea>
+                    <button class="btn" onclick="saveFlashcardNote()" style="margin-top: 8px; padding: 8px 15px; font-size: 0.9em;">💾 Salva nota</button>
+                </div>
                 <div class="controls">
                     <button class="btn" onclick="prevFlash()" ${appState.currentFlashcard === 0 ? 'disabled' : ''}>← Indietro</button>
                     <button class="btn" onclick="nextFlash()" ${appState.currentFlashcard === appState.data.flashcards.length - 1 ? 'disabled' : ''}>Avanti →</button>
@@ -303,8 +363,26 @@
             document.getElementById('contentArea').innerHTML = html;
         }
 
-        function nextFlash() { if (appState.currentFlashcard < appState.data.flashcards.length - 1) { appState.currentFlashcard++; renderFlashcards(); } }
-        function prevFlash() { if (appState.currentFlashcard > 0) { appState.currentFlashcard--; renderFlashcards(); } }
+        function saveFlashcardNote() {
+            const noteKey = `note_${appState.currentFlashcard}`;
+            appState.notes[noteKey] = document.getElementById('flashcardNote').value;
+            localStorage.setItem('flashcardNotes', JSON.stringify(appState.notes));
+            alert('✅ Nota salvata!');
+        }
+
+        function nextFlash() { 
+            if (appState.currentFlashcard < appState.data.flashcards.length - 1) { 
+                appState.currentFlashcard++; 
+                renderFlashcards(); 
+            } 
+        }
+
+        function prevFlash() { 
+            if (appState.currentFlashcard > 0) { 
+                appState.currentFlashcard--; 
+                renderFlashcards(); 
+            } 
+        }
 
         function renderQuiz() {
             const q = appState.data.quiz[appState.currentQuiz];
@@ -322,8 +400,10 @@
         }
 
         function nextQuiz() {
-            if (appState.currentQuiz < appState.data.quiz.length - 1) { appState.currentQuiz++; renderQuiz(); }
-            else {
+            if (appState.currentQuiz < appState.data.quiz.length - 1) { 
+                appState.currentQuiz++; 
+                renderQuiz(); 
+            } else {
                 const perc = (appState.quizScore / appState.data.quiz.length * 100).toFixed(1);
                 document.getElementById('contentArea').innerHTML = `<h2 style="text-align: center;">🏆 Completato!</h2>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
@@ -337,19 +417,6 @@
                         </div>
                     </div>`;
             }
-        }
-
-        function renderNotes() {
-            document.getElementById('contentArea').innerHTML = `<h2>📌 Note</h2>
-                <textarea id="notesArea" placeholder="Note personali..." style="width: 100%; min-height: 200px; padding: 15px; border: 2px solid var(--primary); border-radius: 8px; background: #f5f7ff; color: #333;"></textarea>
-                <button class="btn" onclick="saveNotes()" style="margin-top: 15px; width: 100%;">💾 Salva</button>`;
-            document.getElementById('notesArea').value = appState.notes.text || '';
-        }
-
-        function saveNotes() {
-            appState.notes.text = document.getElementById('notesArea').value;
-            localStorage.setItem('notes', JSON.stringify(appState.notes));
-            alert('✅ Salvate!');
         }
 
         function resetApp() {
@@ -366,9 +433,6 @@
                 darkMode: appState.darkMode
             };
         }
-
-        const notes = localStorage.getItem('notes');
-        if (notes) appState.notes = JSON.parse(notes);
     </script>
 </body>
 </html>
