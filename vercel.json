@@ -1,7 +1,11 @@
 {
-  "buildCommand": "echo 'Build successful'",
-  "outputDirectory": ".",
-  "public": true,
+  "buildCommand": "mkdir -p .vercel/output/static && cp index.html .vercel/output/static/index.html",
+  "outputDirectory": ".vercel/output/static",
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/:path*",
