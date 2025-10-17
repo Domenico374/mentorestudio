@@ -145,6 +145,10 @@
             background: #f7fafc;
             padding: 25px;
             border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .settings-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 25px;
@@ -229,6 +233,32 @@
             margin-bottom: 15px;
         }
 
+        .voice-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #4a5568;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .voice-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .voice-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 10px;
+            display: block;
+        }
+
         .info-box {
             text-align: center;
             margin-top: 20px;
@@ -239,22 +269,8 @@
             font-size: 14px;
         }
 
-        .voice-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: #4a5568;
-            font-weight: 500;
-        }
-
         @media (max-width: 768px) {
-            .settings-panel {
+            .settings-row {
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
@@ -294,11 +310,6 @@
                 </div>
             </div>
 
-            <div class="voice-indicator">
-                <span>👩</span>
-                <span id="voiceName">Voce femminile ottimizzata</span>
-            </div>
-
             <div class="progress-bar">
                 <div class="progress-fill" id="progressBar"></div>
             </div>
@@ -318,30 +329,39 @@
             </div>
 
             <div class="settings-panel">
-                <div class="control-group">
-                    <div class="control-label">
-                        <span>Velocità</span>
-                        <span class="control-value" id="speedValue">0.9x</span>
+                <div class="settings-row">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Velocità</span>
+                            <span class="control-value" id="speedValue">0.9x</span>
+                        </div>
+                        <input type="range" min="0.5" max="2" step="0.1" value="0.9" class="slider" id="speedSlider">
+                        <div class="slider-labels">
+                            <span>0.5x</span>
+                            <span>1.0x</span>
+                            <span>2.0x</span>
+                        </div>
                     </div>
-                    <input type="range" min="0.5" max="2" step="0.1" value="0.9" class="slider" id="speedSlider">
-                    <div class="slider-labels">
-                        <span>0.5x</span>
-                        <span>1.0x</span>
-                        <span>2.0x</span>
+
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Tonalità</span>
+                            <span class="control-value" id="pitchValue">0.8</span>
+                        </div>
+                        <input type="range" min="0.5" max="2" step="0.1" value="0.8" class="slider" id="pitchSlider">
+                        <div class="slider-labels">
+                            <span>Bassa</span>
+                            <span>Normale</span>
+                            <span>Alta</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <div class="control-label">
-                        <span>Tonalità</span>
-                        <span class="control-value" id="pitchValue">0.8</span>
-                    </div>
-                    <input type="range" min="0.5" max="2" step="0.1" value="0.8" class="slider" id="pitchSlider">
-                    <div class="slider-labels">
-                        <span>Bassa</span>
-                        <span>Normale</span>
-                        <span>Alta</span>
-                    </div>
+                    <label class="voice-label">👩 Seleziona Voce (Solo Femminili)</label>
+                    <select class="voice-select" id="voiceSelect">
+                        <option>Caricamento voci...</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -370,7 +390,7 @@
         let utterance = null;
         let isPlaying = false;
         let isPaused = false;
-        let selectedVoice = null;
+        let availableVoices = [];
 
         // Elementi DOM
         const playBtn = document.getElementById('playBtn');
@@ -381,7 +401,7 @@
         const speedValue = document.getElementById('speedValue');
         const pitchValue = document.getElementById('pitchValue');
         const progressBar = document.getElementById('progressBar');
-        const voiceName = document.getElementById('voiceName');
+        const voiceSelect = document.getElementById('voiceSelect');
         const lessonText = document.getElementById('lessonText');
 
         // Carica il testo della lezione
@@ -391,49 +411,61 @@
 
         const lessonTextContent = loadLessonText();
 
-        // Funzione per trovare la migliore voce femminile italiana
-        function getBestFemaleVoice() {
-            const voices = synth.getVoices();
-            const italianVoices = voices.filter(v => v.lang.includes('it'));
-            
-            // Cerca voci femminili di alta qualità
+        // Funzione per identificare voci femminili
+        function isFemaleVoice(voice) {
+            const name = voice.name.toLowerCase();
             const femaleKeywords = [
-                'google.*female', 'google.*donna', 
-                'microsoft.*elsa', 'microsoft.*alice', 'microsoft.*maria',
-                'female', 'donna', 'woman',
-                'elsa', 'alice', 'maria', 'lucia', 'chiara', 'sara'
+                'female', 'woman', 'donna', 'femminile',
+                'alice', 'elsa', 'maria', 'lucia', 'chiara', 'sara',
+                'zira', 'helena', 'paulina', 'samantha', 'victoria',
+                'karen', 'moira', 'tessa', 'veena', 'fiona'
             ];
-            
-            // Prova a trovare una voce premium femminile
-            for (const keyword of femaleKeywords) {
-                const voice = italianVoices.find(v => 
-                    v.name.toLowerCase().match(new RegExp(keyword, 'i'))
-                );
-                if (voice) {
-                    console.log('Voce selezionata:', voice.name);
-                    return voice;
-                }
-            }
-            
-            // Fallback: prima voce italiana o prima voce disponibile
-            return italianVoices[0] || voices[0];
+            return femaleKeywords.some(keyword => name.includes(keyword));
         }
 
-        // Carica la voce migliore all'avvio
-        function loadBestVoice() {
-            const voices = synth.getVoices();
-            if (voices.length > 0) {
-                selectedVoice = getBestFemaleVoice();
-                if (selectedVoice) {
-                    voiceName.textContent = `${selectedVoice.name}`;
-                }
+        // Carica le voci disponibili (solo femminili)
+        function loadVoices() {
+            availableVoices = synth.getVoices();
+            const italianVoices = availableVoices.filter(voice => voice.lang.includes('it'));
+            
+            // Filtra solo voci femminili
+            let femaleVoices = italianVoices.filter(isFemaleVoice);
+            
+            // Se non ci sono voci femminili italiane, usa tutte le voci italiane
+            const voicesToUse = femaleVoices.length > 0 ? femaleVoices : italianVoices;
+
+            // Ordina per qualità
+            voicesToUse.sort((a, b) => {
+                const aQuality = (a.name.toLowerCase().includes('google') || 
+                                 a.name.toLowerCase().includes('microsoft') ||
+                                 a.name.toLowerCase().includes('enhanced')) ? 1 : 0;
+                const bQuality = (b.name.toLowerCase().includes('google') || 
+                                 b.name.toLowerCase().includes('microsoft') ||
+                                 b.name.toLowerCase().includes('enhanced')) ? 1 : 0;
+                return bQuality - aQuality;
+            });
+
+            voiceSelect.innerHTML = '';
+            voicesToUse.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                const quality = (voice.name.toLowerCase().includes('google') || 
+                                voice.name.toLowerCase().includes('microsoft') ||
+                                voice.name.toLowerCase().includes('enhanced')) ? ' ⭐' : '';
+                option.textContent = `${voice.name}${quality}`;
+                voiceSelect.appendChild(option);
+            });
+
+            // Se ci sono voci disponibili, seleziona la prima (migliore)
+            if (voicesToUse.length > 0) {
+                voiceSelect.selectedIndex = 0;
             }
         }
 
-        // Carica voce all'avvio e quando le voci cambiano
-        loadBestVoice();
+        // Carica voci all'avvio
+        loadVoices();
         if (synth.onvoiceschanged !== undefined) {
-            synth.onvoiceschanged = loadBestVoice;
+            synth.onvoiceschanged = loadVoices;
         }
 
         // Aggiorna valori slider
@@ -480,20 +512,20 @@
 
         // Avvia sintesi vocale
         function startSpeech() {
-            // Assicurati che la voce sia caricata
-            if (!selectedVoice) {
-                loadBestVoice();
-            }
-
             utterance = new SpeechSynthesisUtterance(lessonTextContent);
             
             utterance.rate = parseFloat(speedSlider.value);
             utterance.pitch = parseFloat(pitchSlider.value);
             utterance.lang = 'it-IT';
 
-            // Usa la voce femminile selezionata
-            if (selectedVoice) {
-                utterance.voice = selectedVoice;
+            // Imposta voce selezionata
+            const italianVoices = availableVoices.filter(v => v.lang.includes('it'));
+            const femaleVoices = italianVoices.filter(isFemaleVoice);
+            const voicesToUse = femaleVoices.length > 0 ? femaleVoices : italianVoices;
+            
+            const selectedVoiceIndex = parseInt(voiceSelect.value);
+            if (voicesToUse[selectedVoiceIndex]) {
+                utterance.voice = voicesToUse[selectedVoiceIndex];
             }
 
             utterance.onstart = () => {
