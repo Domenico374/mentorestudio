@@ -6,6 +6,7 @@
     <meta name="description" content="MentoreStudio - Il tuo mentore personale per lo studio intelligente">
     <title>📚 MentoreStudio - Studia Intelligente</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -86,6 +87,7 @@
         }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .btn-delete { background: var(--danger); padding: 8px 15px; margin: 0; font-size: 0.9em; }
+        .btn-export { background: #2196F3; padding: 8px 15px; margin: 0; font-size: 0.9em; }
         .tabs {
             display: flex;
             gap: 10px;
@@ -338,6 +340,7 @@
 
         function renderLibrary() {
             let html = '<h2>📚 Le tue lezioni</h2>';
+            html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
             const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
             
             if (studies.length === 0) {
@@ -345,12 +348,13 @@
             } else {
                 studies.forEach(study => {
                     html += `
-                        <div class="study-item" onclick="selectStudy('${study.id}')">
+                        <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
                             <div class="study-left">
                                 <strong>${study.name}</strong>
-                                <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 8 flashcard • ❓ 4 quiz</div>
+                                <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
                             </div>
                             <div class="study-right">
+                                <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
                                 <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
                             </div>
                         </div>
@@ -359,6 +363,73 @@
                 html += '<button class="btn" onclick="resetApp()" style="width: 100%; margin-top: 20px;">➕ Carica altre lezioni</button>';
             }
             document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function filterLibrary() {
+            const searchTerm = document.getElementById('librarySearch').value.toLowerCase();
+            const items = document.querySelectorAll('.study-item');
+            items.forEach(item => {
+                const searchData = item.getAttribute('data-search');
+                item.style.display = searchData.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        function exportStudyPDF(studyId, e) {
+            e.stopPropagation();
+            const study = appState.studies[studyId];
+            if (!study) return;
+
+            const element = document.createElement('div');
+            element.style.padding = '20px';
+            element.innerHTML = `
+                <h1>${study.name}</h1>
+                <p><strong>Materia:</strong> ${study.subject} | <strong>Data:</strong> ${study.date}</p>
+                
+                <h2>📝 Riassunto Breve</h2>
+                <p>${study.data.summary_short}</p>
+                
+                <h2>📖 Riassunto Completo</h2>
+                <p>${study.data.summary_long}</p>
+                
+                <h2>⭐ Punti Salienti</h2>
+                <ul>
+                    ${(study.data.highlights || []).map(h => `<li>${h}</li>`).join('')}
+                </ul>
+                
+                <h2>📖 Glossario</h2>
+                ${(study.data.glossary || []).map(g => `
+                    <div style="margin-bottom: 10px;">
+                        <strong>${g.term}:</strong> ${g.definition}
+                    </div>
+                `).join('')}
+                
+                <h2>🎴 Flashcard</h2>
+                ${(study.data.flashcards || []).map((f, i) => `
+                    <div style="margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                        <strong>Domanda ${i+1}:</strong> ${f.q}<br>
+                        <strong>Risposta:</strong> ${f.a}
+                    </div>
+                `).join('')}
+                
+                <h2>❓ Quiz</h2>
+                ${(study.data.quiz || []).map((q, i) => `
+                    <div style="margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                        <strong>Quiz ${i+1}:</strong> ${q.q}<br>
+                        ${q.options.map((o, j) => `<div style="margin-left: 20px;">• ${o}${j === q.correct ? ' ✓' : ''}</div>`).join('')}
+                    </div>
+                `).join('')}
+            `;
+
+            const opt = {
+                margin: 10,
+                filename: `${study.name.replace(/[^a-z0-9]/gi, '_')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+            alert('✅ PDF scaricato!');
         }
 
         function selectStudy(studyId) {
