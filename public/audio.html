@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Riassunto - MentoreStudio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .icon-wrapper {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .header-text h1 {
+            font-size: 28px;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .control-btn {
+            background: #f7fafc;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+
+        .control-btn:hover:not(:disabled) {
+            background: #edf2f7;
+            transform: scale(1.1);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .play-btn {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .play-btn:hover:not(:disabled) {
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+            transform: scale(1.1);
+        }
+
+        .settings-panel {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .control-value {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            outline: none;
+            -webkit-appearance: none;
+            background: #e2e8f0;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 11px;
+            color: #a0aec0;
+        }
+
+        .text-content {
+            line-height: 1.8;
+            color: #2d3748;
+            font-size: 16px;
+        }
+
+        .text-content h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .text-content p {
+            margin-bottom: 15px;
+        }
+
+        .settings-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #edf2f7;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .settings-toggle:hover {
+            background: #e2e8f0;
+        }
+
+        .voice-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #4a5568;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .voice-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .info-box {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 10px;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .settings-panel {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .header-text h1 {
+                font-size: 22px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .download-btn:hover:not(:disabled) {
+            box-shadow: 0 10px 30px rgba(72, 187, 120, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">
+            ← Torna alla Libreria
+        </a>
+
+        <div class="card">
+            <div class="header">
+                <div class="icon-wrapper">
+                    🎙️
+                </div>
+                <div class="header-text">
+                    <h1>Audio Riassunto</h1>
+                    <p id="lesson-title">Lezione 9 - Ottobre</p>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn" id="stopBtn" disabled>
+                    ⏹️
+                </button>
+
+                <button class="control-btn play-btn" id="playBtn">
+                    ▶️
+                </button>
+
+                <button class="control-btn download-btn" id="downloadBtn">
+                    ⬇️
+                </button>
+            </div>
+
+            <div class="settings-panel">
+                <div class="control-group">
+                    <div class="control-label">
+                        <span>Velocità</span>
+                        <span class="control-value" id="speedValue">1.0x</span>
+                    </div>
+                    <input type="range" min="0.5" max="2" step="0.1" value="1" class="slider" id="speedSlider">
+                    <div class="slider-labels">
+                        <span>0.5x</span>
+                        <span>1.0x</span>
+                        <span>2.0x</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <span>Tonalità</span>
+                        <span class="control-value" id="pitchValue">1.0</span>
+                    </div>
+                    <input type="range" min="0.5" max="2" step="0.1" value="1" class="slider" id="pitchSlider">
+                    <div class="slider-labels">
+                        <span>Bassa</span>
+                        <span>Normale</span>
+                        <span>Alta</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-toggle" id="voiceToggle">
+                <span>⚙️</span>
+                <span>Impostazioni Voce</span>
+            </div>
+
+            <div id="voiceSettings" style="display: none; margin-bottom: 20px;">
+                <select class="voice-select" id="voiceSelect">
+                    <option>Caricamento voci...</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="text-content">
+                <h2>📄 Testo della Lezione</h2>
+                <div id="lessonText">
+                    <p>La Legge 104/1992, nota anche come Legge Quadro per l'Assistenza, l'Integrazione Sociale e i Diritti delle Persone con Disabilità, rappresenta un fondamentale cambiamento nella legislazione italiana.</p>
+                    
+                    <p>Questa legge ha l'obiettivo di colmare le lacune lasciate da precedenti normative e di garantire diritti e servizi alle persone con disabilità e alle loro famiglie.</p>
+                    
+                    <p>Tra i principi fondamentali della legge vi è la necessità di prendersi cura dell'ambiente circostante della persona con disabilità, riconoscendo che la disabilità è un processo di svantaggio sociale legato all'interazione tra persona e ambiente.</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                💡 Usa le cuffie per un'esperienza di ascolto migliore
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variabili globali
+        let synth = window.speechSynthesis;
+        let utterance = null;
+        let isPlaying = false;
+        let isPaused = false;
+        let availableVoices = [];
+
+        // Elementi DOM
+        const playBtn = document.getElementById('playBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const speedSlider = document.getElementById('speedSlider');
+        const pitchSlider = document.getElementById('pitchSlider');
+        const speedValue = document.getElementById('speedValue');
+        const pitchValue = document.getElementById('pitchValue');
+        const progressBar = document.getElementById('progressBar');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const voiceToggle = document.getElementById('voiceToggle');
+        const voiceSettings = document.getElementById('voiceSettings');
+        const lessonText = document.getElementById('lessonText');
+
+        // Carica il testo della lezione (può essere passato via URL params)
+        function loadLessonText() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lessonId = urlParams.get('lesson');
+            
+            // Qui puoi caricare dinamicamente il testo della lezione
+            // Per ora usa il testo di default
+            return lessonText.textContent.trim();
+        }
+
+        const lessonTextContent = loadLessonText();
+
+        // Carica le voci disponibili
+        function loadVoices() {
+            availableVoices = synth.getVoices();
+            const italianVoices = availableVoices.filter(voice => voice.lang.includes('it'));
+            const voicesToUse = italianVoices.length > 0 ? italianVoices : availableVoices;
+
+            voiceSelect.innerHTML = '';
+            voicesToUse.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        // Carica voci all'avvio
+        loadVoices();
+        if (synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = loadVoices;
+        }
+
+        // Toggle impostazioni voce
+        voiceToggle.addEventListener('click', () => {
+            const isVisible = voiceSettings.style.display !== 'none';
+            voiceSettings.style.display = isVisible ? 'none' : 'block';
+        });
+
+        // Aggiorna valori slider
+        speedSlider.addEventListener('input', (e) => {
+            speedValue.textContent = parseFloat(e.target.value).toFixed(1) + 'x';
+        });
+
+        pitchSlider.addEventListener('input', (e) => {
+            pitchValue.textContent = parseFloat(e.target.value).toFixed(1);
+        });
+
+        // Funzione Play/Pause
+        playBtn.addEventListener('click', () => {
+            if (isPaused) {
+                synth.resume();
+                isPaused = false;
+                isPlaying = true;
+                playBtn.textContent = '⏸️';
+                stopBtn.disabled = false;
+            } else if (isPlaying) {
+                synth.pause();
+                isPaused = true;
+                isPlaying = false;
+                playBtn.textContent = '▶️';
+            } else {
+                startSpeech();
+            }
+        });
+
+        // Funzione Stop
+        stopBtn.addEventListener('click', () => {
+            synth.cancel();
+            isPlaying = false;
+            isPaused = false;
+            playBtn.textContent = '▶️';
+            stopBtn.disabled = true;
+            progressBar.style.width = '0%';
+        });
+
+        // Funzione Download
+        downloadBtn.addEventListener('click', () => {
+            alert('Funzionalità di download in sviluppo!\n\nSarà presto possibile scaricare l\'audio in formato MP3 per l\'ascolto offline.');
+        });
+
+        // Avvia sintesi vocale
+        function startSpeech() {
+            utterance = new SpeechSynthesisUtterance(lessonTextContent);
+            
+            utterance.rate = parseFloat(speedSlider.value);
+            utterance.pitch = parseFloat(pitchSlider.value);
+            utterance.lang = 'it-IT';
+
+            // Imposta voce selezionata
+            const selectedVoiceIndex = parseInt(voiceSelect.value);
+            if (availableVoices[selectedVoiceIndex]) {
+                utterance.voice = availableVoices[selectedVoiceIndex];
+            }
+
+            utterance.onstart = () => {
+                isPlaying = true;
+                playBtn.textContent = '⏸️';
+                stopBtn.disabled = false;
+                progressBar.style.width = '0%';
+            };
+
+            utterance.onboundary = (event) => {
+                const progress = (event.charIndex / lessonTextContent.length) * 100;
+                progressBar.style.width = progress + '%';
+            };
+
+            utterance.onend = () => {
+                isPlaying = false;
+                isPaused = false;
+                playBtn.textContent = '▶️';
+                stopBtn.disabled = true;
+                progressBar.style.width = '100%';
+                
+                setTimeout(() => {
+                    progressBar.style.width = '0%';
+                }, 2000);
+            };
+
+            utterance.onerror = (event) => {
+                console.error('Errore sintesi vocale:', event);
+                alert('Si è verificato un errore durante la riproduzione audio.');
+                isPlaying = false;
+                isPaused = false;
+                playBtn.textContent = '▶️';
+                stopBtn.disabled = true;
+            };
+
+            synth.speak(utterance);
+        }
+
+        // Gestione parametri URL per testo dinamico
+        const urlParams = new URLSearchParams(window.location.search);
+        const lessonTitle = urlParams.get('title');
+        if (lessonTitle) {
+            document.getElementById('lesson-title').textContent = decodeURIComponent(lessonTitle);
+        }
+    </script>
+</body>
+</html>
