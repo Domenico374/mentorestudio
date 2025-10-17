@@ -273,6 +273,16 @@
             font-size: 14px;
         }
 
+        .tip-box {
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #856404;
+        }
+
         @media (max-width: 768px) {
             .settings-panel {
                 grid-template-columns: 1fr;
@@ -314,6 +324,10 @@
                 </div>
             </div>
 
+            <div class="tip-box">
+                💡 <strong>Suggerimento:</strong> Se la voce suona robotica, prova a cambiare voce nelle impostazioni qui sotto o regola tonalità e velocità per un suono più naturale.
+            </div>
+
             <div class="progress-bar">
                 <div class="progress-fill" id="progressBar"></div>
             </div>
@@ -336,9 +350,9 @@
                 <div class="control-group">
                     <div class="control-label">
                         <span>Velocità</span>
-                        <span class="control-value" id="speedValue">1.0x</span>
+                        <span class="control-value" id="speedValue">0.9x</span>
                     </div>
-                    <input type="range" min="0.5" max="2" step="0.1" value="1" class="slider" id="speedSlider">
+                    <input type="range" min="0.5" max="2" step="0.1" value="0.9" class="slider" id="speedSlider">
                     <div class="slider-labels">
                         <span>0.5x</span>
                         <span>1.0x</span>
@@ -349,9 +363,9 @@
                 <div class="control-group">
                     <div class="control-label">
                         <span>Tonalità</span>
-                        <span class="control-value" id="pitchValue">1.0</span>
+                        <span class="control-value" id="pitchValue">0.8</span>
                     </div>
-                    <input type="range" min="0.5" max="2" step="0.1" value="1" class="slider" id="pitchSlider">
+                    <input type="range" min="0.5" max="2" step="0.1" value="0.8" class="slider" id="pitchSlider">
                     <div class="slider-labels">
                         <span>Bassa</span>
                         <span>Normale</span>
@@ -362,13 +376,16 @@
 
             <div class="settings-toggle" id="voiceToggle">
                 <span>⚙️</span>
-                <span>Impostazioni Voce</span>
+                <span>Seleziona una Voce Diversa (Consigliato)</span>
             </div>
 
             <div id="voiceSettings" style="display: none; margin-bottom: 20px;">
                 <select class="voice-select" id="voiceSelect">
                     <option>Caricamento voci...</option>
                 </select>
+                <p style="margin-top: 10px; font-size: 13px; color: #718096;">
+                    💡 Prova diverse voci per trovare quella più naturale. Le voci "Google" o "Microsoft" tendono ad essere di qualità migliore.
+                </p>
             </div>
         </div>
 
@@ -412,17 +429,44 @@
         const voiceSettings = document.getElementById('voiceSettings');
         const lessonText = document.getElementById('lessonText');
 
-        // Carica il testo della lezione (può essere passato via URL params)
+        // Carica il testo della lezione
         function loadLessonText() {
             const urlParams = new URLSearchParams(window.location.search);
             const lessonId = urlParams.get('lesson');
-            
-            // Qui puoi caricare dinamicamente il testo della lezione
-            // Per ora usa il testo di default
             return lessonText.textContent.trim();
         }
 
         const lessonTextContent = loadLessonText();
+
+        // Funzione per trovare la voce migliore
+        function getBestVoice(voices) {
+            // Priorità: voci premium/enhanced/natural italiane
+            const italianVoices = voices.filter(v => v.lang.includes('it'));
+            
+            // Cerca voci di qualità superiore
+            const premiumVoice = italianVoices.find(v => 
+                v.name.toLowerCase().includes('enhanced') ||
+                v.name.toLowerCase().includes('premium') ||
+                v.name.toLowerCase().includes('natural') ||
+                v.name.toLowerCase().includes('google') ||
+                v.name.toLowerCase().includes('microsoft')
+            );
+            
+            if (premiumVoice) return premiumVoice;
+            
+            // Altrimenti usa la prima voce italiana femminile (generalmente più naturale)
+            const femaleVoice = italianVoices.find(v => 
+                v.name.toLowerCase().includes('female') ||
+                v.name.toLowerCase().includes('donna') ||
+                v.name.toLowerCase().includes('alice') ||
+                v.name.toLowerCase().includes('maria')
+            );
+            
+            if (femaleVoice) return femaleVoice;
+            
+            // Default: prima voce italiana disponibile
+            return italianVoices[0] || voices[0];
+        }
 
         // Carica le voci disponibili
         function loadVoices() {
@@ -430,13 +474,36 @@
             const italianVoices = availableVoices.filter(voice => voice.lang.includes('it'));
             const voicesToUse = italianVoices.length > 0 ? italianVoices : availableVoices;
 
+            // Ordina le voci: prima quelle di qualità migliore
+            voicesToUse.sort((a, b) => {
+                const aQuality = (a.name.toLowerCase().includes('google') || 
+                                 a.name.toLowerCase().includes('microsoft') ||
+                                 a.name.toLowerCase().includes('enhanced')) ? 1 : 0;
+                const bQuality = (b.name.toLowerCase().includes('google') || 
+                                 b.name.toLowerCase().includes('microsoft') ||
+                                 b.name.toLowerCase().includes('enhanced')) ? 1 : 0;
+                return bQuality - aQuality;
+            });
+
             voiceSelect.innerHTML = '';
             voicesToUse.forEach((voice, index) => {
                 const option = document.createElement('option');
                 option.value = index;
-                option.textContent = `${voice.name} (${voice.lang})`;
+                const quality = (voice.name.toLowerCase().includes('google') || 
+                                voice.name.toLowerCase().includes('microsoft') ||
+                                voice.name.toLowerCase().includes('enhanced')) ? ' ⭐' : '';
+                option.textContent = `${voice.name}${quality} (${voice.lang})`;
                 voiceSelect.appendChild(option);
             });
+
+            // Seleziona automaticamente la voce migliore
+            const bestVoice = getBestVoice(availableVoices);
+            if (bestVoice) {
+                const bestIndex = voicesToUse.findIndex(v => v.name === bestVoice.name);
+                if (bestIndex >= 0) {
+                    voiceSelect.selectedIndex = bestIndex;
+                }
+            }
         }
 
         // Carica voci all'avvio
@@ -502,9 +569,12 @@
             utterance.lang = 'it-IT';
 
             // Imposta voce selezionata
+            const italianVoices = availableVoices.filter(v => v.lang.includes('it'));
+            const voicesToUse = italianVoices.length > 0 ? italianVoices : availableVoices;
             const selectedVoiceIndex = parseInt(voiceSelect.value);
-            if (availableVoices[selectedVoiceIndex]) {
-                utterance.voice = availableVoices[selectedVoiceIndex];
+            
+            if (voicesToUse[selectedVoiceIndex]) {
+                utterance.voice = voicesToUse[selectedVoiceIndex];
             }
 
             utterance.onstart = () => {
@@ -543,7 +613,7 @@
             synth.speak(utterance);
         }
 
-        // Gestione parametri URL per testo dinamico
+        // Gestione parametri URL
         const urlParams = new URLSearchParams(window.location.search);
         const lessonTitle = urlParams.get('title');
         if (lessonTitle) {
