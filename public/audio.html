@@ -126,29 +126,13 @@
             transform: scale(1.1);
         }
 
-        .progress-container {
-            margin-bottom: 20px;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 13px;
-            color: #718096;
-        }
-
-        body.dark-mode .progress-info {
-            color: #a0aec0;
-        }
-
         .progress-bar {
             width: 100%;
             height: 8px;
             background: #e2e8f0;
             border-radius: 10px;
             overflow: hidden;
-            cursor: pointer;
+            margin-bottom: 25px;
         }
 
         body.dark-mode .progress-bar {
@@ -166,9 +150,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 30px;
-            flex-wrap: wrap;
         }
 
         .control-btn {
@@ -215,11 +198,6 @@
             transform: scale(1.1);
         }
 
-        .skip-btn {
-            font-size: 14px;
-            font-weight: bold;
-        }
-
         .settings-panel {
             background: #f7fafc;
             padding: 25px;
@@ -234,7 +212,7 @@
         .settings-row {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
+            gap: 25px;
             margin-bottom: 20px;
         }
 
@@ -330,14 +308,6 @@
 
         .text-content p {
             margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .text-content p.highlight {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
-            padding: 5px 10px;
-            border-radius: 5px;
-            border-left: 4px solid #667eea;
         }
 
         .voice-select {
@@ -391,35 +361,6 @@
             background: rgba(102, 126, 234, 0.15);
         }
 
-        .bookmark-btn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .bookmark-btn:hover:not(:disabled) {
-            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.4);
-        }
-
-        .bookmarks-list {
-            margin-top: 15px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .bookmark-item {
-            background: rgba(102, 126, 234, 0.1);
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 13px;
-        }
-
-        .bookmark-item:hover {
-            background: rgba(102, 126, 234, 0.2);
-            transform: translateY(-2px);
-        }
-
         @media (max-width: 768px) {
             .settings-row {
                 grid-template-columns: 1fr;
@@ -432,21 +373,6 @@
 
             .card {
                 padding: 20px;
-            }
-
-            .controls {
-                gap: 10px;
-            }
-
-            .control-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 18px;
-            }
-
-            .play-btn {
-                width: 60px;
-                height: 60px;
             }
         }
     </style>
@@ -473,35 +399,17 @@
                 </button>
             </div>
 
-            <div class="progress-container">
-                <div class="progress-info">
-                    <span id="currentTime">0:00</span>
-                    <span id="totalTime">0:00</span>
-                </div>
-                <div class="progress-bar" id="progressBarContainer">
-                    <div class="progress-fill" id="progressBar"></div>
-                </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
             </div>
 
             <div class="controls">
-                <button class="control-btn skip-btn" id="skipBackBtn" title="Indietro 10 secondi">
-                    -10s
-                </button>
-
-                <button class="control-btn" id="stopBtn" disabled title="Stop">
+                <button class="control-btn" id="stopBtn" disabled>
                     ⏹️
                 </button>
 
-                <button class="control-btn play-btn" id="playBtn" title="Play/Pause">
+                <button class="control-btn play-btn" id="playBtn">
                     ▶️
-                </button>
-
-                <button class="control-btn skip-btn" id="skipForwardBtn" title="Avanti 10 secondi">
-                    +10s
-                </button>
-
-                <button class="control-btn bookmark-btn" id="bookmarkBtn" title="Aggiungi segnalibro">
-                    🔖
                 </button>
             </div>
 
@@ -553,11 +461,6 @@
                         <option>Caricamento voci...</option>
                     </select>
                 </div>
-
-                <div id="bookmarksContainer" style="display: none;">
-                    <label class="voice-label">🔖 Segnalibri</label>
-                    <div class="bookmarks-list" id="bookmarksList"></div>
-                </div>
             </div>
         </div>
 
@@ -574,7 +477,7 @@
             </div>
 
             <div class="info-box">
-                💡 <strong>Suggerimenti:</strong> Usa i pulsanti ±10s per navigare • Aggiungi segnalibri con 🔖 • Le tue preferenze vengono salvate automaticamente
+                💡 <strong>Per la migliore esperienza:</strong> Seleziona una voce con ⭐ • Usa cuffie • Dark mode disponibile 🌙
             </div>
         </div>
     </div>
@@ -586,16 +489,10 @@
         let isPlaying = false;
         let isPaused = false;
         let availableVoices = [];
-        let currentCharIndex = 0;
-        let startTime = 0;
-        let bookmarks = JSON.parse(localStorage.getItem('audioBookmarks')) || [];
 
         // Elementi DOM
         const playBtn = document.getElementById('playBtn');
         const stopBtn = document.getElementById('stopBtn');
-        const skipBackBtn = document.getElementById('skipBackBtn');
-        const skipForwardBtn = document.getElementById('skipForwardBtn');
-        const bookmarkBtn = document.getElementById('bookmarkBtn');
         const darkModeToggle = document.getElementById('darkModeToggle');
         const speedSlider = document.getElementById('speedSlider');
         const pitchSlider = document.getElementById('pitchSlider');
@@ -604,13 +501,8 @@
         const pitchValue = document.getElementById('pitchValue');
         const volumeValue = document.getElementById('volumeValue');
         const progressBar = document.getElementById('progressBar');
-        const progressBarContainer = document.getElementById('progressBarContainer');
-        const currentTimeEl = document.getElementById('currentTime');
-        const totalTimeEl = document.getElementById('totalTime');
         const voiceSelect = document.getElementById('voiceSelect');
         const lessonText = document.getElementById('lessonText');
-        const bookmarksContainer = document.getElementById('bookmarksContainer');
-        const bookmarksList = document.getElementById('bookmarksList');
 
         // Carica preferenze salvate
         const savedPrefs = JSON.parse(localStorage.getItem('audioPreferences')) || {};
@@ -618,9 +510,18 @@
             document.body.classList.add('dark-mode');
             darkModeToggle.textContent = '☀️';
         }
-        if (savedPrefs.speed) speedSlider.value = savedPrefs.speed;
-        if (savedPrefs.pitch) pitchSlider.value = savedPrefs.pitch;
-        if (savedPrefs.volume) volumeSlider.value = savedPrefs.volume;
+        if (savedPrefs.speed) {
+            speedSlider.value = savedPrefs.speed;
+            speedValue.textContent = parseFloat(savedPrefs.speed).toFixed(2) + 'x';
+        }
+        if (savedPrefs.pitch) {
+            pitchSlider.value = savedPrefs.pitch;
+            pitchValue.textContent = parseFloat(savedPrefs.pitch).toFixed(2);
+        }
+        if (savedPrefs.volume) {
+            volumeSlider.value = savedPrefs.volume;
+            volumeValue.textContent = Math.round(parseFloat(savedPrefs.volume) * 100) + '%';
+        }
 
         // Carica il testo della lezione
         function loadLessonText() {
@@ -628,14 +529,6 @@
         }
 
         const lessonTextContent = loadLessonText();
-        const estimatedDuration = Math.ceil(lessonTextContent.length / 15); // stima: ~15 caratteri al secondo
-        totalTimeEl.textContent = formatTime(estimatedDuration);
-
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
 
         // Dark Mode
         darkModeToggle.addEventListener('click', () => {
@@ -710,92 +603,24 @@
         // Aggiorna valori slider
         speedSlider.addEventListener('input', (e) => {
             speedValue.textContent = parseFloat(e.target.value).toFixed(2) + 'x';
-            savePreferences();
         });
+
+        speedSlider.addEventListener('change', savePreferences);
 
         pitchSlider.addEventListener('input', (e) => {
             pitchValue.textContent = parseFloat(e.target.value).toFixed(2);
-            savePreferences();
         });
+
+        pitchSlider.addEventListener('change', savePreferences);
 
         volumeSlider.addEventListener('input', (e) => {
             const vol = Math.round(parseFloat(e.target.value) * 100);
             volumeValue.textContent = vol + '%';
-            if (utterance) utterance.volume = parseFloat(e.target.value);
-            savePreferences();
         });
+
+        volumeSlider.addEventListener('change', savePreferences);
 
         voiceSelect.addEventListener('change', savePreferences);
-
-        // Skip buttons
-        skipBackBtn.addEventListener('click', () => {
-            if (utterance && isPlaying) {
-                // Riavvia da una posizione precedente (approssimazione)
-                const charToSkip = Math.floor(lessonTextContent.length * 0.05); // ~5%
-                currentCharIndex = Math.max(0, currentCharIndex - charToSkip);
-                restartFromPosition();
-            }
-        });
-
-        skipForwardBtn.addEventListener('click', () => {
-            if (utterance && isPlaying) {
-                const charToSkip = Math.floor(lessonTextContent.length * 0.05);
-                currentCharIndex = Math.min(lessonTextContent.length, currentCharIndex + charToSkip);
-                restartFromPosition();
-            }
-        });
-
-        function restartFromPosition() {
-            synth.cancel();
-            startSpeech(currentCharIndex);
-        }
-
-        // Bookmark
-        bookmarkBtn.addEventListener('click', () => {
-            if (currentCharIndex > 0) {
-                const bookmark = {
-                    position: currentCharIndex,
-                    time: formatTime(Math.floor((currentCharIndex / lessonTextContent.length) * estimatedDuration)),
-                    text: lessonTextContent.substring(currentCharIndex, currentCharIndex + 50) + '...'
-                };
-                bookmarks.push(bookmark);
-                localStorage.setItem('audioBookmarks', JSON.stringify(bookmarks));
-                renderBookmarks();
-                alert('🔖 Segnalibro aggiunto!');
-            }
-        });
-
-        function renderBookmarks() {
-            if (bookmarks.length > 0) {
-                bookmarksContainer.style.display = 'block';
-                bookmarksList.innerHTML = bookmarks.map((b, i) => 
-                    `<div class="bookmark-item" onclick="jumpToBookmark(${i})">
-                        ${b.time} - ${b.text.substring(0, 30)}...
-                    </div>`
-                ).join('');
-            }
-        }
-
-        window.jumpToBookmark = (index) => {
-            currentCharIndex = bookmarks[index].position;
-            if (isPlaying) {
-                restartFromPosition();
-            } else {
-                startSpeech(currentCharIndex);
-            }
-        };
-
-        renderBookmarks();
-
-        // Progress bar click
-        progressBarContainer.addEventListener('click', (e) => {
-            const rect = progressBarContainer.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            currentCharIndex = Math.floor(lessonTextContent.length * percent);
-            if (isPlaying) {
-                restartFromPosition();
-            }
-        });
 
         // Funzione Play/Pause
         playBtn.addEventListener('click', () => {
@@ -811,7 +636,7 @@
                 isPlaying = false;
                 playBtn.textContent = '▶️';
             } else {
-                startSpeech(currentCharIndex);
+                startSpeech();
             }
         });
 
@@ -822,27 +647,8 @@
             isPaused = false;
             playBtn.textContent = '▶️';
             stopBtn.disabled = true;
-            currentCharIndex = 0;
             progressBar.style.width = '0%';
-            currentTimeEl.textContent = '0:00';
-            highlightCurrentParagraph(-1);
         });
-
-        // Evidenzia paragrafo corrente
-        function highlightCurrentParagraph(charIndex) {
-            const paragraphs = lessonText.querySelectorAll('p');
-            let currentLength = 0;
-            
-            paragraphs.forEach((p, i) => {
-                const pLength = p.textContent.length;
-                if (charIndex >= currentLength && charIndex < currentLength + pLength) {
-                    p.classList.add('highlight');
-                } else {
-                    p.classList.remove('highlight');
-                }
-                currentLength += pLength;
-            });
-        }
 
         // Pulisce e normalizza il testo
         function cleanText(text) {
@@ -853,11 +659,9 @@
         }
 
         // Avvia sintesi vocale
-        function startSpeech(fromChar = 0) {
+        function startSpeech() {
             const cleanedText = cleanText(lessonTextContent);
-            const textToSpeak = cleanedText.substring(fromChar);
-            
-            utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance = new SpeechSynthesisUtterance(cleanedText);
             
             utterance.rate = parseFloat(speedSlider.value);
             utterance.pitch = parseFloat(pitchSlider.value);
@@ -877,18 +681,12 @@
                 isPlaying = true;
                 playBtn.textContent = '⏸️';
                 stopBtn.disabled = false;
-                startTime = Date.now();
+                progressBar.style.width = '0%';
             };
 
             utterance.onboundary = (event) => {
-                currentCharIndex = fromChar + event.charIndex;
-                const progress = (currentCharIndex / lessonTextContent.length) * 100;
+                const progress = (event.charIndex / cleanedText.length) * 100;
                 progressBar.style.width = progress + '%';
-                
-                const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                currentTimeEl.textContent = formatTime(elapsed);
-                
-                highlightCurrentParagraph(currentCharIndex);
             };
 
             utterance.onend = () => {
@@ -897,12 +695,9 @@
                 playBtn.textContent = '▶️';
                 stopBtn.disabled = true;
                 progressBar.style.width = '100%';
-                currentCharIndex = 0;
-                highlightCurrentParagraph(-1);
                 
                 setTimeout(() => {
                     progressBar.style.width = '0%';
-                    currentTimeEl.textContent = '0:00';
                 }, 2000);
             };
 
