@@ -28,7 +28,16 @@ async function generateContent(text) {
 Testo:
 ${text}
 
-Rispondi SOLO con JSON valido.`;
+IMPORTANTE:
+- Rispondi SOLO con JSON valido
+- highlights: 5 punti chiave specifici
+- glossary: 8-10 termini
+- timeline: eventi significativi con date
+- mind_map: 4 concetti interconnessi
+- flashcards: 20-25 domande/risposte (MOLTE per studio intensivo)
+- quiz: 15-20 domande DIFFICILI e SPECIFICHE (test comprensione profonda)
+- Varia i tipi di domande: definizioni, applicazioni, confronti, analisi
+- Usa italiano per tutto il contenuto`;
 
   try {
     const response = await openai.chat.completions.create({
