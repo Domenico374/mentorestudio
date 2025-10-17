@@ -333,26 +333,26 @@
                     <div class="control-group">
                         <div class="control-label">
                             <span>Velocità</span>
-                            <span class="control-value" id="speedValue">0.9x</span>
+                            <span class="control-value" id="speedValue">1.0x</span>
                         </div>
-                        <input type="range" min="0.5" max="2" step="0.1" value="0.9" class="slider" id="speedSlider">
+                        <input type="range" min="0.7" max="1.5" step="0.05" value="1.0" class="slider" id="speedSlider">
                         <div class="slider-labels">
-                            <span>0.5x</span>
+                            <span>0.7x</span>
                             <span>1.0x</span>
-                            <span>2.0x</span>
+                            <span>1.5x</span>
                         </div>
                     </div>
 
                     <div class="control-group">
                         <div class="control-label">
                             <span>Tonalità</span>
-                            <span class="control-value" id="pitchValue">0.8</span>
+                            <span class="control-value" id="pitchValue">1.0</span>
                         </div>
-                        <input type="range" min="0.5" max="2" step="0.1" value="0.8" class="slider" id="pitchSlider">
+                        <input type="range" min="0.8" max="1.2" step="0.05" value="1.0" class="slider" id="pitchSlider">
                         <div class="slider-labels">
-                            <span>Bassa</span>
-                            <span>Normale</span>
-                            <span>Alta</span>
+                            <span>0.8</span>
+                            <span>1.0</span>
+                            <span>1.2</span>
                         </div>
                     </div>
                 </div>
@@ -510,13 +510,23 @@
             alert('Funzionalità di download in sviluppo!\n\nSarà presto possibile scaricare l\'audio in formato MP3 per l\'ascolto offline.');
         });
 
+        // Pulisce e normalizza il testo per una lettura migliore
+        function cleanText(text) {
+            return text
+                .replace(/\s+/g, ' ')  // Normalizza spazi multipli
+                .replace(/\n+/g, '. ')  // Sostituisce a capo con pause
+                .trim();
+        }
+
         // Avvia sintesi vocale
         function startSpeech() {
-            utterance = new SpeechSynthesisUtterance(lessonTextContent);
+            const cleanedText = cleanText(lessonTextContent);
+            utterance = new SpeechSynthesisUtterance(cleanedText);
             
             utterance.rate = parseFloat(speedSlider.value);
             utterance.pitch = parseFloat(pitchSlider.value);
             utterance.lang = 'it-IT';
+            utterance.volume = 1.0;
 
             // Imposta voce selezionata
             const italianVoices = availableVoices.filter(v => v.lang.includes('it'));
