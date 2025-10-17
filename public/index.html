@@ -85,6 +85,7 @@
             margin-top: 15px;
         }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .btn-delete { background: var(--danger); padding: 8px 15px; margin: 0; font-size: 0.9em; }
         .tabs {
             display: flex;
             gap: 10px;
@@ -121,6 +122,23 @@
         body.dark-mode .section h2 { color: var(--accent); border-color: var(--accent); }
         .card { background: #f5f7ff; padding: 20px; border-radius: 10px; margin: 10px 0; border-left: 4px solid var(--primary); }
         body.dark-mode .card { background: #1a1a2e; border-left-color: var(--accent); }
+        .study-item {
+            background: #f5f7ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        body.dark-mode .study-item { background: #1a1a2e; }
+        .study-item:hover { transform: translateX(5px); background: #e8eaff; }
+        .study-info { font-size: 0.9em; color: #666; margin-top: 5px; }
+        body.dark-mode .study-info { color: #aaa; }
+        .study-left { flex: 1; }
+        .study-right { display: flex; gap: 10px; }
         .search-box {
             width: 100%;
             padding: 12px;
@@ -152,7 +170,8 @@
         .note-input { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9em; }
         body.dark-mode .note-input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
         .key-concept { display: inline-block; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 4px 10px; border-radius: 15px; margin: 3px; font-size: 0.85em; }
-        .highlight { background: linear-gradient(120deg, #ffd89b, #19547b); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        .back-btn { display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--primary); margin-bottom: 20px; font-weight: bold; }
+        body.dark-mode .back-btn { color: var(--accent); }
     </style>
 </head>
 <body>
@@ -161,12 +180,12 @@
             <h1>📚 MentoreStudio</h1>
             <div class="header-controls">
                 <button class="toggle-btn" onclick="toggleDarkMode()">🌙</button>
-                <button class="toggle-btn hidden" id="resetBtn" onclick="resetApp()">🔄 Reset</button>
             </div>
         </div>
 
         <div class="upload-section" id="uploadSection">
-            <h2>🚀 Carica il tuo PDF per iniziare</h2>
+            <h2>🚀 Carica i tuoi PDF di lezioni</h2>
+            <p style="margin-bottom: 15px; color: #666;">Puoi caricare più PDF contemporaneamente o uno per volta</p>
             <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Seleziona la materia:</label>
             <select id="subjectSelect" class="subject-select">
                 <option value="Generale">Generale</option>
@@ -175,20 +194,21 @@
                 <option value="Biologia">Biologia</option>
                 <option value="Diritto">Diritto</option>
             </select>
-            <input type="file" id="pdfFile" accept=".pdf">
-            <button class="btn" onclick="loadPDF()" style="width: 100%; max-width: 400px;">📂 Carica e Genera</button>
-            <p style="font-size: 0.9em; margin-top: 10px; color: #666;">Nessuna chiave API necessaria • Tutto salvato offline</p>
+            <input type="file" id="pdfFile" accept=".pdf" multiple>
+            <button class="btn" onclick="loadMultiplePDFs()" style="width: 100%; max-width: 400px;">📂 Carica e Genera</button>
+            <p style="font-size: 0.9em; margin-top: 10px; color: #666;">Tutto salvato offline • Nessuna chiave API visibile</p>
         </div>
 
         <div id="mainApp" class="hidden">
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('summary', event)">📝 Riassunto</button>
-                <button class="tab-btn" onclick="switchTab('highlights', event)">⭐ Punti Salienti</button>
-                <button class="tab-btn" onclick="switchTab('glossary', event)">📖 Glossario</button>
-                <button class="tab-btn" onclick="switchTab('timeline', event)">📅 Timeline</button>
-                <button class="tab-btn" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
-                <button class="tab-btn" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
-                <button class="tab-btn" onclick="switchTab('quiz', event)">❓ Quiz</button>
+                <button class="tab-btn active" onclick="switchTab('library', event)">📚 Libreria Studi</button>
+                <button class="tab-btn hidden" id="tabSummary" onclick="switchTab('summary', event)">📝 Riassunto</button>
+                <button class="tab-btn hidden" id="tabHighlights" onclick="switchTab('highlights', event)">⭐ Punti Salienti</button>
+                <button class="tab-btn hidden" id="tabGlossary" onclick="switchTab('glossary', event)">📖 Glossario</button>
+                <button class="tab-btn hidden" id="tabTimeline" onclick="switchTab('timeline', event)">📅 Timeline</button>
+                <button class="tab-btn hidden" id="tabMindmap" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
+                <button class="tab-btn hidden" id="tabFlashcards" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
+                <button class="tab-btn hidden" id="tabQuiz" onclick="switchTab('quiz', event)">❓ Quiz</button>
             </div>
             <div class="content-area" id="contentArea"></div>
         </div>
@@ -196,8 +216,8 @@
 
     <script>
         let appState = {
-            pdfText: '',
-            data: null,
+            studies: JSON.parse(localStorage.getItem('mentorestudio_studies')) || {},
+            currentStudyId: null,
             currentFlashcard: 0,
             currentQuiz: 0,
             quizScore: 0,
@@ -213,18 +233,40 @@
             localStorage.setItem('darkMode', appState.darkMode);
         }
 
-        async function loadPDF() {
-            const file = document.getElementById('pdfFile').files[0];
-            if (!file) { alert('Seleziona un PDF'); return; }
-            showLoading();
-            try {
-                const text = await extractPDFText(file);
-                appState.pdfText = text;
-                await generateContent();
-            } catch (e) {
-                alert('Errore: ' + e.message);
-                document.getElementById('contentArea').innerHTML = '<p style="color: red;">Errore: ' + e.message + '</p>';
+        async function loadMultiplePDFs() {
+            const files = document.getElementById('pdfFile').files;
+            if (files.length === 0) { alert('Seleziona almeno un PDF'); return; }
+
+            showMainApp();
+            let processedCount = 0;
+
+            for (let file of files) {
+                try {
+                    const text = await extractPDFText(file);
+                    const studyId = Date.now() + Math.random();
+                    
+                    updateProgress(processedCount, files.length, `Elaborando: ${file.name}`);
+                    
+                    const data = await generateContent(text, document.getElementById('subjectSelect').value);
+                    
+                    appState.studies[studyId] = {
+                        id: studyId,
+                        name: file.name.replace('.pdf', ''),
+                        data: data,
+                        date: new Date().toLocaleDateString('it-IT'),
+                        subject: document.getElementById('subjectSelect').value
+                    };
+                    
+                    processedCount++;
+                    updateProgress(processedCount, files.length, `Completato: ${file.name}`);
+                } catch (e) {
+                    alert(`Errore con ${file.name}: ${e.message}`);
+                }
             }
+
+            saveStudies();
+            renderLibrary();
+            switchTab('library');
         }
 
         async function extractPDFText(file) {
@@ -244,29 +286,37 @@
             });
         }
 
-        function showLoading() {
+        function showMainApp() {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('resetBtn').classList.remove('hidden');
-            document.getElementById('contentArea').innerHTML = '<div class="loading"><div class="spinner"></div><p>🤖 Generando contenuti...</p></div>';
         }
 
-        async function generateContent() {
-            try {
-                const subject = document.getElementById('subjectSelect').value;
-                const response = await fetch('/api/generate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: appState.pdfText, subject: subject })
-                });
+        function updateProgress(current, total, message) {
+            document.getElementById('contentArea').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>${message}</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${(current/total)*100}%"></div>
+                    </div>
+                    <p>${current}/${total}</p>
+                </div>
+            `;
+        }
 
-                if (!response.ok) throw new Error('Errore server: ' + response.status);
-                appState.data = await response.json();
-                switchTab('summary');
-            } catch (e) {
-                alert('Errore: ' + e.message);
-                document.getElementById('contentArea').innerHTML = '<p style="color: red;">Errore: ' + e.message + '</p>';
-            }
+        async function generateContent(text, subject) {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text.substring(0, 8000), subject: subject })
+            });
+
+            if (!response.ok) throw new Error('Errore server: ' + response.status);
+            return await response.json();
+        }
+
+        function saveStudies() {
+            localStorage.setItem('mentorestudio_studies', JSON.stringify(appState.studies));
         }
 
         function switchTab(tab, e) {
@@ -275,6 +325,7 @@
                 e.target.classList.add('active');
             }
             switch(tab) {
+                case 'library': renderLibrary(); break;
                 case 'summary': renderSummary(); break;
                 case 'highlights': renderHighlights(); break;
                 case 'glossary': renderGlossary(); break;
@@ -285,26 +336,94 @@
             }
         }
 
+        function renderLibrary() {
+            let html = '<h2>📚 Le tue lezioni</h2>';
+            const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
+            
+            if (studies.length === 0) {
+                html += '<p style="text-align: center; color: #999; margin-top: 20px;">Nessuna lezione caricata. Carica i tuoi PDF sopra.</p>';
+            } else {
+                studies.forEach(study => {
+                    html += `
+                        <div class="study-item" onclick="selectStudy('${study.id}')">
+                            <div class="study-left">
+                                <strong>${study.name}</strong>
+                                <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 8 flashcard • ❓ 4 quiz</div>
+                            </div>
+                            <div class="study-right">
+                                <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '<button class="btn" onclick="resetApp()" style="width: 100%; margin-top: 20px;">➕ Carica altre lezioni</button>';
+            }
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function selectStudy(studyId) {
+            appState.currentStudyId = studyId;
+            appState.currentFlashcard = 0;
+            appState.currentQuiz = 0;
+            appState.quizScore = 0;
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.add('hidden'));
+            document.getElementById('tabSummary').classList.remove('hidden');
+            document.getElementById('tabHighlights').classList.remove('hidden');
+            document.getElementById('tabGlossary').classList.remove('hidden');
+            document.getElementById('tabTimeline').classList.remove('hidden');
+            document.getElementById('tabMindmap').classList.remove('hidden');
+            document.getElementById('tabFlashcards').classList.remove('hidden');
+            document.getElementById('tabQuiz').classList.remove('hidden');
+            
+            switchTab('summary');
+        }
+
+        function deleteStudy(studyId, e) {
+            e.stopPropagation();
+            if (confirm('Eliminare questa lezione?')) {
+                delete appState.studies[studyId];
+                saveStudies();
+                renderLibrary();
+            }
+        }
+
+        function getCurrentStudy() {
+            return appState.studies[appState.currentStudyId];
+        }
+
+        function goBack() {
+            switchTab('library');
+        }
+
         function renderSummary() {
+            const study = getCurrentStudy();
+            if (!study) return;
             document.getElementById('contentArea').innerHTML = `
-                <div class="section"><h2>📝 Riassunto Breve</h2><div class="card">${appState.data.summary_short || 'N/A'}</div></div>
-                <div class="section"><h2>📖 Riassunto Completo</h2><div class="card">${appState.data.summary_long || 'N/A'}</div></div>
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <div class="section"><h3>📝 Riassunto Breve</h3><div class="card">${study.data.summary_short || 'N/A'}</div></div>
+                <div class="section"><h3>📖 Riassunto Completo</h3><div class="card">${study.data.summary_long || 'N/A'}</div></div>
             `;
         }
 
         function renderHighlights() {
-            let html = '<h2>⭐ Punti Salienti</h2>';
-            (appState.data.highlights || []).forEach((h, i) => { 
+            const study = getCurrentStudy();
+            if (!study) return;
+            let html = `<div class="back-btn" onclick="goBack()">← Torna alla Libreria</div><h2>${study.name}</h2><h3>⭐ Punti Salienti</h3>`;
+            (study.data.highlights || []).forEach((h, i) => { 
                 html += `<div class="card"><strong>${i+1}.</strong> <span class="key-concept">${h}</span></div>`; 
             });
             document.getElementById('contentArea').innerHTML = html;
         }
 
         function renderGlossary() {
-            let html = '<h2>📖 Glossario</h2>';
+            const study = getCurrentStudy();
+            if (!study) return;
+            let html = `<div class="back-btn" onclick="goBack()">← Torna alla Libreria</div><h2>${study.name}</h2><h3>📖 Glossario</h3>`;
             html += '<input type="text" class="search-box" id="glossarySearch" placeholder="🔍 Cerca un termine..." onkeyup="filterGlossary()">';
             html += '<div id="glossaryContent">';
-            (appState.data.glossary || []).forEach(item => { 
+            (study.data.glossary || []).forEach(item => { 
                 html += `<div class="card" data-term="${item.term.toLowerCase()}"><strong>${item.term}</strong><p>${item.definition}</p></div>`; 
             });
             html += '</div>';
@@ -321,16 +440,20 @@
         }
 
         function renderTimeline() {
-            let html = '<h2>📅 Timeline</h2>';
-            (appState.data.timeline || []).forEach(item => { 
-                html += `<div class="card"><strong class="highlight">${item.date}</strong><p>${item.event}</p></div>`; 
+            const study = getCurrentStudy();
+            if (!study) return;
+            let html = `<div class="back-btn" onclick="goBack()">← Torna alla Libreria</div><h2>${study.name}</h2><h3>📅 Timeline</h3>`;
+            (study.data.timeline || []).forEach(item => { 
+                html += `<div class="card"><strong>${item.date}</strong><p>${item.event}</p></div>`; 
             });
             document.getElementById('contentArea').innerHTML = html;
         }
 
         function renderMindMap() {
-            let html = '<h2>🧠 Mappa Mentale</h2><div style="display: flex; flex-wrap: wrap; gap: 15px;">';
-            (appState.data.mind_map || []).forEach(c => { 
+            const study = getCurrentStudy();
+            if (!study) return;
+            let html = `<div class="back-btn" onclick="goBack()">← Torna alla Libreria</div><h2>${study.name}</h2><h3>🧠 Mappa Mentale</h3><div style="display: flex; flex-wrap: wrap; gap: 15px;">`;
+            (study.data.mind_map || []).forEach(c => { 
                 html += `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 15px 20px; border-radius: 8px; font-weight: bold;">${c}</div>`; 
             });
             html += '</div>';
@@ -338,13 +461,17 @@
         }
 
         function renderFlashcards() {
-            const fc = appState.data.flashcards[appState.currentFlashcard];
-            const prog = ((appState.currentFlashcard + 1) / appState.data.flashcards.length * 100).toFixed(0);
-            const noteKey = `note_${appState.currentFlashcard}`;
+            const study = getCurrentStudy();
+            if (!study || !study.data.flashcards || study.data.flashcards.length === 0) return;
+            const fc = study.data.flashcards[appState.currentFlashcard];
+            const prog = ((appState.currentFlashcard + 1) / study.data.flashcards.length * 100).toFixed(0);
+            const noteKey = `note_${appState.currentStudyId}_${appState.currentFlashcard}`;
             const note = appState.notes[noteKey] || '';
             
-            let html = `<div class="progress-bar"><div class="progress-fill" style="width: ${prog}%"></div></div>
-                <p style="text-align: center;">Flashcard ${appState.currentFlashcard + 1}/${appState.data.flashcards.length}</p>
+            let html = `<div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <div class="progress-bar"><div class="progress-fill" style="width: ${prog}%"></div></div>
+                <p style="text-align: center;">Flashcard ${appState.currentFlashcard + 1}/${study.data.flashcards.length}</p>
                 <div class="flashcard" onclick="this.querySelector('.flashcard-inner').classList.toggle('flipped')">
                     <div class="flashcard-inner">
                         <div class="flashcard-front">${fc.q || 'Domanda'}</div>
@@ -358,26 +485,27 @@
                 </div>
                 <div class="controls">
                     <button class="btn" onclick="prevFlash()" ${appState.currentFlashcard === 0 ? 'disabled' : ''}>← Indietro</button>
-                    <button class="btn" onclick="nextFlash()" ${appState.currentFlashcard === appState.data.flashcards.length - 1 ? 'disabled' : ''}>Avanti →</button>
+                    <button class="btn" onclick="nextFlash()" ${appState.currentFlashcard === study.data.flashcards.length - 1 ? 'disabled' : ''}>Avanti →</button>
                 </div>`;
             document.getElementById('contentArea').innerHTML = html;
         }
 
         function saveFlashcardNote() {
-            const noteKey = `note_${appState.currentFlashcard}`;
+            const noteKey = `note_${appState.currentStudyId}_${appState.currentFlashcard}`;
             appState.notes[noteKey] = document.getElementById('flashcardNote').value;
             localStorage.setItem('flashcardNotes', JSON.stringify(appState.notes));
             alert('✅ Nota salvata!');
         }
 
-        function nextFlash() { 
-            if (appState.currentFlashcard < appState.data.flashcards.length - 1) { 
+        function nextFlash() {
+            const study = getCurrentStudy();
+            if (appState.currentFlashcard < study.data.flashcards.length - 1) { 
                 appState.currentFlashcard++; 
                 renderFlashcards(); 
             } 
         }
 
-        function prevFlash() { 
+        function prevFlash() {
             if (appState.currentFlashcard > 0) { 
                 appState.currentFlashcard--; 
                 renderFlashcards(); 
@@ -385,10 +513,14 @@
         }
 
         function renderQuiz() {
-            const q = appState.data.quiz[appState.currentQuiz];
-            const prog = ((appState.currentQuiz + 1) / appState.data.quiz.length * 100).toFixed(0);
-            let html = `<div class="progress-bar"><div class="progress-fill" style="width: ${prog}%"></div></div>
-                <p style="text-align: center;">Quiz ${appState.currentQuiz + 1}/${appState.data.quiz.length}</p>
+            const study = getCurrentStudy();
+            if (!study || !study.data.quiz || study.data.quiz.length === 0) return;
+            const q = study.data.quiz[appState.currentQuiz];
+            const prog = ((appState.currentQuiz + 1) / study.data.quiz.length * 100).toFixed(0);
+            let html = `<div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <div class="progress-bar"><div class="progress-fill" style="width: ${prog}%"></div></div>
+                <p style="text-align: center;">Quiz ${appState.currentQuiz + 1}/${study.data.quiz.length}</p>
                 <h3 style="margin: 30px 0;">${q.q || 'Domanda'}</h3>`;
             (q.options || []).forEach((o, i) => { html += `<div class="quiz-option" onclick="checkAns(${i}, ${q.correct})">${o}</div>`; });
             document.getElementById('contentArea').innerHTML = html;
@@ -400,38 +532,31 @@
         }
 
         function nextQuiz() {
-            if (appState.currentQuiz < appState.data.quiz.length - 1) { 
+            const study = getCurrentStudy();
+            if (appState.currentQuiz < study.data.quiz.length - 1) { 
                 appState.currentQuiz++; 
                 renderQuiz(); 
             } else {
-                const perc = (appState.quizScore / appState.data.quiz.length * 100).toFixed(1);
+                const perc = (appState.quizScore / study.data.quiz.length * 100).toFixed(1);
                 document.getElementById('contentArea').innerHTML = `<h2 style="text-align: center;">🏆 Completato!</h2>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
                         <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px; border-radius: 10px; text-align: center;">
-                            <div style="font-size: 2em; font-weight: bold;">${appState.quizScore}/${appState.data.quiz.length}</div>
+                            <div style="font-size: 2em; font-weight: bold;">${appState.quizScore}/${study.data.quiz.length}</div>
                             <div style="font-size: 0.9em; margin-top: 5px;">Corrette</div>
                         </div>
                         <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px; border-radius: 10px; text-align: center;">
                             <div style="font-size: 2em; font-weight: bold;">${perc}%</div>
                             <div style="font-size: 0.9em; margin-top: 5px;">Percentuale</div>
                         </div>
-                    </div>`;
+                    </div>
+                    <button class="btn" onclick="goBack()" style="width: 100%; margin-top: 20px;">← Torna alla Libreria</button>`;
             }
         }
 
         function resetApp() {
             document.getElementById('uploadSection').classList.remove('hidden');
             document.getElementById('mainApp').classList.add('hidden');
-            document.getElementById('resetBtn').classList.add('hidden');
-            appState = {
-                pdfText: '',
-                data: null,
-                currentFlashcard: 0,
-                currentQuiz: 0,
-                quizScore: 0,
-                notes: appState.notes,
-                darkMode: appState.darkMode
-            };
+            document.getElementById('pdfFile').value = '';
         }
     </script>
 </body>
