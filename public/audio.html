@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audio Riassunto - MentoreStudio</title>
     <style>
+        /* CSS INIZIALE - Mantenuto invariato */
         * {
             margin: 0;
             padding: 0;
@@ -561,14 +562,38 @@
             ];
             return femaleKeywords.some(keyword => name.includes(keyword));
         }
+        
+        // NUOVA FUNZIONE: seleziona automaticamente la voce di migliore qualità.
+        function getBestVoice(voices) {
+            const selectedIndex = parseInt(voiceSelect.value);
+            
+            // 1. Prova a usare la voce selezionata dall'utente (se l'indice è valido)
+            if (voices[selectedIndex]) {
+                return voices[selectedIndex];
+            }
+            
+            // 2. Prova a trovare la voce con il tag di qualità (Google, Microsoft, Enhanced)
+            const bestQualityVoice = voices.find(v => 
+                v.name.toLowerCase().includes('google') ||
+                v.name.toLowerCase().includes('microsoft') ||
+                v.name.toLowerCase().includes('enhanced')
+            );
+            if (bestQualityVoice) return bestQualityVoice;
+
+            // 3. Fallback alla prima voce italiana disponibile
+            return voices[0];
+        }
+
 
         // Carica le voci disponibili
         function loadVoices() {
             availableVoices = synth.getVoices();
             const italianVoices = availableVoices.filter(voice => voice.lang.includes('it'));
             let femaleVoices = italianVoices.filter(isFemaleVoice);
+            // Se non trova voci femminili specifiche, usa tutte le voci italiane filtrate.
             const voicesToUse = femaleVoices.length > 0 ? femaleVoices : italianVoices;
 
+            // Ordina per qualità (voci Google/Microsoft/Enhanced in cima)
             voicesToUse.sort((a, b) => {
                 const aQuality = (a.name.toLowerCase().includes('google') || 
                                  a.name.toLowerCase().includes('microsoft') ||
@@ -584,8 +609,8 @@
                 const option = document.createElement('option');
                 option.value = index;
                 const quality = (voice.name.toLowerCase().includes('google') || 
-                                voice.name.toLowerCase().includes('microsoft') ||
-                                voice.name.toLowerCase().includes('enhanced')) ? ' ⭐' : '';
+                                 voice.name.toLowerCase().includes('microsoft') ||
+                                 voice.name.toLowerCase().includes('enhanced')) ? ' ⭐' : '';
                 option.textContent = `${voice.name}${quality}`;
                 voiceSelect.appendChild(option);
             });
@@ -600,26 +625,22 @@
             synth.onvoiceschanged = loadVoices;
         }
 
-        // Aggiorna valori slider
+        // Aggiorna valori slider e salva preferenze
         speedSlider.addEventListener('input', (e) => {
             speedValue.textContent = parseFloat(e.target.value).toFixed(2) + 'x';
         });
-
         speedSlider.addEventListener('change', savePreferences);
 
         pitchSlider.addEventListener('input', (e) => {
             pitchValue.textContent = parseFloat(e.target.value).toFixed(2);
         });
-
         pitchSlider.addEventListener('change', savePreferences);
 
         volumeSlider.addEventListener('input', (e) => {
             const vol = Math.round(parseFloat(e.target.value) * 100);
             volumeValue.textContent = vol + '%';
         });
-
         volumeSlider.addEventListener('change', savePreferences);
-
         voiceSelect.addEventListener('change', savePreferences);
 
         // Funzione Play/Pause
@@ -658,11 +679,12 @@
                 .trim();
         }
 
-        // Avvia sintesi vocale
+        // Avvia sintesi vocale (MODIFICATO PER USARE getBestVoice)
         function startSpeech() {
             const cleanedText = cleanText(lessonTextContent);
             utterance = new SpeechSynthesisUtterance(cleanedText);
             
+            // Impostazione dei parametri utente
             utterance.rate = parseFloat(speedSlider.value);
             utterance.pitch = parseFloat(pitchSlider.value);
             utterance.volume = parseFloat(volumeSlider.value);
@@ -672,11 +694,10 @@
             const femaleVoices = italianVoices.filter(isFemaleVoice);
             const voicesToUse = femaleVoices.length > 0 ? femaleVoices : italianVoices;
             
-            const selectedVoiceIndex = parseInt(voiceSelect.value);
-            if (voicesToUse[selectedVoiceIndex]) {
-                utterance.voice = voicesToUse[selectedVoiceIndex];
-            }
+            // Imposta la voce usando la nuova logica getBestVoice()
+            utterance.voice = getBestVoice(voicesToUse);
 
+            // Gestori di eventi
             utterance.onstart = () => {
                 isPlaying = true;
                 playBtn.textContent = '⏸️';
