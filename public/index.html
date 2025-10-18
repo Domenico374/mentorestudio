@@ -172,11 +172,40 @@
         .flashcard-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
         .flashcard-back { background: linear-gradient(135deg, var(--accent), #f5576c); color: white; transform: rotateY(180deg); }
         .controls { display: flex; gap: 10px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
-        .quiz-option { background: #f5f7ff; padding: 15px; margin: 10px 0; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s; }
+        .quiz-option { 
+            background: #f5f7ff; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            border: 2px solid transparent; 
+            transition: all 0.3s;
+            position: relative;
+        }
         body.dark-mode .quiz-option { background: #1a1a2e; }
-        .quiz-option:hover { background: #e8eaff; }
+        .quiz-option:hover { background: #e8eaff; transform: translateX(5px); }
+        .quiz-option.selected { border-color: var(--primary); background: #e8eaff; }
         .quiz-option.correct { border-color: var(--success); background: #c8e6c9; }
         .quiz-option.incorrect { border-color: var(--danger); background: #ffcdd2; }
+        .quiz-option.show-correct { border-color: var(--success); background: #e8f5e9; }
+        .timer-display {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .timer-display.warning {
+            background: linear-gradient(135deg, #ffa726, #fb8c00);
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
         .note-section { background: #fff3cd; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #ffc107; }
         body.dark-mode .note-section { background: #3d3d1a; color: #e0e0e0; }
         .note-input { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9em; }
@@ -214,6 +243,21 @@
         .audio-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        .review-item {
+            background: #f5f7ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid var(--primary);
+        }
+        .review-item.wrong {
+            border-left-color: var(--danger);
+            background: #ffebee;
+        }
+        .review-item.correct {
+            border-left-color: var(--success);
+            background: #e8f5e9;
         }
     </style>
 </head>
@@ -265,13 +309,19 @@
             currentFlashcardFiltered: 0,
             flashcardMode: 'all',
             currentQuiz: 0,
+            currentQuizFiltered: 0,
+            quizMode: 'all',
             quizScore: 0,
+            quizAnswers: [],
+            quizTimerEnabled: false,
+            quizTimeRemaining: 0,
+            quizTimerId: null,
             notes: JSON.parse(localStorage.getItem('flashcardNotes')) || {},
             darkMode: localStorage.getItem('darkMode') === 'true'
         };
 
-        // Flashcard stats tracking
         let flashcardStats = JSON.parse(localStorage.getItem('flashcardStats')) || {};
+        let quizStats = JSON.parse(localStorage.getItem('quizStats')) || {};
 
         if (appState.darkMode) document.body.classList.add('dark-mode');
 
@@ -380,7 +430,7 @@
                 case 'timeline': renderTimeline(); break;
                 case 'mindmap': renderMindMap(); break;
                 case 'flashcards': renderFlashcardsAdvanced(); break;
-                case 'quiz': renderQuiz(); break;
+                case 'quiz': renderQuizAdvanced(); break;
             }
         }
 
@@ -484,7 +534,10 @@
             appState.currentFlashcardFiltered = 0;
             appState.flashcardMode = 'all';
             appState.currentQuiz = 0;
+            appState.currentQuizFiltered = 0;
+            appState.quizMode = 'all';
             appState.quizScore = 0;
+            appState.quizAnswers = [];
             
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.add('hidden'));
             document.getElementById('tabSummary').classList.remove('hidden');
@@ -512,6 +565,10 @@
         }
 
         function goBack() {
+            if (appState.quizTimerId) {
+                clearInterval(appState.quizTimerId);
+                appState.quizTimerId = null;
+            }
             switchTab('library');
         }
 
@@ -592,7 +649,7 @@
             document.getElementById('contentArea').innerHTML = html;
         }
 
-        // ===== FLASHCARD SYSTEM AVANZATO =====
+        // ===== FLASHCARD SYSTEM (già implementato prima) =====
 
         function initFlashcardStats(studyId, totalCards) {
             if (!flashcardStats[studyId]) {
@@ -861,47 +918,415 @@
             alert('✅ Nota salvata!');
         }
 
-        // ===== QUIZ FUNCTIONS =====
+        // ===== QUIZ SYSTEM AVANZATO =====
 
-        function renderQuiz() {
+        function initQuizStats(studyId, totalQuestions) {
+            if (!quizStats[studyId]) {
+                quizStats[studyId] = {
+                    questions: Array(totalQuestions).fill(null).map(() => ({
+                        attempts: 0,
+                        correct: 0,
+                        wrong: 0,
+                        lastAttempt: null
+                    })),
+                    sessions: [],
+                    totalScore: 0,
+                    totalAttempts: 0
+                };
+                saveQuizStats();
+            }
+        }
+
+        function saveQuizStats() {
+            localStorage.setItem('quizStats', JSON.stringify(quizStats));
+        }
+
+        function getQuizStats(studyId) {
+            return quizStats[studyId] || null;
+        }
+
+        function updateQuizQuestion(studyId, questionIndex, isCorrect) {
+            if (!quizStats[studyId]) return;
+            
+            const question = quizStats[studyId].questions[questionIndex];
+            question.attempts++;
+            if (isCorrect) {
+                question.correct++;
+            } else {
+                question.wrong++;
+            }
+            question.lastAttempt = Date.now();
+            saveQuizStats();
+        }
+
+        function saveQuizSession(studyId, score, total, answers, timeTaken) {
+            if (!quizStats[studyId]) return;
+            
+            quizStats[studyId].sessions.push({
+                date: Date.now(),
+                score: score,
+                total: total,
+                percentage: (score / total * 100).toFixed(1),
+                timeTaken: timeTaken,
+                answers: answers
+            });
+            
+            quizStats[studyId].totalScore += score;
+            quizStats[studyId].totalAttempts += total;
+            
+            saveQuizStats();
+        }
+
+        function getFilteredQuizQuestions(study, mode) {
+            const studyId = study.id;
+            const questions = study.data.quiz || [];
+            
+            if (!quizStats[studyId]) {
+                initQuizStats(studyId, questions.length);
+            }
+            
+            let indices = questions.map((_, i) => i);
+            const stats = quizStats[studyId];
+            
+            switch(mode) {
+                case 'unanswered':
+                    indices = indices.filter(i => stats.questions[i].attempts === 0);
+                    break;
+                case 'wrong':
+                    indices = indices.filter(i => stats.questions[i].wrong > 0);
+                    break;
+                case 'random':
+                    indices = indices.sort(() => Math.random() - 0.5);
+                    break;
+            }
+            
+            return indices;
+        }
+
+        function getQuizProgressStats(studyId) {
+            if (!quizStats[studyId]) return null;
+            
+            const questions = quizStats[studyId].questions;
+            const total = questions.length;
+            const attempted = questions.filter(q => q.attempts > 0).length;
+            const correct = questions.reduce((sum, q) => sum + q.correct, 0);
+            const wrong = questions.reduce((sum, q) => sum + q.wrong, 0);
+            const totalAttempts = correct + wrong;
+            const accuracy = totalAttempts > 0 ? ((correct / totalAttempts) * 100).toFixed(1) : 0;
+            
+            return {
+                total,
+                attempted,
+                unattempted: total - attempted,
+                correct,
+                wrong,
+                accuracy,
+                sessions: quizStats[studyId].sessions.length
+            };
+        }
+
+        function renderQuizAdvanced() {
             const study = getCurrentStudy();
             if (!study || !study.data.quiz || study.data.quiz.length === 0) return;
-            const q = study.data.quiz[appState.currentQuiz];
-            const prog = ((appState.currentQuiz + 1) / study.data.quiz.length * 100).toFixed(0);
-            let html = `<div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+            
+            const studyId = study.id;
+            initQuizStats(studyId, study.data.quiz.length);
+            
+            const mode = appState.quizMode || 'all';
+            const filteredIndices = getFilteredQuizQuestions(study, mode);
+            
+            if (filteredIndices.length === 0) {
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                    <h2>${study.name}</h2>
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <h3>🎉 Ben fatto!</h3>
+                        <p style="margin: 20px 0;">Non ci sono domande da fare in questa modalità.</p>
+                        <button class="btn" onclick="appState.quizMode = 'all'; appState.currentQuizFiltered = 0; renderQuizAdvanced();">
+                            Rivedi tutte le domande
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (appState.currentQuizFiltered >= filteredIndices.length) {
+                showQuizResults(study, filteredIndices);
+                return;
+            }
+            
+            const currentFilteredIndex = appState.currentQuizFiltered || 0;
+            const actualQuestionIndex = filteredIndices[currentFilteredIndex];
+            const q = study.data.quiz[actualQuestionIndex];
+            const stats = getQuizProgressStats(studyId);
+            const prog = ((currentFilteredIndex + 1) / filteredIndices.length * 100).toFixed(0);
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <div class="progress-bar"><div class="progress-fill" style="width: ${prog}%"></div></div>
-                <p style="text-align: center;">Quiz ${appState.currentQuiz + 1}/${study.data.quiz.length}</p>
-                <h3 style="margin: 30px 0;">${q.q || 'Domanda'}</h3>`;
-            (q.options || []).forEach((o, i) => { html += `<div class="quiz-option" onclick="checkAns(${i}, ${q.correct})">${o}</div>`; });
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px;">
+                    <div class="card" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 15px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold;">${stats.accuracy}%</div>
+                        <div style="font-size: 12px; opacity: 0.9;">Precisione ✅</div>
+                    </div>
+                    <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold;">${stats.attempted}</div>
+                        <div style="font-size: 12px; opacity: 0.9;">Tentate 📝</div>
+                    </div>
+                    <div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 15px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold;">${stats.wrong}</div>
+                        <div style="font-size: 12px; opacity: 0.9;">Sbagliate ❌</div>
+                    </div>
+                    <div class="card" style="background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%); color: white; padding: 15px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold;">${stats.sessions}</div>
+                        <div style="font-size: 12px; opacity: 0.9;">Sessioni 🎯</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="btn" style="padding: 8px 15px; ${mode === 'all' ? 'background: var(--primary);' : ''}" 
+                            onclick="resetQuizMode('all')">
+                        📚 Tutte (${study.data.quiz.length})
+                    </button>
+                    <button class="btn" style="padding: 8px 15px; ${mode === 'unanswered' ? 'background: var(--primary);' : ''}" 
+                            onclick="resetQuizMode('unanswered')">
+                        👁️ Non Tentate (${stats.unattempted})
+                    </button>
+                    <button class="btn" style="padding: 8px 15px; ${mode === 'wrong' ? 'background: var(--primary);' : ''}" 
+                            onclick="resetQuizMode('wrong')">
+                        ❌ Sbagliate (${stats.wrong})
+                    </button>
+                    <button class="btn" style="padding: 8px 15px; ${mode === 'random' ? 'background: var(--primary);' : ''}" 
+                            onclick="resetQuizMode('random')">
+                        🎲 Casuale
+                    </button>
+                    <button class="btn" style="padding: 8px 15px; ${appState.quizTimerEnabled ? 'background: var(--danger);' : ''}" 
+                            onclick="toggleQuizTimer()">
+                        ⏱️ Timer ${appState.quizTimerEnabled ? 'ON' : 'OFF'}
+                    </button>
+                </div>
+                
+                ${appState.quizTimerEnabled ? `
+                    <div class="timer-display ${appState.quizTimeRemaining <= 10 ? 'warning' : ''}">
+                        ⏱️ ${appState.quizTimeRemaining}s
+                    </div>
+                ` : ''}
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${prog}%"></div>
+                </div>
+                <p style="text-align: center; margin: 10px 0;">Domanda ${currentFilteredIndex + 1}/${filteredIndices.length}</p>
+                
+                <h3 style="margin: 30px 0; font-size: 1.3em;">${q.q || 'Domanda'}</h3>
+            `;
+            
+            (q.options || []).forEach((o, i) => {
+                html += `<div class="quiz-option" onclick="selectQuizAnswer(${i}, ${actualQuestionIndex})">${o}</div>`;
+            });
+            
+            html += `
+                <div class="controls">
+                    <button class="btn" onclick="submitQuizAnswer(${actualQuestionIndex}, ${q.correct})">Conferma Risposta</button>
+                </div>
+            `;
+            
+            document.getElementById('contentArea').innerHTML = html;
+            
+            if (appState.quizTimerEnabled && !appState.quizTimerId) {
+                startQuizTimer();
+            }
+        }
+
+        function resetQuizMode(mode) {
+            appState.quizMode = mode;
+            appState.currentQuizFiltered = 0;
+            appState.quizAnswers = [];
+            appState.quizScore = 0;
+            renderQuizAdvanced();
+        }
+
+        function toggleQuizTimer() {
+            appState.quizTimerEnabled = !appState.quizTimerEnabled;
+            if (appState.quizTimerEnabled) {
+                appState.quizTimeRemaining = 30;
+            } else {
+                if (appState.quizTimerId) {
+                    clearInterval(appState.quizTimerId);
+                    appState.quizTimerId = null;
+                }
+            }
+            renderQuizAdvanced();
+        }
+
+        function startQuizTimer() {
+            appState.quizTimeRemaining = 30;
+            appState.quizTimerId = setInterval(() => {
+                appState.quizTimeRemaining--;
+                const timerEl = document.querySelector('.timer-display');
+                if (timerEl) {
+                    timerEl.textContent = `⏱️ ${appState.quizTimeRemaining}s`;
+                    if (appState.quizTimeRemaining <= 10) {
+                        timerEl.classList.add('warning');
+                    }
+                }
+                
+                if (appState.quizTimeRemaining <= 0) {
+                    clearInterval(appState.quizTimerId);
+                    appState.quizTimerId = null;
+                    alert('⏰ Tempo scaduto!');
+                    const study = getCurrentStudy();
+                    const mode = appState.quizMode || 'all';
+                    const filteredIndices = getFilteredQuizQuestions(study, mode);
+                    const actualQuestionIndex = filteredIndices[appState.currentQuizFiltered];
+                    
+                    appState.quizAnswers.push({
+                        question: actualQuestionIndex,
+                        selected: null,
+                        correct: study.data.quiz[actualQuestionIndex].correct,
+                        isCorrect: false,
+                        timeTaken: 30
+                    });
+                    
+                    updateQuizQuestion(study.id, actualQuestionIndex, false);
+                    nextQuizAdvanced();
+                }
+            }, 1000);
+        }
+
+        let selectedAnswerIndex = null;
+
+        function selectQuizAnswer(index, questionIndex) {
+            selectedAnswerIndex = index;
+            document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelectorAll('.quiz-option')[index].classList.add('selected');
+        }
+
+        function submitQuizAnswer(questionIndex, correctIndex) {
+            if (selectedAnswerIndex === null) {
+                alert('⚠️ Seleziona una risposta prima di confermare!');
+                return;
+            }
+            
+            if (appState.quizTimerId) {
+                clearInterval(appState.quizTimerId);
+                appState.quizTimerId = null;
+            }
+            
+            const timeTaken = appState.quizTimerEnabled ? (30 - appState.quizTimeRemaining) : 0;
+            const isCorrect = selectedAnswerIndex === correctIndex;
+            
+            const study = getCurrentStudy();
+            appState.quizAnswers.push({
+                question: questionIndex,
+                selected: selectedAnswerIndex,
+                correct: correctIndex,
+                isCorrect: isCorrect,
+                timeTaken: timeTaken
+            });
+            
+            if (isCorrect) {
+                appState.quizScore++;
+            }
+            
+            updateQuizQuestion(study.id, questionIndex, isCorrect);
+            
+            document.querySelectorAll('.quiz-option').forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+                if (i === correctIndex) {
+                    opt.classList.add('correct');
+                } else if (i === selectedAnswerIndex && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            setTimeout(() => {
+                selectedAnswerIndex = null;
+                nextQuizAdvanced();
+            }, 1500);
+        }
+
+        function nextQuizAdvanced() {
+            const study = getCurrentStudy();
+            const mode = appState.quizMode || 'all';
+            const filteredIndices = getFilteredQuizQuestions(study, mode);
+            
+            if ((appState.currentQuizFiltered || 0) < filteredIndices.length - 1) {
+                appState.currentQuizFiltered = (appState.currentQuizFiltered || 0) + 1;
+                renderQuizAdvanced();
+            } else {
+                showQuizResults(study, filteredIndices);
+            }
+        }
+
+        function showQuizResults(study, filteredIndices) {
+            if (appState.quizTimerId) {
+                clearInterval(appState.quizTimerId);
+                appState.quizTimerId = null;
+            }
+            
+            const totalTime = appState.quizAnswers.reduce((sum, a) => sum + a.timeTaken, 0);
+            const avgTime = appState.quizAnswers.length > 0 ? (totalTime / appState.quizAnswers.length).toFixed(1) : 0;
+            const perc = (appState.quizScore / filteredIndices.length * 100).toFixed(1);
+            
+            saveQuizSession(study.id, appState.quizScore, filteredIndices.length, appState.quizAnswers, totalTime);
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2 style="text-align: center;">🏆 Quiz Completato!</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
+                    <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2em; font-weight: bold;">${appState.quizScore}/${filteredIndices.length}</div>
+                        <div style="font-size: 0.9em; margin-top: 5px;">Corrette</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 2em; font-weight: bold;">${perc}%</div>
+                        <div style="font-size: 0.9em; margin-top: 5px;">Percentuale</div>
+                    </div>
+                    ${appState.quizTimerEnabled ? `
+                        <div style="background: linear-gradient(135deg, #ffa726, #fb8c00); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 2em; font-weight: bold;">${avgTime}s</div>
+                            <div style="font-size: 0.9em; margin-top: 5px;">Tempo Medio</div>
+                        </div>
+                    ` : ''}
+                </div>
+                
+                <h3 style="margin: 20px 0;">📋 Rivedi le Risposte</h3>
+            `;
+            
+            appState.quizAnswers.forEach((answer, i) => {
+                const q = study.data.quiz[answer.question];
+                const userAnswer = answer.selected !== null ? q.options[answer.selected] : 'Nessuna risposta';
+                const correctAnswer = q.options[answer.correct];
+                
+                html += `
+                    <div class="review-item ${answer.isCorrect ? 'correct' : 'wrong'}">
+                        <strong>Domanda ${i + 1}:</strong> ${q.q}
+                        <div style="margin-top: 10px;">
+                            <div><strong>La tua risposta:</strong> ${userAnswer} ${answer.isCorrect ? '✅' : '❌'}</div>
+                            ${!answer.isCorrect ? `<div><strong>Risposta corretta:</strong> ${correctAnswer}</div>` : ''}
+                            ${appState.quizTimerEnabled ? `<div style="font-size: 0.9em; color: #666; margin-top: 5px;">⏱️ Tempo: ${answer.timeTaken}s</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div class="controls">
+                    <button class="btn" onclick="restartQuiz()" style="width: 100%;">🔄 Rifai il Quiz</button>
+                    <button class="btn" onclick="goBack()" style="width: 100%;">← Torna alla Libreria</button>
+                </div>
+            `;
+            
             document.getElementById('contentArea').innerHTML = html;
         }
 
-        function checkAns(sel, corr) {
-            if (sel === corr) { appState.quizScore++; alert('✅ Corretto!'); } else { alert('❌ Sbagliato!'); }
-            nextQuiz();
-        }
-
-        function nextQuiz() {
-            const study = getCurrentStudy();
-            if (appState.currentQuiz < study.data.quiz.length - 1) { 
-                appState.currentQuiz++; 
-                renderQuiz(); 
-            } else {
-                const perc = (appState.quizScore / study.data.quiz.length * 100).toFixed(1);
-                document.getElementById('contentArea').innerHTML = `<h2 style="text-align: center;">🏆 Completato!</h2>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
-                        <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px; border-radius: 10px; text-align: center;">
-                            <div style="font-size: 2em; font-weight: bold;">${appState.quizScore}/${study.data.quiz.length}</div>
-                            <div style="font-size: 0.9em; margin-top: 5px;">Corrette</div>
-                        </div>
-                        <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px; border-radius: 10px; text-align: center;">
-                            <div style="font-size: 2em; font-weight: bold;">${perc}%</div>
-                            <div style="font-size: 0.9em; margin-top: 5px;">Percentuale</div>
-                        </div>
-                    </div>
-                    <button class="btn" onclick="goBack()" style="width: 100%; margin-top: 20px;">← Torna alla Libreria</button>`;
-            }
+        function restartQuiz() {
+            appState.currentQuizFiltered = 0;
+            appState.quizScore = 0;
+            appState.quizAnswers = [];
+            renderQuizAdvanced();
         }
 
         function resetApp() {
