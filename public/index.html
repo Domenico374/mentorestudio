@@ -442,6 +442,70 @@
             background: rgba(198, 40, 40, 0.2);
             color: #ff5252;
         }
+        .audio-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .audio-btn-small {
+            padding: 6px 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        .audio-btn-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .audio-btn-small:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .audio-btn-small.playing {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            animation: pulse 2s infinite;
+        }
+        .speed-selector {
+            padding: 4px 8px;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            background: white;
+            font-size: 0.85em;
+            cursor: pointer;
+        }
+        body.dark-mode .speed-selector {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            border-color: var(--secondary);
+        }
+        .speaking-indicator {
+            display: inline-flex;
+            gap: 3px;
+            margin-left: 8px;
+        }
+        .speaking-dot {
+            width: 6px;
+            height: 6px;
+            background: #4caf50;
+            border-radius: 50%;
+            animation: speaking 0.6s infinite alternate;
+        }
+        .speaking-dot:nth-child(2) { animation-delay: 0.2s; }
+        .speaking-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes speaking {
+            from { transform: scale(0.8); opacity: 0.5; }
+            to { transform: scale(1.2); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -503,13 +567,29 @@
             notes: JSON.parse(localStorage.getItem('flashcardNotes')) || {},
             darkMode: localStorage.getItem('darkMode') === 'true',
             chatHistory: JSON.parse(localStorage.getItem('chatHistory')) || {},
-            isChatLoading: false
+            isChatLoading: false,
+            speechSynthesis: window.speechSynthesis,
+            currentSpeech: null,
+            speechSpeed: 1.0,
+            isSpeaking: false,
+            speakingMessageId: null
         };
 
         let flashcardStats = JSON.parse(localStorage.getItem('flashcardStats')) || {};
         let quizStats = JSON.parse(localStorage.getItem('quizStats')) || {};
 
         if (appState.darkMode) document.body.classList.add('dark-mode');
+
+        // Initialize speech synthesis voices
+        if (window.speechSynthesis) {
+            // Load voices (needed for some browsers)
+            window.speechSynthesis.onvoiceschanged = () => {
+                const voices = window.speechSynthesis.getVoices();
+                console.log('Voci disponibili:', voices.length);
+            };
+            // Trigger voice loading
+            window.speechSynthesis.getVoices();
+        }
 
         function toggleDarkMode() {
             appState.darkMode = !appState.darkMode;
@@ -771,6 +851,7 @@
                 clearInterval(appState.quizTimerId);
                 appState.quizTimerId = null;
             }
+            stopSpeech(); // Stop any ongoing speech
             switchTab('library');
         }
 
@@ -908,6 +989,138 @@
 
         // ===== CHAT AI SYSTEM =====
 
+        // Speech Synthesis Functions
+        function speakMessage(messageId, text) {
+            // Stop any current speech
+            if (appState.isSpeaking) {
+                stopSpeech();
+            }
+            
+            // Check if browser supports speech synthesis
+            if (!appState.speechSynthesis) {
+                alert('⚠️ Il tuo browser non supporta la sintesi vocale');
+                return;
+            }
+            
+            // Create speech utterance
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'it-IT';
+            utterance.rate = appState.speechSpeed;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            
+            // Get Italian voice if available
+            const voices = appState.speechSynthesis.getVoices();
+            const italianVoice = voices.find(voice => voice.lang.startsWith('it'));
+            if (italianVoice) {
+                utterance.voice = italianVoice;
+            }
+            
+            // Update UI when speech starts
+            utterance.onstart = () => {
+                appState.isSpeaking = true;
+                appState.speakingMessageId = messageId;
+                updateSpeechUI(messageId, 'playing');
+            };
+            
+            // Update UI when speech ends
+            utterance.onend = () => {
+                appState.isSpeaking = false;
+                appState.speakingMessageId = null;
+                updateSpeechUI(messageId, 'stopped');
+            };
+            
+            // Handle errors
+            utterance.onerror = (event) => {
+                console.error('Speech synthesis error:', event);
+                appState.isSpeaking = false;
+                appState.speakingMessageId = null;
+                updateSpeechUI(messageId, 'stopped');
+                alert('❌ Errore nella sintesi vocale');
+            };
+            
+            // Start speaking
+            appState.currentSpeech = utterance;
+            appState.speechSynthesis.speak(utterance);
+        }
+        
+        function pauseSpeech() {
+            if (appState.speechSynthesis && appState.isSpeaking) {
+                if (appState.speechSynthesis.speaking && !appState.speechSynthesis.paused) {
+                    appState.speechSynthesis.pause();
+                    if (appState.speakingMessageId) {
+                        updateSpeechUI(appState.speakingMessageId, 'paused');
+                    }
+                } else if (appState.speechSynthesis.paused) {
+                    appState.speechSynthesis.resume();
+                    if (appState.speakingMessageId) {
+                        updateSpeechUI(appState.speakingMessageId, 'playing');
+                    }
+                }
+            }
+        }
+        
+        function stopSpeech() {
+            if (appState.speechSynthesis) {
+                appState.speechSynthesis.cancel();
+                if (appState.speakingMessageId) {
+                    updateSpeechUI(appState.speakingMessageId, 'stopped');
+                }
+                appState.isSpeaking = false;
+                appState.speakingMessageId = null;
+                appState.currentSpeech = null;
+            }
+        }
+        
+        function changeSpeechSpeed(speed) {
+            appState.speechSpeed = parseFloat(speed);
+            // If currently speaking, restart with new speed
+            if (appState.isSpeaking && appState.speakingMessageId) {
+                const wasPlaying = !appState.speechSynthesis.paused;
+                if (wasPlaying) {
+                    stopSpeech();
+                    // Get the text from the message
+                    const messageElement = document.querySelector(`[data-message-id="${appState.speakingMessageId}"]`);
+                    if (messageElement) {
+                        const text = messageElement.querySelector('.chat-bubble').textContent;
+                        setTimeout(() => speakMessage(appState.speakingMessageId, text), 100);
+                    }
+                }
+            }
+        }
+        
+        function updateSpeechUI(messageId, state) {
+            const playBtn = document.getElementById(`play-btn-${messageId}`);
+            const pauseBtn = document.getElementById(`pause-btn-${messageId}`);
+            const stopBtn = document.getElementById(`stop-btn-${messageId}`);
+            const indicator = document.getElementById(`speaking-${messageId}`);
+            
+            if (!playBtn) return;
+            
+            switch(state) {
+                case 'playing':
+                    playBtn.style.display = 'none';
+                    pauseBtn.style.display = 'inline-flex';
+                    pauseBtn.innerHTML = '⏸️ Pausa';
+                    pauseBtn.classList.add('playing');
+                    stopBtn.style.display = 'inline-flex';
+                    indicator.style.display = 'inline-flex';
+                    break;
+                case 'paused':
+                    pauseBtn.innerHTML = '▶️ Riprendi';
+                    pauseBtn.classList.remove('playing');
+                    indicator.style.display = 'none';
+                    break;
+                case 'stopped':
+                    playBtn.style.display = 'inline-flex';
+                    pauseBtn.style.display = 'none';
+                    pauseBtn.classList.remove('playing');
+                    stopBtn.style.display = 'none';
+                    indicator.style.display = 'none';
+                    break;
+            }
+        }
+
         function renderChat() {
             const study = getCurrentStudy();
             if (!study) return;
@@ -947,7 +1160,7 @@
                                 <p>Inizia una conversazione!</p>
                                 <p style="font-size: 0.9em; margin-top: 10px;">Fai domande sulla lezione o usa i suggerimenti sopra</p>
                             </div>
-                        ` : chatHistory.map(msg => createChatMessageHTML(msg)).join('')}
+                        ` : chatHistory.map((msg, idx) => createChatMessageHTML(msg, `msg_${study.id}_${idx}`)).join('')}
                     </div>
                     
                     <div class="chat-input-container">
@@ -985,14 +1198,52 @@
             });
         }
 
-        function createChatMessageHTML(message) {
+        function createChatMessageHTML(message, messageId) {
             const isUser = message.role === 'user';
-            return `
-                <div class="chat-message ${isUser ? 'user' : 'ai'}">
+            const msgId = messageId || 'msg_' + Date.now() + Math.random();
+            
+            let html = `
+                <div class="chat-message ${isUser ? 'user' : 'ai'}" data-message-id="${msgId}">
                     <div class="chat-avatar">${isUser ? '👤' : '🤖'}</div>
-                    <div class="chat-bubble">${escapeHTML(message.content)}</div>
+                    <div style="flex: 1;">
+                        <div class="chat-bubble">${escapeHTML(message.content)}</div>
+            `;
+            
+            // Add audio controls only for AI messages
+            if (!isUser && message.content) {
+                html += `
+                    <div class="audio-controls" id="audio-controls-${msgId}">
+                        <button class="audio-btn-small" id="play-btn-${msgId}" onclick="speakMessage('${msgId}', \`${message.content.replace(/`/g, '\\`').replace(/\n/g, ' ')}\`)">
+                            ▶️ Ascolta
+                        </button>
+                        <button class="audio-btn-small" id="pause-btn-${msgId}" onclick="pauseSpeech()" style="display: none;">
+                            ⏸️ Pausa
+                        </button>
+                        <button class="audio-btn-small" id="stop-btn-${msgId}" onclick="stopSpeech()" style="display: none;">
+                            ⏹️ Stop
+                        </button>
+                        <select class="speed-selector" id="speed-${msgId}" onchange="changeSpeechSpeed(this.value)">
+                            <option value="0.8">0.8x</option>
+                            <option value="1.0" selected>1.0x</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2.0">2.0x</option>
+                        </select>
+                        <span class="speaking-indicator" id="speaking-${msgId}" style="display: none;">
+                            <span class="speaking-dot"></span>
+                            <span class="speaking-dot"></span>
+                            <span class="speaking-dot"></span>
+                        </span>
+                    </div>
+                `;
+            }
+            
+            html += `
+                    </div>
                 </div>
             `;
+            
+            return html;
         }
 
         function escapeHTML(text) {
@@ -1023,6 +1274,7 @@
             if (!message) return;
             
             // Add user message
+            const userMessageId = `msg_${study.id}_${appState.chatHistory[study.id].length}`;
             appState.chatHistory[study.id].push({
                 role: 'user',
                 content: message
@@ -1036,7 +1288,7 @@
             messagesContainer.innerHTML += createChatMessageHTML({
                 role: 'user',
                 content: message
-            });
+            }, userMessageId);
             
             // Show typing indicator
             messagesContainer.innerHTML += `
@@ -1101,6 +1353,7 @@
                 document.getElementById('typingIndicator').remove();
                 
                 // Add AI response
+                const aiMessageId = `msg_${study.id}_${appState.chatHistory[study.id].length}`;
                 appState.chatHistory[study.id].push({
                     role: 'assistant',
                     content: aiResponse
@@ -1109,7 +1362,7 @@
                 messagesContainer.innerHTML += createChatMessageHTML({
                     role: 'assistant',
                     content: aiResponse
-                });
+                }, aiMessageId);
                 
                 saveChatHistory();
                 scrollChatToBottom();
@@ -1154,6 +1407,7 @@
             if (!study) return;
             
             if (confirm('Vuoi cancellare tutta la conversazione?')) {
+                stopSpeech(); // Stop any ongoing speech
                 appState.chatHistory[study.id] = [];
                 saveChatHistory();
                 renderChat();
