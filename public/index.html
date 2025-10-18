@@ -1061,30 +1061,31 @@
             appState.isChatLoading = true;
             
             try {
-                // Prepare context from study
-                const context = `
-                    Materia: ${study.subject}
-                    Lezione: ${study.name}
-                    
-                    Riassunto: ${study.data.summary_short}
-                    
-                    Punti chiave: ${(study.data.highlights || []).join(', ')}
-                    
-                    Contenuto completo (estratto): ${study.fullText ? study.fullText.substring(0, 3000) : ''}
-                `;
+                // Prepare compact context from study (max 800 chars)
+                const summaryShort = (study.data.summary_short || '').substring(0, 300);
+                const highlightsText = (study.data.highlights || []).slice(0, 3).join('. ').substring(0, 200);
+                const contentSnippet = study.fullText ? study.fullText.substring(0, 400) : '';
                 
-                // Prepare conversation history for API
-                const conversationHistory = appState.chatHistory[study.id].slice(0, -1).map(msg => ({
-                    role: msg.role,
-                    content: msg.content
-                }));
+                const context = `Materia: ${study.subject}\nLezione: ${study.name}\n\nRiassunto: ${summaryShort}\n\nPunti chiave: ${highlightsText}\n\nEstratto: ${contentSnippet}`;
+                
+                // Prepare conversation history for API (only last 5 messages)
+                const conversationHistory = appState.chatHistory[study.id]
+                    .slice(0, -1)
+                    .slice(-5)
+                    .map(msg => ({
+                        role: msg.role,
+                        content: msg.content.substring(0, 500) // Limit each message
+                    }));
+                
+                // Create compact message
+                const fullMessage = `[CONTESTO]\n${context}\n\n[DOMANDA]\n${message}`;
                 
                 // Call chat API
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: `Contesto della lezione:\n${context}\n\nDomanda dello studente: ${message}`,
+                        message: fullMessage,
                         conversationHistory: conversationHistory
                     })
                 });
