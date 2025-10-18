@@ -155,7 +155,17 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .progress-bar { background: #e0e0e0; height: 10px; border-radius: 5px; margin: 15px 0; overflow: hidden; }
         .progress-fill { background: var(--primary); height: 100%; transition: width 0.3s; }
-        .flashcard { perspective: 1000px; height: 300px; cursor: pointer; margin: 20px 0; }
+        .flashcard { 
+            perspective: 1000px; 
+            height: 300px; 
+            cursor: pointer; 
+            margin: 20px 0; 
+            border: 3px solid transparent;
+            border-radius: 10px;
+        }
+        .flashcard.easy { border-color: #4caf50; }
+        .flashcard.medium { border-color: #ffa726; }
+        .flashcard.difficult { border-color: #f44336; }
         .flashcard-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
         .flashcard-inner.flipped { transform: rotateY(180deg); }
         .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center; border-radius: 10px; font-size: 1.2em; font-weight: bold; }
@@ -174,7 +184,18 @@
         .key-concept { display: inline-block; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 4px 10px; border-radius: 15px; margin: 3px; font-size: 0.85em; }
         .back-btn { display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--primary); margin-bottom: 20px; font-weight: bold; }
         body.dark-mode .back-btn { color: var(--accent); }
-        
+        .audio-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 15px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+        body.dark-mode .audio-section {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
         .audio-btn {
             display: inline-flex;
             align-items: center;
@@ -193,18 +214,6 @@
         .audio-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-        .audio-section {
-            text-align: center;
-            margin-top: 30px;
-            padding: 25px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-radius: 15px;
-            border: 2px solid rgba(102, 126, 234, 0.2);
-        }
-        body.dark-mode .audio-section {
-            background: rgba(102, 126, 234, 0.15);
-            border-color: rgba(102, 126, 234, 0.3);
         }
     </style>
 </head>
@@ -253,11 +262,16 @@
             studies: JSON.parse(localStorage.getItem('mentorestudio_studies')) || {},
             currentStudyId: null,
             currentFlashcard: 0,
+            currentFlashcardFiltered: 0,
+            flashcardMode: 'all',
             currentQuiz: 0,
             quizScore: 0,
             notes: JSON.parse(localStorage.getItem('flashcardNotes')) || {},
             darkMode: localStorage.getItem('darkMode') === 'true'
         };
+
+        // Flashcard stats tracking
+        let flashcardStats = JSON.parse(localStorage.getItem('flashcardStats')) || {};
 
         if (appState.darkMode) document.body.classList.add('dark-mode');
 
@@ -365,7 +379,7 @@
                 case 'glossary': renderGlossary(); break;
                 case 'timeline': renderTimeline(); break;
                 case 'mindmap': renderMindMap(); break;
-                case 'flashcards': renderFlashcards(); break;
+                case 'flashcards': renderFlashcardsAdvanced(); break;
                 case 'quiz': renderQuiz(); break;
             }
         }
@@ -467,6 +481,8 @@
         function selectStudy(studyId) {
             appState.currentStudyId = studyId;
             appState.currentFlashcard = 0;
+            appState.currentFlashcardFiltered = 0;
+            appState.flashcardMode = 'all';
             appState.currentQuiz = 0;
             appState.quizScore = 0;
             
@@ -576,57 +592,276 @@
             document.getElementById('contentArea').innerHTML = html;
         }
 
-        function renderFlashcards() {
+        // ===== FLASHCARD SYSTEM AVANZATO =====
+
+        function initFlashcardStats(studyId, totalCards) {
+            if (!flashcardStats[studyId]) {
+                flashcardStats[studyId] = {
+                    cards: Array(totalCards).fill(null).map(() => ({
+                        difficulty: 0,
+                        reviews: 0,
+                        lastReview: null,
+                        nextReview: null
+                    })),
+                    sessionStart: Date.now(),
+                    totalTime: 0
+                };
+                saveFlashcardStats();
+            }
+        }
+
+        function saveFlashcardStats() {
+            localStorage.setItem('flashcardStats', JSON.stringify(flashcardStats));
+        }
+
+        function getCardStats(studyId, cardIndex) {
+            return flashcardStats[studyId]?.cards[cardIndex] || null;
+        }
+
+        function updateCardDifficulty(studyId, cardIndex, difficulty) {
+            if (!flashcardStats[studyId]) return;
+            
+            const card = flashcardStats[studyId].cards[cardIndex];
+            card.difficulty = difficulty;
+            card.reviews++;
+            card.lastReview = Date.now();
+            
+            const intervals = {
+                1: 24 * 60 * 60 * 1000,
+                2: 4 * 60 * 60 * 1000,
+                3: 10 * 60 * 1000
+            };
+            
+            card.nextReview = Date.now() + (intervals[difficulty] || 0);
+            saveFlashcardStats();
+        }
+
+        function getFilteredCards(study, mode) {
+            const studyId = study.id;
+            const cards = study.data.flashcards || [];
+            
+            if (!flashcardStats[studyId]) {
+                initFlashcardStats(studyId, cards.length);
+            }
+            
+            let indices = cards.map((_, i) => i);
+            const stats = flashcardStats[studyId];
+            
+            switch(mode) {
+                case 'unreviewed':
+                    indices = indices.filter(i => stats.cards[i].reviews === 0);
+                    break;
+                case 'difficult':
+                    indices = indices.filter(i => stats.cards[i].difficulty === 3);
+                    break;
+                case 'due':
+                    indices = indices.filter(i => {
+                        const card = stats.cards[i];
+                        return card.nextReview && card.nextReview <= Date.now();
+                    });
+                    break;
+                case 'random':
+                    indices = indices.sort(() => Math.random() - 0.5);
+                    break;
+            }
+            
+            return indices;
+        }
+
+        function getProgressStats(studyId) {
+            if (!flashcardStats[studyId]) return null;
+            
+            const cards = flashcardStats[studyId].cards;
+            const total = cards.length;
+            const reviewed = cards.filter(c => c.reviews > 0).length;
+            const easy = cards.filter(c => c.difficulty === 1).length;
+            const medium = cards.filter(c => c.difficulty === 2).length;
+            const difficult = cards.filter(c => c.difficulty === 3).length;
+            const due = cards.filter(c => c.nextReview && c.nextReview <= Date.now()).length;
+            
+            return {
+                total,
+                reviewed,
+                unreviewed: total - reviewed,
+                easy,
+                medium,
+                difficult,
+                due,
+                mastered: easy,
+                needsReview: medium + difficult
+            };
+        }
+
+        function renderFlashcardsAdvanced() {
             const study = getCurrentStudy();
             if (!study || !study.data.flashcards || study.data.flashcards.length === 0) return;
-            const fc = study.data.flashcards[appState.currentFlashcard];
-            const prog = ((appState.currentFlashcard + 1) / study.data.flashcards.length * 100).toFixed(0);
-            const noteKey = `note_${appState.currentStudyId}_${appState.currentFlashcard}`;
-            const note = appState.notes[noteKey] || '';
             
-            let html = `<div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+            const studyId = study.id;
+            initFlashcardStats(studyId, study.data.flashcards.length);
+            
+            const mode = appState.flashcardMode || 'all';
+            const filteredIndices = getFilteredCards(study, mode);
+            
+            if (filteredIndices.length === 0) {
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                    <h2>${study.name}</h2>
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <h3>🎉 Ottimo lavoro!</h3>
+                        <p style="margin: 20px 0;">Non ci sono carte da rivedere in questa modalità.</p>
+                        <button class="btn" onclick="appState.flashcardMode = 'all'; renderFlashcardsAdvanced();">
+                            Rivedi tutte le carte
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (appState.currentFlashcardFiltered >= filteredIndices.length) {
+                appState.currentFlashcardFiltered = 0;
+            }
+            
+            const currentFilteredIndex = appState.currentFlashcardFiltered || 0;
+            const actualCardIndex = filteredIndices[currentFilteredIndex];
+            const fc = study.data.flashcards[actualCardIndex];
+            const cardStats = getCardStats(studyId, actualCardIndex);
+            const stats = getProgressStats(studyId);
+            
+            const difficultyClass = cardStats.difficulty === 1 ? 'easy' : 
+                                  cardStats.difficulty === 2 ? 'medium' : 
+                                  cardStats.difficulty === 3 ? 'difficult' : '';
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <div class="progress-bar"><div class="progress-fill" style="width: ${prog}%"></div></div>
-                <p style="text-align: center;">Flashcard ${appState.currentFlashcard + 1}/${study.data.flashcards.length}</p>
-                <div class="flashcard" onclick="this.querySelector('.flashcard-inner').classList.toggle('flipped')">
-                    <div class="flashcard-inner">
-                        <div class="flashcard-front">${fc.q || 'Domanda'}</div>
-                        <div class="flashcard-back">${fc.a || 'Risposta'}</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px;">
+                    <div class="card" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 15px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold;">${stats.mastered}</div>
+                        <div style="font-size: 12px; opacity: 0.9;">Padroneggiate ✅</div>
+                    </div>
+                    <div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 15px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold;">${stats.needsReview}</div>
+                        <div style="font-size: 12px; opacity: 0.9;">Da Rivedere 🔄</div>
+                    </div>
+                    <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold;">${stats.unreviewed}</div>
+                        <div style="font-size: 12px; opacity: 0.9;">Non Viste 👁️</div>
+                    </div>
+                    <div class="card" style="background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%); color: white; padding: 15px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold;">${stats.due}</div>
+                        <div style="font-size: 12px; opacity: 0.9;">Da Ripassare ⏰</div>
                     </div>
                 </div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="btn" style="padding: 8px 15px; ${mode === 'all' ? 'background: var(--primary);' : ''}" 
+                            onclick="appState.flashcardMode = 'all'; appState.currentFlashcardFiltered = 0; renderFlashcardsAdvanced();">
+                        📚 Tutte (${study.data.flashcards.length})
+                    </button>
+                    <button class="btn" style="padding: 8px 15px; ${mode === 'unreviewed' ? 'background: var(--primary);' : ''}" 
+                            onclick="appState.flashcardMode = 'unreviewed'; appState.currentFlashcardFiltered = 0; renderFlashcardsAdvanced();">
+                        👁️ Non Viste (${stats.unreviewed})
+                    </button>
+                    <button class="btn" style="padding: 8px 15px; ${mode === 'difficult' ? 'background: var(--primary);' : ''}" 
+                            onclick="appState.flashcardMode = 'difficult'; appState.currentFlashcardFiltered = 0; renderFlashcardsAdvanced();">
+                        ❌ Difficili (${stats.difficult})
+                    </button>
+                    <button class="btn" style="padding: 8px 15px; ${mode === 'due' ? 'background: var(--primary);' : ''}" 
+                            onclick="appState.flashcardMode = 'due'; appState.currentFlashcardFiltered = 0; renderFlashcardsAdvanced();">
+                        ⏰ Da Ripassare (${stats.due})
+                    </button>
+                    <button class="btn" style="padding: 8px 15px; ${mode === 'random' ? 'background: var(--primary);' : ''}" 
+                            onclick="appState.flashcardMode = 'random'; appState.currentFlashcardFiltered = 0; renderFlashcardsAdvanced();">
+                        🎲 Casuale
+                    </button>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${((currentFilteredIndex + 1) / filteredIndices.length * 100).toFixed(0)}%"></div>
+                </div>
+                <p style="text-align: center; margin: 10px 0;">
+                    Carta ${currentFilteredIndex + 1}/${filteredIndices.length}
+                    ${cardStats.reviews > 0 ? `<span style="color: #666; font-size: 0.9em;"> • Rivista ${cardStats.reviews} ${cardStats.reviews === 1 ? 'volta' : 'volte'}</span>` : ''}
+                </p>
+                
+                <div class="flashcard ${difficultyClass}" onclick="this.querySelector('.flashcard-inner').classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div style="font-size: 0.9em; opacity: 0.7; margin-bottom: 10px;">DOMANDA</div>
+                            ${fc.q || 'Domanda'}
+                        </div>
+                        <div class="flashcard-back">
+                            <div style="font-size: 0.9em; opacity: 0.7; margin-bottom: 10px;">RISPOSTA</div>
+                            ${fc.a || 'Risposta'}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: center; margin: 20px 0;">
+                    <button class="btn" style="background: #f44336; color: white; padding: 12px 20px; border-radius: 8px;" 
+                            onclick="rateCard(${actualCardIndex}, 3)">
+                        ❌ Difficile
+                    </button>
+                    <button class="btn" style="background: #ffa726; color: white; padding: 12px 20px; border-radius: 8px;" 
+                            onclick="rateCard(${actualCardIndex}, 2)">
+                        🤔 Medio
+                    </button>
+                    <button class="btn" style="background: #4caf50; color: white; padding: 12px 20px; border-radius: 8px;" 
+                            onclick="rateCard(${actualCardIndex}, 1)">
+                        ✅ Facile
+                    </button>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" onclick="prevFlashAdvanced()" ${currentFilteredIndex === 0 ? 'disabled' : ''}>← Indietro</button>
+                    <button class="btn" onclick="nextFlashAdvanced()" ${currentFilteredIndex === filteredIndices.length - 1 ? 'disabled' : ''}>Avanti →</button>
+                </div>
+                
                 <div class="note-section">
                     <strong>📝 Le tue note su questa carta:</strong>
-                    <textarea class="note-input" id="flashcardNote" placeholder="Aggiungi note personali..." style="max-height: 100px;">${note}</textarea>
-                    <button class="btn" onclick="saveFlashcardNote()" style="margin-top: 8px; padding: 8px 15px; font-size: 0.9em;">💾 Salva nota</button>
+                    <textarea class="note-input" id="flashcardNote" placeholder="Aggiungi note personali..." style="max-height: 100px;">${appState.notes[`note_${studyId}_${actualCardIndex}`] || ''}</textarea>
+                    <button class="btn" onclick="saveFlashcardNote(${actualCardIndex})" style="margin-top: 8px; padding: 8px 15px; font-size: 0.9em;">💾 Salva nota</button>
                 </div>
-                <div class="controls">
-                    <button class="btn" onclick="prevFlash()" ${appState.currentFlashcard === 0 ? 'disabled' : ''}>← Indietro</button>
-                    <button class="btn" onclick="nextFlash()" ${appState.currentFlashcard === study.data.flashcards.length - 1 ? 'disabled' : ''}>Avanti →</button>
-                </div>`;
+            `;
+            
             document.getElementById('contentArea').innerHTML = html;
         }
 
-        function saveFlashcardNote() {
-            const noteKey = `note_${appState.currentStudyId}_${appState.currentFlashcard}`;
+        function rateCard(cardIndex, difficulty) {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            updateCardDifficulty(study.id, cardIndex, difficulty);
+            nextFlashAdvanced();
+        }
+
+        function nextFlashAdvanced() {
+            const study = getCurrentStudy();
+            const mode = appState.flashcardMode || 'all';
+            const filteredIndices = getFilteredCards(study, mode);
+            
+            if ((appState.currentFlashcardFiltered || 0) < filteredIndices.length - 1) {
+                appState.currentFlashcardFiltered = (appState.currentFlashcardFiltered || 0) + 1;
+                renderFlashcardsAdvanced();
+            }
+        }
+
+        function prevFlashAdvanced() {
+            if ((appState.currentFlashcardFiltered || 0) > 0) {
+                appState.currentFlashcardFiltered = (appState.currentFlashcardFiltered || 0) - 1;
+                renderFlashcardsAdvanced();
+            }
+        }
+
+        function saveFlashcardNote(actualCardIndex) {
+            const noteKey = `note_${appState.currentStudyId}_${actualCardIndex}`;
             appState.notes[noteKey] = document.getElementById('flashcardNote').value;
             localStorage.setItem('flashcardNotes', JSON.stringify(appState.notes));
             alert('✅ Nota salvata!');
         }
 
-        function nextFlash() {
-            const study = getCurrentStudy();
-            if (appState.currentFlashcard < study.data.flashcards.length - 1) { 
-                appState.currentFlashcard++; 
-                renderFlashcards(); 
-            } 
-        }
-
-        function prevFlash() {
-            if (appState.currentFlashcard > 0) { 
-                appState.currentFlashcard--; 
-                renderFlashcards(); 
-            } 
-        }
+        // ===== QUIZ FUNCTIONS =====
 
         function renderQuiz() {
             const study = getCurrentStudy();
