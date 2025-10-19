@@ -157,109 +157,6 @@
         .progress-bar { background: #e0e0e0; height: 10px; border-radius: 5px; margin: 15px 0; overflow: hidden; }
         .progress-fill { background: var(--primary); height: 100%; transition: width 0.3s; }
         
-        /* RECORDING STYLES */
-        .record-container {
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        .record-btn-large {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: none;
-            background: linear-gradient(135deg, var(--danger), #ff6b6b);
-            color: white;
-            font-size: 3em;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(244, 67, 54, 0.3);
-            transition: all 0.3s;
-            margin: 30px auto;
-        }
-        .record-btn-large:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(244, 67, 54, 0.4);
-        }
-        .record-btn-large.recording {
-            animation: pulse-record 1.5s infinite;
-        }
-        @keyframes pulse-record {
-            0%, 100% { box-shadow: 0 10px 30px rgba(244, 67, 54, 0.3); }
-            50% { box-shadow: 0 15px 50px rgba(244, 67, 54, 0.6); }
-        }
-        .timer-display-large {
-            font-size: 3em;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 20px 0;
-        }
-        .waveform-container {
-            width: 100%;
-            height: 100px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
-        body.dark-mode .waveform-container { background: #1a1a2e; }
-        .waveform-bar {
-            width: 3px;
-            background: var(--primary);
-            margin: 0 2px;
-            border-radius: 3px;
-            transition: height 0.1s;
-        }
-        .recording-controls {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin: 30px 0;
-        }
-        .control-btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .control-btn-pause {
-            background: linear-gradient(135deg, #ffa726, #fb8c00);
-            color: white;
-        }
-        .control-btn-stop {
-            background: linear-gradient(135deg, var(--danger), #c62828);
-            color: white;
-        }
-        .control-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .permission-warning {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border-left: 4px solid #ffc107;
-        }
-        body.dark-mode .permission-warning {
-            background: rgba(255, 193, 7, 0.2);
-            border-color: #ffa726;
-        }
-        
-        /* Resto CSS identico all'artifact precedente... */
         .flashcard { 
             perspective: 1000px; 
             height: 300px; 
@@ -471,35 +368,20 @@
         </div>
 
         <div class="upload-section" id="uploadSection">
-            <h2>🚀 Carica i tuoi PDF o Registra una Lezione</h2>
-            <p style="margin-bottom: 15px; color: #666;">Puoi caricare più PDF contemporaneamente o registrare dal vivo</p>
+            <h2>🚀 Carica i tuoi PDF</h2>
+            <p style="margin-bottom: 15px; color: #666;">Puoi caricare più PDF contemporaneamente</p>
             
-            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 30px;">
-                <div style="flex: 1; min-width: 250px; max-width: 350px;">
-                    <h3 style="margin-bottom: 15px;">📄 Carica PDF</h3>
-                    <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Materia:</label>
-                    <select id="subjectSelect" class="subject-select">
-                        <option value="Generale">Generale</option>
-                        <option value="Storia">Storia</option>
-                        <option value="Matematica">Matematica</option>
-                        <option value="Biologia">Biologia</option>
-                        <option value="Diritto">Diritto</option>
-                    </select>
-                    <input type="file" id="pdfFile" accept=".pdf" multiple>
-                    <button class="btn" onclick="loadMultiplePDFs()" style="width: 100%;">📂 Carica PDF</button>
-                </div>
-                
-                <div style="border-left: 2px solid #ddd; margin: 0 20px;"></div>
-                
-                <div style="flex: 1; min-width: 250px; max-width: 350px;">
-                    <h3 style="margin-bottom: 15px;">🎙️ Registra Lezione</h3>
-                    <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">
-                        Registra audio dal vivo con trascrizione automatica
-                    </p>
-                    <button class="btn" onclick="goToRecord()" style="width: 100%; background: linear-gradient(135deg, var(--danger), #ff6b6b);">
-                        🎙️ Inizia Registrazione
-                    </button>
-                </div>
+            <div style="max-width: 500px; margin: 30px auto;">
+                <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Materia:</label>
+                <select id="subjectSelect" class="subject-select">
+                    <option value="Generale">Generale</option>
+                    <option value="Storia">Storia</option>
+                    <option value="Matematica">Matematica</option>
+                    <option value="Biologia">Biologia</option>
+                    <option value="Diritto">Diritto</option>
+                </select>
+                <input type="file" id="pdfFile" accept=".pdf" multiple>
+                <button class="btn" onclick="loadMultiplePDFs()" style="width: 100%;">📂 Carica PDF</button>
             </div>
             
             <p style="font-size: 0.9em; margin-top: 20px; color: #666;">Tutto salvato offline • Nessuna chiave API visibile</p>
@@ -508,7 +390,6 @@
         <div id="mainApp" class="hidden">
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('library', event)">📚 Libreria Studi</button>
-                <button class="tab-btn" id="tabRecord" onclick="switchTab('record', event)">🎙️ Registra Lezione</button>
                 <button class="tab-btn hidden" id="tabSummary" onclick="switchTab('summary', event)">📝 Riassunto</button>
                 <button class="tab-btn hidden" id="tabHighlights" onclick="switchTab('highlights', event)">⭐ Punti Salienti</button>
                 <button class="tab-btn hidden" id="tabGlossary" onclick="switchTab('glossary', event)">📖 Glossario</button>
@@ -540,16 +421,7 @@
             notes: JSON.parse(localStorage.getItem('flashcardNotes')) || {},
             darkMode: localStorage.getItem('darkMode') === 'true',
             chatHistory: JSON.parse(localStorage.getItem('chatHistory')) || {},
-            isChatLoading: false,
-            mediaRecorder: null,
-            audioChunks: [],
-            recordingStartTime: null,
-            recordingTimerId: null,
-            recordingElapsedSeconds: 0,
-            isRecording: false,
-            isPaused: false,
-            audioBlob: null,
-            stream: null
+            isChatLoading: false
         };
 
         let flashcardStats = JSON.parse(localStorage.getItem('flashcardStats')) || {};
@@ -562,334 +434,6 @@
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', appState.darkMode);
         }
-
-        function goToRecord() {
-            showMainApp();
-            switchTab('record');
-        }
-
-        // ===== RECORDING SYSTEM =====
-        
-        function renderRecord() {
-            let html = `
-                <div class="back-btn" onclick="switchTab('library')">← Torna alla Libreria</div>
-                <h2 style="text-align: center;">🎙️ Registra Nuova Lezione</h2>
-                
-                <div class="record-container">
-                    <div class="card" style="margin: 20px 0;">
-                        <label style="font-weight: bold; display: block; margin-bottom: 10px;">📚 Materia:</label>
-                        <select id="recordSubject" class="subject-select" style="margin: 0;">
-                            <option value="Generale">Generale</option>
-                            <option value="Storia">Storia</option>
-                            <option value="Matematica">Matematica</option>
-                            <option value="Biologia">Biologia</option>
-                            <option value="Diritto">Diritto</option>
-                        </select>
-                        
-                        <label style="font-weight: bold; display: block; margin: 15px 0 10px 0;">📝 Nome Lezione:</label>
-                        <input type="text" id="recordName" placeholder="Es: Lezione del 20/01" 
-                               style="width: 100%; max-width: 100%; margin: 0;">
-                    </div>
-                    
-                    <div class="permission-warning" id="permissionWarning" style="display: none;">
-                        ⚠️ <strong>Attenzione:</strong> Devi consentire l'accesso al microfono per registrare.
-                    </div>
-                    
-                    <div id="recordingInterface">
-                        <button class="record-btn-large" id="recordBtn" onclick="toggleRecording()">
-                            🎙️
-                        </button>
-                        
-                        <div class="timer-display-large" id="recordTimer">00:00:00</div>
-                        
-                        <div class="waveform-container" id="waveformContainer">
-                            <p style="color: #999;">Premi il pulsante per iniziare</p>
-                        </div>
-                        
-                        <div class="recording-controls" id="recordingControls" style="display: none;">
-                            <button class="control-btn control-btn-pause" onclick="pauseRecording()">
-                                <span id="pauseIcon">⏸️</span> <span id="pauseText">Pausa</span>
-                            </button>
-                            <button class="control-btn control-btn-stop" onclick="stopRecording()">
-                                ⏹️ Stop e Salva
-                            </button>
-                        </div>
-                        
-                        <p style="text-align: center; margin-top: 20px; font-size: 0.9em; color: #666;">
-                            💡 Suggerimento: Assicurati di essere in un luogo silenzioso per una migliore trascrizione
-                        </p>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('contentArea').innerHTML = html;
-        }
-
-        async function toggleRecording() {
-            if (!appState.isRecording) {
-                await startRecording();
-            }
-        }
-
-        async function startRecording() {
-            try {
-                appState.stream = await navigator.mediaDevices.getUserMedia({ 
-                    audio: {
-                        echoCancellation: true,
-                        noiseSuppression: true,
-                        autoGainControl: true
-                    } 
-                });
-                
-                document.getElementById('permissionWarning').style.display = 'none';
-                
-                const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
-                appState.mediaRecorder = new MediaRecorder(appState.stream, { mimeType });
-                appState.audioChunks = [];
-                
-                appState.mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        appState.audioChunks.push(event.data);
-                    }
-                };
-                
-                appState.mediaRecorder.onstop = async () => {
-                    appState.audioBlob = new Blob(appState.audioChunks, { type: mimeType });
-                    await processRecording();
-                };
-                
-                appState.mediaRecorder.start(100);
-                appState.isRecording = true;
-                appState.isPaused = false;
-                appState.recordingStartTime = Date.now();
-                appState.recordingElapsedSeconds = 0;
-                
-                document.getElementById('recordBtn').classList.add('recording');
-                document.getElementById('recordBtn').innerHTML = '🔴';
-                document.getElementById('recordingControls').style.display = 'flex';
-                document.getElementById('waveformContainer').innerHTML = '';
-                createWaveform();
-                
-                updateRecordingTimer();
-                appState.recordingTimerId = setInterval(updateRecordingTimer, 1000);
-                
-                animateWaveform();
-                
-            } catch (error) {
-                console.error('Errore accesso microfono:', error);
-                document.getElementById('permissionWarning').style.display = 'block';
-                alert('❌ Impossibile accedere al microfono. Controlla i permessi del browser.');
-            }
-        }
-
-        function pauseRecording() {
-            if (!appState.mediaRecorder) return;
-            
-            if (appState.isPaused) {
-                appState.mediaRecorder.resume();
-                appState.isPaused = false;
-                document.getElementById('pauseIcon').textContent = '⏸️';
-                document.getElementById('pauseText').textContent = 'Pausa';
-                appState.recordingTimerId = setInterval(updateRecordingTimer, 1000);
-            } else {
-                appState.mediaRecorder.pause();
-                appState.isPaused = true;
-                document.getElementById('pauseIcon').textContent = '▶️';
-                document.getElementById('pauseText').textContent = 'Riprendi';
-                clearInterval(appState.recordingTimerId);
-            }
-        }
-
-        function stopRecording() {
-            if (!appState.mediaRecorder || !appState.isRecording) return;
-            
-            appState.mediaRecorder.stop();
-            appState.stream.getTracks().forEach(track => track.stop());
-            appState.isRecording = false;
-            appState.isPaused = false;
-            
-            if (appState.recordingTimerId) {
-                clearInterval(appState.recordingTimerId);
-                appState.recordingTimerId = null;
-            }
-            
-            document.getElementById('recordBtn').classList.remove('recording');
-            document.getElementById('recordBtn').innerHTML = '🎙️';
-            document.getElementById('recordingControls').style.display = 'none';
-        }
-
-        function updateRecordingTimer() {
-            if (!appState.isPaused) {
-                appState.recordingElapsedSeconds++;
-            }
-            
-            const hours = Math.floor(appState.recordingElapsedSeconds / 3600);
-            const minutes = Math.floor((appState.recordingElapsedSeconds % 3600) / 60);
-            const seconds = appState.recordingElapsedSeconds % 60;
-            
-            const timerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            document.getElementById('recordTimer').textContent = timerText;
-        }
-
-        function createWaveform() {
-            const container = document.getElementById('waveformContainer');
-            container.innerHTML = '';
-            for (let i = 0; i < 50; i++) {
-                const bar = document.createElement('div');
-                bar.className = 'waveform-bar';
-                bar.style.height = '10px';
-                container.appendChild(bar);
-            }
-        }
-
-        function animateWaveform() {
-            if (!appState.isRecording) return;
-            
-            const bars = document.querySelectorAll('.waveform-bar');
-            bars.forEach(bar => {
-                const height = Math.random() * 80 + 20;
-                bar.style.height = `${height}px`;
-            });
-            
-            if (appState.isRecording && !appState.isPaused) {
-                setTimeout(animateWaveform, 100);
-            }
-        }
-
-        async function processRecording() {
-            if (!appState.audioBlob) return;
-            
-            const lessonName = document.getElementById('recordName').value.trim() || 
-                              `Registrazione ${new Date().toLocaleDateString('it-IT')}`;
-            const subject = document.getElementById('recordSubject').value;
-            
-            document.getElementById('contentArea').innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <h3>🎙️ Elaborazione Registrazione</h3>
-                    <p>Trascrizione audio in corso...</p>
-                    <p style="font-size: 0.9em; color: #666; margin-top: 10px;">
-                        Questo può richiedere alcuni minuti per lezioni lunghe
-                    </p>
-                </div>
-            `;
-            
-            try {
-                const transcription = await transcribeAudio(appState.audioBlob);
-                
-                document.getElementById('contentArea').innerHTML = `
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <h3>✨ Generazione Materiali</h3>
-                        <p>Creazione riassunti, flashcard e quiz...</p>
-                    </div>
-                `;
-                
-                const data = await generateContent(transcription.text, subject);
-                
-                const studyId = Date.now() + Math.random();
-                appState.studies[studyId] = {
-                    id: studyId,
-                    name: lessonName,
-                    data: data,
-                    date: new Date().toLocaleDateString('it-IT'),
-                    subject: subject,
-                    fullText: transcription.text.substring(0, 8000),
-                    audioTranscription: transcription.text,
-                    audioBlob: null,
-                    duration: transcription.duration,
-                    type: 'recording'
-                };
-                
-                appState.chatHistory[studyId] = [];
-                
-                saveStudies();
-                saveChatHistory();
-                
-                document.getElementById('contentArea').innerHTML = `
-                    <div style="text-align: center; padding: 60px 20px;">
-                        <div style="font-size: 5em; margin-bottom: 20px;">🎉</div>
-                        <h2>Lezione Registrata con Successo!</h2>
-                        <p style="margin: 20px 0; font-size: 1.1em;">
-                            "${lessonName}" è stata aggiunta alla tua libreria
-                        </p>
-                        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
-                            <button class="btn" onclick="selectStudy('${studyId}')">
-                                📖 Visualizza Lezione
-                            </button>
-                            <button class="btn" onclick="renderRecord()">
-                                🎙️ Registra Altra Lezione
-                            </button>
-                            <button class="btn" onclick="switchTab('library')">
-                                📚 Vai alla Libreria
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-            } catch (error) {
-                console.error('Errore elaborazione:', error);
-                document.getElementById('contentArea').innerHTML = `
-                    <div class="error-message" style="padding: 40px; text-align: center;">
-                        <h3>❌ Errore durante l'elaborazione</h3>
-                        <p style="margin: 20px 0;">${error.message}</p>
-                        <button class="btn" onclick="renderRecord()">
-                            🔄 Riprova
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        // ===== FUNZIONE TRANSCRIBE AUDIO MIGLIORATA =====
-        async function transcribeAudio(audioBlob) {
-            const formData = new FormData();
-            formData.append('audio', audioBlob, 'recording.webm');
-            formData.append('language', 'it');
-            
-            console.log('Invio audio per trascrizione:', {
-                size: audioBlob.size,
-                type: audioBlob.type
-            });
-            
-            const response = await fetch('/api/transcribe', {
-                method: 'POST',
-                body: formData
-            });
-            
-            console.log('Risposta API:', {
-                status: response.status,
-                statusText: response.statusText,
-                contentType: response.headers.get('content-type')
-            });
-            
-            if (!response.ok) {
-                // Prova a leggere come JSON, altrimenti come testo
-                let errorMessage = `Errore server: ${response.status}`;
-                try {
-                    const errorData = await response.json();
-                    errorMessage = errorData.message || errorData.error || errorMessage;
-                } catch (e) {
-                    // Se non è JSON, leggi come testo
-                    const errorText = await response.text();
-                    console.error('Errore non-JSON:', errorText.substring(0, 500));
-                    errorMessage = `Errore server: ${response.status}. Controlla i log di Vercel.`;
-                }
-                throw new Error(errorMessage);
-            }
-            
-            // Verifica che la risposta sia JSON
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                const textResponse = await response.text();
-                console.error('Risposta non-JSON:', textResponse.substring(0, 500));
-                throw new Error('L\'API ha ritornato una risposta non valida. Verifica che l\'API /api/transcribe sia configurata correttamente.');
-            }
-            
-            return await response.json();
-        }
-
-        // ===== PDF & OTHER SYSTEMS (resto codice identico) =====
 
         async function loadMultiplePDFs() {
             const files = document.getElementById('pdfFile').files;
@@ -993,7 +537,6 @@
             }
             switch(tab) {
                 case 'library': renderLibrary(); break;
-                case 'record': renderRecord(); break;
                 case 'summary': renderSummary(); break;
                 case 'highlights': renderHighlights(); break;
                 case 'glossary': renderGlossary(); break;
@@ -1011,17 +554,14 @@
             const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
             
             if (studies.length === 0) {
-                html += '<p style="text-align: center; color: #999; margin-top: 20px;">Nessuna lezione caricata. Carica i tuoi PDF o registra una lezione.</p>';
+                html += '<p style="text-align: center; color: #999; margin-top: 20px;">Nessuna lezione caricata. Carica i tuoi PDF per iniziare.</p>';
             } else {
                 studies.forEach(study => {
-                    const typeIcon = study.type === 'recording' ? '🎙️' : '📄';
-                    const durationText = study.duration ? ` • ⏱️ ${Math.round(study.duration / 60)} min` : '';
-                    
                     html += `
                         <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
                             <div class="study-left">
-                                <strong>${typeIcon} ${study.name}</strong>
-                                <div class="study-info">📅 ${study.date} • 📚 ${study.subject}${durationText} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
+                                <strong>📄 ${study.name}</strong>
+                                <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
                             </div>
                             <div class="study-right">
                                 <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
@@ -1031,9 +571,8 @@
                     `;
                 });
                 html += `
-                    <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <button class="btn" onclick="resetApp()" style="flex: 1;">📄 Carica PDF</button>
-                        <button class="btn" onclick="goToRecord()" style="flex: 1; background: linear-gradient(135deg, var(--danger), #ff6b6b);">🎙️ Registra Lezione</button>
+                    <div style="margin-top: 20px;">
+                        <button class="btn" onclick="resetApp()" style="width: 100%;">📄 Carica Altri PDF</button>
                     </div>
                 `;
             }
@@ -1057,11 +596,9 @@
             const element = document.createElement('div');
             element.style.padding = '20px';
             
-            const typeLabel = study.type === 'recording' ? '🎙️ Registrazione' : '📄 PDF';
-            
             element.innerHTML = `
                 <h1>${study.name}</h1>
-                <p><strong>Tipo:</strong> ${typeLabel} | <strong>Materia:</strong> ${study.subject} | <strong>Data:</strong> ${study.date}</p>
+                <p><strong>Tipo:</strong> 📄 PDF | <strong>Materia:</strong> ${study.subject} | <strong>Data:</strong> ${study.date}</p>
                 
                 <h2>📝 Riassunto Breve</h2>
                 <p>${study.data.summary_short}</p>
@@ -1126,7 +663,6 @@
             }
             
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.add('hidden'));
-            document.getElementById('tabRecord').classList.remove('hidden');
             document.getElementById('tabSummary').classList.remove('hidden');
             document.getElementById('tabHighlights').classList.remove('hidden');
             document.getElementById('tabGlossary').classList.remove('hidden');
@@ -1166,13 +702,10 @@
             const study = getCurrentStudy();
             if (!study) return;
             
-            const typeLabel = study.type === 'recording' ? '🎙️ Registrazione Audio' : '📄 PDF';
-            const durationText = study.duration ? `<p><strong>Durata:</strong> ${Math.round(study.duration / 60)} minuti</p>` : '';
-            
             document.getElementById('contentArea').innerHTML = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <p style="margin-bottom: 20px;"><strong>Tipo:</strong> ${typeLabel} ${durationText}</p>
+                <p style="margin-bottom: 20px;"><strong>Tipo:</strong> 📄 PDF</p>
                 <div class="section"><h3>📝 Riassunto Breve</h3><div class="card">${study.data.summary_short || 'N/A'}</div></div>
                 <div class="section"><h3>📖 Riassunto Completo</h3><div class="card">${study.data.summary_long || 'N/A'}</div></div>
             `;
@@ -1282,11 +815,404 @@
             document.getElementById('contentArea').innerHTML = html;
         }
 
-        // Nota: Ho omesso le funzioni flashcard e quiz per brevità
-        // In produzione vanno incluse tutte dal codice precedente
+        function renderFlashcardsAdvanced() {
+            const study = getCurrentStudy();
+            if (!study || !study.data.flashcards) return;
 
-        // ===== CHAT AI SYSTEM (versione semplificata) =====
-        
+            const allFlashcards = study.data.flashcards;
+            const filteredFlashcards = filterFlashcardsByMode(allFlashcards);
+            
+            if (filteredFlashcards.length === 0) {
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                    <h2>${study.name}</h2>
+                    <h3>🎴 Flashcard</h3>
+                    <div class="card" style="text-align: center;">
+                        <p>Nessuna flashcard trovata per il filtro selezionato.</p>
+                        <button class="btn" onclick="appState.flashcardMode = 'all'; renderFlashcardsAdvanced()">Mostra Tutte</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const currentCard = filteredFlashcards[appState.currentFlashcardFiltered];
+            const currentCardId = `${study.id}_${currentCard.q}`;
+            const stats = flashcardStats[currentCardId] || { difficulty: 'medium', views: 0, correct: 0 };
+
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>🎴 Flashcard (${appState.currentFlashcardFiltered + 1}/${filteredFlashcards.length})</h3>
+                
+                <div style="display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap;">
+                    <button class="btn ${appState.flashcardMode === 'all' ? 'active' : ''}" onclick="changeFlashcardMode('all')">📚 Tutte</button>
+                    <button class="btn ${appState.flashcardMode === 'difficult' ? 'active' : ''}" onclick="changeFlashcardMode('difficult')">🔴 Difficili</button>
+                    <button class="btn ${appState.flashcardMode === 'medium' ? 'active' : ''}" onclick="changeFlashcardMode('medium')">🟠 Medie</button>
+                    <button class="btn ${appState.flashcardMode === 'easy' ? 'active' : ''}" onclick="changeFlashcardMode('easy')">🟢 Facili</button>
+                </div>
+
+                <div class="flashcard ${stats.difficulty}" onclick="flipCard()">
+                    <div class="flashcard-inner" id="flashcardInner">
+                        <div class="flashcard-front">
+                            <div>${currentCard.q}</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div>${currentCard.a}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn" onclick="prevFlashcard()">⬅️ Precedente</button>
+                    <button class="btn" onclick="flipCard()">🔄 Gira</button>
+                    <button class="btn" onclick="nextFlashcard()">Successiva ➡️</button>
+                </div>
+
+                <div class="controls" style="margin-top: 20px;">
+                    <button class="btn" style="background: #4caf50;" onclick="markDifficulty('easy')">🟢 Facile</button>
+                    <button class="btn" style="background: #ffa726;" onclick="markDifficulty('medium')">🟠 Medio</button>
+                    <button class="btn" style="background: #f44336;" onclick="markDifficulty('difficult')">🔴 Difficile</button>
+                </div>
+
+                <div class="note-section">
+                    <strong>📝 Note Personali:</strong>
+                    <textarea class="note-input" id="flashcardNote" rows="3" placeholder="Aggiungi note per questa flashcard...">${appState.notes[currentCardId] || ''}</textarea>
+                    <button class="btn" onclick="saveFlashcardNote('${currentCardId}')" style="margin-top: 10px;">💾 Salva Nota</button>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <strong>📊 Statistiche:</strong> Visualizzata ${stats.views} volte | Difficoltà: ${stats.difficulty === 'easy' ? '🟢 Facile' : stats.difficulty === 'medium' ? '🟠 Medio' : '🔴 Difficile'}
+                </div>
+            `;
+
+            document.getElementById('contentArea').innerHTML = html;
+            updateFlashcardStats(currentCardId);
+        }
+
+        function filterFlashcardsByMode(flashcards) {
+            if (appState.flashcardMode === 'all') return flashcards;
+            
+            const study = getCurrentStudy();
+            return flashcards.filter(card => {
+                const cardId = `${study.id}_${card.q}`;
+                const stats = flashcardStats[cardId] || { difficulty: 'medium' };
+                return stats.difficulty === appState.flashcardMode;
+            });
+        }
+
+        function changeFlashcardMode(mode) {
+            appState.flashcardMode = mode;
+            appState.currentFlashcardFiltered = 0;
+            renderFlashcardsAdvanced();
+        }
+
+        function flipCard() {
+            document.getElementById('flashcardInner').classList.toggle('flipped');
+        }
+
+        function nextFlashcard() {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            appState.currentFlashcardFiltered = (appState.currentFlashcardFiltered + 1) % filtered.length;
+            renderFlashcardsAdvanced();
+        }
+
+        function prevFlashcard() {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            appState.currentFlashcardFiltered = appState.currentFlashcardFiltered === 0 ? filtered.length - 1 : appState.currentFlashcardFiltered - 1;
+            renderFlashcardsAdvanced();
+        }
+
+        function markDifficulty(difficulty) {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            const currentCard = filtered[appState.currentFlashcardFiltered];
+            const cardId = `${study.id}_${currentCard.q}`;
+            
+            if (!flashcardStats[cardId]) flashcardStats[cardId] = { difficulty: 'medium', views: 0, correct: 0 };
+            flashcardStats[cardId].difficulty = difficulty;
+            
+            localStorage.setItem('flashcardStats', JSON.stringify(flashcardStats));
+            renderFlashcardsAdvanced();
+        }
+
+        function updateFlashcardStats(cardId) {
+            if (!flashcardStats[cardId]) flashcardStats[cardId] = { difficulty: 'medium', views: 0, correct: 0 };
+            flashcardStats[cardId].views++;
+            localStorage.setItem('flashcardStats', JSON.stringify(flashcardStats));
+        }
+
+        function saveFlashcardNote(cardId) {
+            const note = document.getElementById('flashcardNote').value;
+            appState.notes[cardId] = note;
+            localStorage.setItem('flashcardNotes', JSON.stringify(appState.notes));
+            alert('✅ Nota salvata!');
+        }
+
+        function renderQuizAdvanced() {
+            const study = getCurrentStudy();
+            if (!study || !study.data.quiz) return;
+
+            const allQuestions = study.data.quiz;
+            const filteredQuestions = filterQuizByMode(allQuestions);
+
+            if (filteredQuestions.length === 0) {
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                    <h2>${study.name}</h2>
+                    <h3>❓ Quiz</h3>
+                    <div class="card" style="text-align: center;">
+                        <p>Nessuna domanda trovata per il filtro selezionato.</p>
+                        <button class="btn" onclick="appState.quizMode = 'all'; renderQuizAdvanced()">Mostra Tutte</button>
+                    </div>
+                `;
+                return;
+            }
+
+            if (appState.currentQuizFiltered >= filteredQuestions.length) {
+                return renderQuizResults();
+            }
+
+            const currentQuestion = filteredQuestions[appState.currentQuizFiltered];
+            const currentQuestionId = `${study.id}_${currentQuestion.q}`;
+
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>❓ Quiz (${appState.currentQuizFiltered + 1}/${filteredQuestions.length})</h3>
+
+                <div style="display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap;">
+                    <button class="btn ${appState.quizMode === 'all' ? 'active' : ''}" onclick="changeQuizMode('all')">📚 Tutte</button>
+                    <button class="btn ${appState.quizMode === 'wrong' ? 'active' : ''}" onclick="changeQuizMode('wrong')">❌ Sbagliate</button>
+                    <button class="btn ${appState.quizMode === 'correct' ? 'active' : ''}" onclick="changeQuizMode('correct')">✅ Corrette</button>
+                    <button class="btn ${appState.quizMode === 'unseen' ? 'active' : ''}" onclick="changeQuizMode('unseen')">👁️ Non Viste</button>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 10px; margin: 20px 0;">
+                    <label><input type="checkbox" id="timerCheckbox" ${appState.quizTimerEnabled ? 'checked' : ''} onchange="toggleQuizTimer()"> ⏱️ Timer (60s per domanda)</label>
+                </div>
+            `;
+
+            if (appState.quizTimerEnabled) {
+                html += `<div class="timer-display ${appState.quizTimeRemaining < 10 ? 'warning' : ''}" id="quizTimer">${appState.quizTimeRemaining}s</div>`;
+            }
+
+            html += `
+                <div class="card">
+                    <h4>${currentQuestion.q}</h4>
+                </div>
+            `;
+
+            currentQuestion.options.forEach((option, i) => {
+                const isAnswered = appState.quizAnswers[appState.currentQuizFiltered] !== undefined;
+                const userAnswer = appState.quizAnswers[appState.currentQuizFiltered];
+                let className = 'quiz-option';
+                
+                if (isAnswered) {
+                    if (i === currentQuestion.correct) className += ' correct';
+                    else if (i === userAnswer) className += ' incorrect';
+                } else if (userAnswer === i) {
+                    className += ' selected';
+                }
+
+                html += `<div class="${className}" onclick="${isAnswered ? '' : `selectQuizAnswer(${i})`}">${option}</div>`;
+            });
+
+            if (!appState.quizAnswers[appState.currentQuizFiltered] !== undefined) {
+                html += `
+                    <div class="controls">
+                        <button class="btn" onclick="submitQuizAnswer()">✅ Conferma</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="controls">
+                        <button class="btn" onclick="nextQuizQuestion()">Prossima ➡️</button>
+                    </div>
+                `;
+            }
+
+            document.getElementById('contentArea').innerHTML = html;
+
+            if (appState.quizTimerEnabled && !appState.quizTimerId) {
+                startQuizTimer();
+            }
+        }
+
+        function filterQuizByMode(questions) {
+            if (appState.quizMode === 'all') return questions;
+            
+            const study = getCurrentStudy();
+            return questions.filter(q => {
+                const qId = `${study.id}_${q.q}`;
+                const stats = quizStats[qId];
+                
+                if (appState.quizMode === 'unseen') return !stats;
+                if (appState.quizMode === 'correct') return stats && stats.correct;
+                if (appState.quizMode === 'wrong') return stats && !stats.correct;
+                
+                return true;
+            });
+        }
+
+        function changeQuizMode(mode) {
+            appState.quizMode = mode;
+            appState.currentQuizFiltered = 0;
+            appState.quizAnswers = [];
+            appState.quizScore = 0;
+            renderQuizAdvanced();
+        }
+
+        function toggleQuizTimer() {
+            appState.quizTimerEnabled = document.getElementById('timerCheckbox').checked;
+            if (appState.quizTimerEnabled) {
+                appState.quizTimeRemaining = 60;
+                startQuizTimer();
+            } else {
+                if (appState.quizTimerId) {
+                    clearInterval(appState.quizTimerId);
+                    appState.quizTimerId = null;
+                }
+            }
+            renderQuizAdvanced();
+        }
+
+        function startQuizTimer() {
+            appState.quizTimeRemaining = 60;
+            if (appState.quizTimerId) clearInterval(appState.quizTimerId);
+            
+            appState.quizTimerId = setInterval(() => {
+                appState.quizTimeRemaining--;
+                const timerEl = document.getElementById('quizTimer');
+                if (timerEl) {
+                    timerEl.textContent = `${appState.quizTimeRemaining}s`;
+                    if (appState.quizTimeRemaining < 10) {
+                        timerEl.classList.add('warning');
+                    }
+                }
+                
+                if (appState.quizTimeRemaining <= 0) {
+                    clearInterval(appState.quizTimerId);
+                    appState.quizTimerId = null;
+                    appState.quizAnswers[appState.currentQuizFiltered] = -1;
+                    nextQuizQuestion();
+                }
+            }, 1000);
+        }
+
+        function selectQuizAnswer(index) {
+            const currentAnswerIndex = appState.quizAnswers[appState.currentQuizFiltered];
+            if (currentAnswerIndex === undefined) {
+                appState.quizAnswers[appState.currentQuizFiltered] = index;
+                renderQuizAdvanced();
+            }
+        }
+
+        function submitQuizAnswer() {
+            if (appState.quizTimerId) {
+                clearInterval(appState.quizTimerId);
+                appState.quizTimerId = null;
+            }
+
+            const study = getCurrentStudy();
+            const filtered = filterQuizByMode(study.data.quiz);
+            const currentQuestion = filtered[appState.currentQuizFiltered];
+            const userAnswer = appState.quizAnswers[appState.currentQuizFiltered];
+
+            if (userAnswer === undefined) {
+                alert('Seleziona una risposta!');
+                return;
+            }
+
+            const isCorrect = userAnswer === currentQuestion.correct;
+            if (isCorrect) appState.quizScore++;
+
+            const qId = `${study.id}_${currentQuestion.q}`;
+            quizStats[qId] = { correct: isCorrect, timestamp: Date.now() };
+            localStorage.setItem('quizStats', JSON.stringify(quizStats));
+
+            renderQuizAdvanced();
+        }
+
+        function nextQuizQuestion() {
+            const study = getCurrentStudy();
+            const filtered = filterQuizByMode(study.data.quiz);
+            
+            appState.currentQuizFiltered++;
+            
+            if (appState.currentQuizFiltered >= filtered.length) {
+                if (appState.quizTimerId) {
+                    clearInterval(appState.quizTimerId);
+                    appState.quizTimerId = null;
+                }
+                renderQuizResults();
+            } else {
+                if (appState.quizTimerEnabled) {
+                    startQuizTimer();
+                }
+                renderQuizAdvanced();
+            }
+        }
+
+        function renderQuizResults() {
+            const study = getCurrentStudy();
+            const filtered = filterQuizByMode(study.data.quiz);
+            const percentage = Math.round((appState.quizScore / filtered.length) * 100);
+
+            let emoji = '😢';
+            if (percentage >= 90) emoji = '🎉';
+            else if (percentage >= 70) emoji = '😊';
+            else if (percentage >= 50) emoji = '😐';
+
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>🎯 Risultati Quiz</h3>
+
+                <div class="card" style="text-align: center; font-size: 1.5em;">
+                    <div style="font-size: 4em; margin: 20px 0;">${emoji}</div>
+                    <p><strong>Punteggio: ${appState.quizScore}/${filtered.length}</strong></p>
+                    <p>${percentage}%</p>
+                </div>
+
+                <h3 style="margin-top: 30px;">📝 Riepilogo</h3>
+            `;
+
+            filtered.forEach((q, i) => {
+                const userAnswer = appState.quizAnswers[i];
+                const isCorrect = userAnswer === q.correct;
+                html += `
+                    <div class="review-item ${isCorrect ? 'correct' : 'wrong'}">
+                        <strong>Domanda ${i + 1}:</strong> ${q.q}<br>
+                        <strong>La tua risposta:</strong> ${userAnswer >= 0 ? q.options[userAnswer] : 'Nessuna risposta'}<br>
+                        <strong>Risposta corretta:</strong> ${q.options[q.correct]}<br>
+                        ${isCorrect ? '✅ Corretto!' : '❌ Sbagliato'}
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="controls" style="margin-top: 30px;">
+                    <button class="btn" onclick="resetQuiz()">🔄 Rifai Quiz</button>
+                    <button class="btn" onclick="switchTab('library')">📚 Torna alla Libreria</button>
+                </div>
+            `;
+
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function resetQuiz() {
+            appState.currentQuizFiltered = 0;
+            appState.quizAnswers = [];
+            appState.quizScore = 0;
+            if (appState.quizTimerId) {
+                clearInterval(appState.quizTimerId);
+                appState.quizTimerId = null;
+            }
+            renderQuizAdvanced();
+        }
+
         function renderChat() {
             const study = getCurrentStudy();
             if (!study) return;
@@ -1572,9 +1498,6 @@
             showMainApp();
             switchTab('library');
         }
-
-        // Nota: Le funzioni flashcard e quiz complete vanno aggiunte qui
-        // Le ho omesse per brevità ma sono nel codice precedente
     </script>
 </body>
 </html>
