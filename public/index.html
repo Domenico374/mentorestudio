@@ -159,7 +159,7 @@
         
         .flashcard { 
             perspective: 1000px; 
-            height: 300px; 
+            min-height: 350px; 
             cursor: pointer; 
             margin: 20px 0; 
             border: 3px solid transparent;
@@ -168,11 +168,44 @@
         .flashcard.easy { border-color: #4caf50; }
         .flashcard.medium { border-color: #ffa726; }
         .flashcard.difficult { border-color: #f44336; }
-        .flashcard-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flashcard-inner { position: relative; width: 100%; min-height: 350px; transition: transform 0.6s; transform-style: preserve-3d; }
         .flashcard-inner.flipped { transform: rotateY(180deg); }
-        .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center; border-radius: 10px; font-size: 1.2em; font-weight: bold; }
+        .flashcard-front, .flashcard-back { position: absolute; width: 100%; min-height: 350px; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 25px; text-align: center; border-radius: 10px; }
         .flashcard-front { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
         .flashcard-back { background: linear-gradient(135deg, var(--accent), #f5576c); color: white; transform: rotateY(180deg); }
+        .flashcard-question { font-size: 1.3em; font-weight: bold; margin-bottom: 15px; }
+        .flashcard-answer { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; }
+        .flashcard-extra { 
+            font-size: 0.9em; 
+            margin-top: 15px; 
+            padding-top: 15px; 
+            border-top: 2px solid rgba(255,255,255,0.3);
+            text-align: left;
+            width: 100%;
+            line-height: 1.6;
+        }
+        .flashcard-extra-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .expand-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.5);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .expand-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
         .controls { display: flex; gap: 10px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
         .quiz-option { 
             background: #f5f7ff; 
@@ -752,7 +785,8 @@
             if (timeline.length === 0 && study.data.highlights && study.data.highlights.length > 0) {
                 timeline = study.data.highlights.slice(0, 8).map((highlight, index) => ({
                     date: `Punto ${index + 1}`,
-                    event: highlight
+                    event: highlight,
+                    details: `Approfondimento su: ${highlight}`
                 }));
             }
             
@@ -760,7 +794,8 @@
                 document.getElementById('contentArea').innerHTML = `
                     <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                     <h2>${study.name}</h2>
-                    <h3>📅 Timeline</h3>
+                    <h3>📅 Timeline Cronologica</h3>
+                    <p style="color: #666; margin-bottom: 20px;">Clicca su ogni evento per vedere i dettagli</p>
                     <div class="card" style="text-align: center; padding: 40px;">
                         <div style="font-size: 3em; margin-bottom: 15px;">📅</div>
                         <h3>Nessun evento temporale trovato</h3>
@@ -775,25 +810,37 @@
             let html = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <h3>📅 Timeline degli Eventi</h3>
+                <h3>📅 Timeline Cronologica (${timeline.length} eventi)</h3>
+                <p style="color: #666; margin-bottom: 20px;">Clicca su ogni evento per vedere i dettagli</p>
                 <div style="position: relative; padding: 20px 0;">
                     <div style="position: absolute; left: 30px; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--primary), var(--secondary));"></div>
             `;
             
             timeline.forEach((item, index) => {
+                const itemId = `timeline_${index}`;
                 html += `
-                    <div style="display: flex; align-items: center; margin: 30px 0; position: relative;">
+                    <div style="display: flex; align-items: flex-start; margin: 20px 0; position: relative;">
                         <div style="position: absolute; left: 21px; width: 20px; height: 20px; background: white; border: 4px solid var(--primary); border-radius: 50%; z-index: 1;"></div>
                         <div style="margin-left: 60px; flex: 1;">
-                            <div class="card" style="animation: slideIn 0.5s ease ${index * 0.1}s both;">
-                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                                    <span style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9em;">
-                                        ${item.date || `Evento ${index + 1}`}
-                                    </span>
+                            <div class="timeline-item" onclick="toggleTimelineItem('${itemId}')" style="cursor: pointer; transition: all 0.3s;">
+                                <div class="card" style="margin: 0; border-left: 4px solid var(--primary);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <span style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9em;">
+                                                ${item.date || `Evento ${index + 1}`}
+                                            </span>
+                                        </div>
+                                        <span id="${itemId}_icon" style="font-size: 1.2em; transition: transform 0.3s;">▼</span>
+                                    </div>
+                                    <p style="margin: 10px 0 0 0; line-height: 1.6; font-weight: 600;">
+                                        ${item.event}
+                                    </p>
+                                    <div id="${itemId}_details" class="timeline-details" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+                                        <p style="color: #666; line-height: 1.8;">
+                                            ${item.details || item.event}
+                                        </p>
+                                    </div>
                                 </div>
-                                <p style="margin: 0; line-height: 1.6;">
-                                    ${item.event}
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -802,6 +849,19 @@
             
             html += '</div>';
             document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function toggleTimelineItem(itemId) {
+            const details = document.getElementById(`${itemId}_details`);
+            const icon = document.getElementById(`${itemId}_icon`);
+            
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                details.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            }
         }
 
         function renderMindMap() {
@@ -854,10 +914,42 @@
                 <div class="flashcard ${stats.difficulty}" onclick="flipCard()">
                     <div class="flashcard-inner" id="flashcardInner">
                         <div class="flashcard-front">
-                            <div>${currentCard.q}</div>
+                            <div class="flashcard-question">${currentCard.q}</div>
+                            <div style="font-size: 0.8em; opacity: 0.8; margin-top: 15px;">
+                                👆 Clicca per vedere la risposta
+                            </div>
                         </div>
                         <div class="flashcard-back">
-                            <div>${currentCard.a}</div>
+                            <div class="flashcard-answer">${currentCard.a}</div>
+                            
+                            <div id="flashcardExtras" style="width: 100%;">
+                                ${currentCard.explanation ? `
+                                    <div class="flashcard-extra">
+                                        <div class="flashcard-extra-title">💡 Spiegazione Semplice:</div>
+                                        <div>${currentCard.explanation}</div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${currentCard.example ? `
+                                    <div class="flashcard-extra">
+                                        <div class="flashcard-extra-title">📚 Esempio Pratico:</div>
+                                        <div>${currentCard.example}</div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${currentCard.essay ? `
+                                    <div class="flashcard-extra">
+                                        <div class="flashcard-extra-title">✏️ Domanda per Saggio:</div>
+                                        <div>${currentCard.essay}</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <div style="margin-top: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px;" onclick="event.stopPropagation()">
+                                ${!currentCard.explanation ? `<button class="expand-btn" onclick="generateExplanation('${currentCardId}')">💡 Spiega Semplice</button>` : ''}
+                                ${!currentCard.example ? `<button class="expand-btn" onclick="generateExample('${currentCardId}')">📚 Esempio</button>` : ''}
+                                ${!currentCard.essay ? `<button class="expand-btn" onclick="generateEssay('${currentCardId}')">✏️ Domanda Saggio</button>` : ''}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1492,6 +1584,128 @@
             document.getElementById('uploadSection').classList.remove('hidden');
             document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('pdfFile').value = '';
+        }
+
+        // ===== FUNZIONI PER SPIEGAZIONI EXTRA FLASHCARD =====
+        
+        async function generateExplanation(cardId) {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            const currentCard = filtered[appState.currentFlashcardFiltered];
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Generazione...';
+            
+            try {
+                const prompt = `Spiega in modo molto semplice (come a un bambino di 10 anni) questo concetto:\n\nDomanda: ${currentCard.q}\nRisposta: ${currentCard.a}\n\nFornisci una spiegazione chiara, breve (max 3 frasi) e con esempi quotidiani.`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore generazione');
+                
+                const data = await response.json();
+                currentCard.explanation = data.response;
+                
+                saveStudies();
+                renderFlashcardsAdvanced();
+                
+                setTimeout(() => {
+                    document.getElementById('flashcardInner').classList.add('flipped');
+                }, 100);
+                
+            } catch (error) {
+                alert('❌ Errore: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = '💡 Spiega Semplice';
+            }
+        }
+        
+        async function generateExample(cardId) {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            const currentCard = filtered[appState.currentFlashcardFiltered];
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Generazione...';
+            
+            try {
+                const prompt = `Fornisci un esempio pratico e concreto per questo concetto:\n\nDomanda: ${currentCard.q}\nRisposta: ${currentCard.a}\n\nDai un esempio reale dalla vita quotidiana o dalla materia ${study.subject}. Max 3 frasi.`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore generazione');
+                
+                const data = await response.json();
+                currentCard.example = data.response;
+                
+                saveStudies();
+                renderFlashcardsAdvanced();
+                
+                setTimeout(() => {
+                    document.getElementById('flashcardInner').classList.add('flipped');
+                }, 100);
+                
+            } catch (error) {
+                alert('❌ Errore: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = '📚 Esempio';
+            }
+        }
+        
+        async function generateEssay(cardId) {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            const currentCard = filtered[appState.currentFlashcardFiltered];
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Generazione...';
+            
+            try {
+                const prompt = `Crea una domanda da saggio/tema d'esame su questo argomento:\n\nDomanda: ${currentCard.q}\nRisposta: ${currentCard.a}\n\nLa domanda deve essere aperta, richiedere ragionamento critico e analisi. Max 2 frasi. Inizia con "Come..." o "In che modo..." o "Analizza..." o "Discuti...".`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore generazione');
+                
+                const data = await response.json();
+                currentCard.essay = data.response;
+                
+                saveStudies();
+                renderFlashcardsAdvanced();
+                
+                setTimeout(() => {
+                    document.getElementById('flashcardInner').classList.add('flipped');
+                }, 100);
+                
+            } catch (error) {
+                alert('❌ Errore: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = '✏️ Domanda Saggio';
+            }
         }
 
         if (Object.keys(appState.studies).length > 0) {
