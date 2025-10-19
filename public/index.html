@@ -456,6 +456,80 @@
             border-left: 4px solid #c62828;
         }
         body.dark-mode .error-message { background: rgba(198, 40, 40, 0.2); color: #ff5252; }
+        
+        /* STUDY GUIDE & CONCEPT ANALYSIS STYLES */
+        .question-card {
+            background: #f5f7ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+        body.dark-mode .question-card { background: #1a1a2e; }
+        .question-card:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .question-number {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .question-text {
+            font-size: 1.05em;
+            line-height: 1.7;
+            margin-top: 10px;
+            color: #333;
+        }
+        body.dark-mode .question-text { color: #e0e0e0; }
+        .pillar-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid var(--primary);
+            transition: all 0.3s;
+        }
+        body.dark-mode .pillar-card { background: rgba(102, 126, 234, 0.15); }
+        .pillar-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .pillar-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        body.dark-mode .pillar-title { color: var(--accent); }
+        .pillar-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        .pillar-content {
+            line-height: 1.8;
+            color: #444;
+            font-size: 1.05em;
+        }
+        body.dark-mode .pillar-content { color: #ccc; }
+        .connection-box {
+            background: rgba(240, 147, 251, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 3px solid var(--accent);
+        }
+        body.dark-mode .connection-box { background: rgba(240, 147, 251, 0.15); }
     </style>
 </head>
 <body>
@@ -495,6 +569,8 @@
                 <button class="tab-btn hidden" id="tabGlossary" onclick="switchTab('glossary', event)">📖 Glossario</button>
                 <button class="tab-btn hidden" id="tabTimeline" onclick="switchTab('timeline', event)">📅 Timeline</button>
                 <button class="tab-btn hidden" id="tabMindmap" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
+                <button class="tab-btn hidden" id="tabStudyGuide" onclick="switchTab('studyguide', event)">📘 Guida di Studio</button>
+                <button class="tab-btn hidden" id="tabConceptAnalysis" onclick="switchTab('conceptanalysis', event)">🔍 Analisi Concetto</button>
                 <button class="tab-btn hidden" id="tabFlashcards" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
                 <button class="tab-btn hidden" id="tabQuiz" onclick="switchTab('quiz', event)">❓ Quiz</button>
                 <button class="tab-btn hidden" id="tabChat" onclick="switchTab('chat', event)">💬 Chat AI</button>
@@ -642,6 +718,8 @@
                 case 'glossary': renderGlossary(); break;
                 case 'timeline': renderTimeline(); break;
                 case 'mindmap': renderMindMap(); break;
+                case 'studyguide': renderStudyGuide(); break;
+                case 'conceptanalysis': renderConceptAnalysis(); break;
                 case 'flashcards': renderFlashcardsAdvanced(); break;
                 case 'quiz': renderQuizAdvanced(); break;
                 case 'chat': renderChat(); break;
@@ -768,6 +846,8 @@
             document.getElementById('tabGlossary').classList.remove('hidden');
             document.getElementById('tabTimeline').classList.remove('hidden');
             document.getElementById('tabMindmap').classList.remove('hidden');
+            document.getElementById('tabStudyGuide').classList.remove('hidden');
+            document.getElementById('tabConceptAnalysis').classList.remove('hidden');
             document.getElementById('tabFlashcards').classList.remove('hidden');
             document.getElementById('tabQuiz').classList.remove('hidden');
             document.getElementById('tabChat').classList.remove('hidden');
@@ -1141,6 +1221,309 @@
             });
             html += '</div>';
             document.getElementById('contentArea').innerHTML = html;
+        }
+
+        // ===== GUIDA DI STUDIO =====
+        
+        function renderStudyGuide() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>📘 Guida di Studio</h3>
+                <p style="color: #666; margin-bottom: 30px;">Domande per saggi, esami orali e scritti</p>
+            `;
+            
+            // Sezione Quiz a Risposta Breve (già esistente)
+            if (study.data.quiz && study.data.quiz.length > 0) {
+                html += `
+                    <div class="section">
+                        <h3 style="color: var(--primary); margin-top: 30px;">❓ Quiz a Risposta Multipla</h3>
+                        <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
+                            Vai alla sezione Quiz per esercitarti con ${study.data.quiz.length} domande
+                        </p>
+                        <button class="btn" onclick="switchTab('quiz')">
+                            🎯 Vai ai Quiz
+                        </button>
+                    </div>
+                `;
+            }
+            
+            // Sezione Domande per Saggio/Esame
+            html += `
+                <div class="section">
+                    <h3 style="color: var(--primary); margin-top: 30px;">✏️ Domande per Saggi ed Esami</h3>
+                    <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
+                        Domande aperte che richiedono analisi critica e ragionamento approfondito
+                    </p>
+            `;
+            
+            const essayQuestions = study.data.essayQuestions || [];
+            
+            if (essayQuestions.length === 0) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 30px;">
+                        <p style="color: #999; margin-bottom: 15px;">
+                            Nessuna domanda per saggio ancora generata
+                        </p>
+                        <button class="btn" onclick="generateEssayQuestions()">
+                            🤖 Genera Domande per Saggio
+                        </button>
+                    </div>
+                `;
+            } else {
+                essayQuestions.forEach((question, i) => {
+                    html += `
+                        <div class="question-card">
+                            <span class="question-number">Domanda ${i + 1}</span>
+                            <div class="question-text">${question}</div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                    <button class="btn" onclick="generateEssayQuestions()" style="margin-top: 15px;">
+                        🔄 Genera Altre Domande
+                    </button>
+                `;
+            }
+            
+            html += `</div>`;
+            
+            // Sezione Glossario
+            if (study.data.glossary && study.data.glossary.length > 0) {
+                html += `
+                    <div class="section">
+                        <h3 style="color: var(--primary); margin-top: 30px;">📖 Glossario dei Termini</h3>
+                        <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
+                            ${study.data.glossary.length} termini chiave da conoscere
+                        </p>
+                        <button class="btn" onclick="switchTab('glossary')">
+                            📚 Vai al Glossario
+                        </button>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        async function generateEssayQuestions() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            document.getElementById('contentArea').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>🤖 Generazione Domande per Saggio</h3>
+                    <p>Sto creando domande di analisi critica...</p>
+                </div>
+            `;
+            
+            try {
+                const context = `Materia: ${study.subject}\nLezione: ${study.name}\n\nRiassunto: ${study.data.summary_short}\n\nPunti chiave: ${(study.data.highlights || []).slice(0, 5).join(', ')}`;
+                
+                const prompt = `Genera 5 domande per saggi/esami scritti su questo argomento:\n\n${context}\n\nLe domande devono:\n- Essere aperte e richiedere ragionamento critico\n- Iniziare con "Analizza...", "Discuti...", "Come...", "In che modo...", "Spiega..."\n- Essere adatte per esami universitari o superiori\n- Coprire aspetti diversi dell'argomento\n- Essere formulate in modo chiaro\n\nFormato: una domanda per riga, numerate da 1 a 5.`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore nella generazione');
+                
+                const data = await response.json();
+                
+                // Parse le domande dalla risposta
+                const questions = data.response
+                    .split('\n')
+                    .filter(line => line.trim().length > 0)
+                    .map(line => line.replace(/^\d+\.\s*/, '').trim())
+                    .filter(q => q.length > 20);
+                
+                if (!study.data.essayQuestions) {
+                    study.data.essayQuestions = [];
+                }
+                
+                // Aggiungi le nuove domande evitando duplicati
+                questions.forEach(q => {
+                    if (!study.data.essayQuestions.includes(q)) {
+                        study.data.essayQuestions.push(q);
+                    }
+                });
+                
+                saveStudies();
+                renderStudyGuide();
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="error-message">
+                        ❌ Errore nella generazione: ${error.message}
+                        <button class="btn" onclick="renderStudyGuide()" style="margin-top: 15px;">
+                            🔄 Riprova
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // ===== ANALISI DEL CONCETTO =====
+        
+        function renderConceptAnalysis() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>🔍 Analisi del Concetto</h3>
+                <p style="color: #666; margin-bottom: 30px;">I tre pilastri fondamentali che sostengono questa lezione</p>
+            `;
+            
+            const analysis = study.data.conceptAnalysis;
+            
+            if (!analysis) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 20px;">🔍</div>
+                        <h3>Analisi non ancora generata</h3>
+                        <p style="color: #666; margin: 20px 0;">
+                            L'analisi del concetto ti aiuta a comprendere i tre pilastri fondamentali<br>
+                            dell'argomento e come si collegano tra loro.
+                        </p>
+                        <button class="btn" onclick="generateConceptAnalysis()">
+                            🤖 Genera Analisi del Concetto
+                        </button>
+                    </div>
+                `;
+            } else {
+                // Pilastro 1
+                html += `
+                    <div class="pillar-card">
+                        <div class="pillar-title">
+                            <div class="pillar-icon">1️⃣</div>
+                            <span>Primo Pilastro: ${analysis.pillar1_title || 'Definizione Base'}</span>
+                        </div>
+                        <div class="pillar-content">
+                            ${analysis.pillar1_content || 'Contenuto non disponibile'}
+                        </div>
+                    </div>
+                `;
+                
+                // Pilastro 2
+                html += `
+                    <div class="pillar-card">
+                        <div class="pillar-title">
+                            <div class="pillar-icon">2️⃣</div>
+                            <span>Secondo Pilastro: ${analysis.pillar2_title || 'Applicazioni Pratiche'}</span>
+                        </div>
+                        <div class="pillar-content">
+                            ${analysis.pillar2_content || 'Contenuto non disponibile'}
+                        </div>
+                    </div>
+                `;
+                
+                // Pilastro 3
+                html += `
+                    <div class="pillar-card">
+                        <div class="pillar-title">
+                            <div class="pillar-icon">3️⃣</div>
+                            <span>Terzo Pilastro: ${analysis.pillar3_title || 'Collegamenti Concettuali'}</span>
+                        </div>
+                        <div class="pillar-content">
+                            ${analysis.pillar3_content || 'Contenuto non disponibile'}
+                        </div>
+                    </div>
+                `;
+                
+                // Collegamenti
+                if (analysis.connections) {
+                    html += `
+                        <div class="connection-box">
+                            <h4 style="margin-bottom: 10px; color: var(--accent);">🔗 Come si Collegano i Tre Pilastri</h4>
+                            <p style="line-height: 1.8;">${analysis.connections}</p>
+                        </div>
+                    `;
+                }
+                
+                html += `
+                    <button class="btn" onclick="generateConceptAnalysis()" style="margin-top: 30px;">
+                        🔄 Rigenera Analisi
+                    </button>
+                `;
+            }
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        async function generateConceptAnalysis() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            document.getElementById('contentArea').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>🔍 Analisi del Concetto in Corso</h3>
+                    <p>Sto identificando i tre pilastri fondamentali...</p>
+                </div>
+            `;
+            
+            try {
+                const context = `Materia: ${study.subject}\nLezione: ${study.name}\n\nRiassunto: ${study.data.summary_long}\n\nPunti chiave: ${(study.data.highlights || []).join(', ')}`;
+                
+                const prompt = `Analizza in profondità questo argomento identificando i TRE PILASTRI FONDAMENTALI:\n\n${context}\n\nPer ogni pilastro fornisci:\n1. TITOLO del pilastro (3-5 parole)\n2. CONTENUTO del pilastro (4-6 frasi di spiegazione approfondita)\n\nPoi spiega come i tre pilastri si COLLEGANO tra loro.\n\nFormato richiesto:\nPILASTRO 1: [titolo]\n[contenuto]\n\nPILASTRO 2: [titolo]\n[contenuto]\n\nPILASTRO 3: [titolo]\n[contenuto]\n\nCOLLEGAMENTI:\n[spiegazione dei collegamenti]`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore nella generazione');
+                
+                const data = await response.json();
+                
+                // Parse della risposta
+                const text = data.response;
+                const pillar1Match = text.match(/PILASTRO 1:\s*([^\n]+)\n([\s\S]*?)(?=PILASTRO 2:|$)/i);
+                const pillar2Match = text.match(/PILASTRO 2:\s*([^\n]+)\n([\s\S]*?)(?=PILASTRO 3:|$)/i);
+                const pillar3Match = text.match(/PILASTRO 3:\s*([^\n]+)\n([\s\S]*?)(?=COLLEGAMENTI:|$)/i);
+                const connectionsMatch = text.match(/COLLEGAMENTI:\s*([\s\S]*?)$/i);
+                
+                study.data.conceptAnalysis = {
+                    pillar1_title: pillar1Match ? pillar1Match[1].trim() : 'Definizione Base',
+                    pillar1_content: pillar1Match ? pillar1Match[2].trim() : '',
+                    pillar2_title: pillar2Match ? pillar2Match[1].trim() : 'Applicazioni Pratiche',
+                    pillar2_content: pillar2Match ? pillar2Match[2].trim() : '',
+                    pillar3_title: pillar3Match ? pillar3Match[1].trim() : 'Collegamenti Concettuali',
+                    pillar3_content: pillar3Match ? pillar3Match[2].trim() : '',
+                    connections: connectionsMatch ? connectionsMatch[1].trim() : ''
+                };
+                
+                saveStudies();
+                renderConceptAnalysis();
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="error-message">
+                        ❌ Errore nella generazione: ${error.message}
+                        <button class="btn" onclick="renderConceptAnalysis()" style="margin-top: 15px;">
+                            🔄 Riprova
+                        </button>
+                    </div>
+                `;
+            }
         }
 
         function renderFlashcardsAdvanced() {
