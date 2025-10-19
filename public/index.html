@@ -243,7 +243,74 @@
         body.dark-mode .note-section { background: #3d3d1a; color: #e0e0e0; }
         .note-input { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9em; }
         body.dark-mode .note-input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
-        .key-concept { display: inline-block; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 4px 10px; border-radius: 15px; margin: 3px; font-size: 0.85em; }
+        .key-concept { 
+            display: inline-block; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            color: white; 
+            padding: 8px 15px; 
+            border-radius: 20px; 
+            margin: 3px; 
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+        .highlight-item {
+            background: #f5f7ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        body.dark-mode .highlight-item { background: #1a1a2e; }
+        .highlight-item:hover { transform: translateX(5px); background: #e8eaff; }
+        body.dark-mode .highlight-item:hover { background: #2a2a3e; }
+        .highlight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .highlight-title {
+            flex: 1;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+        .highlight-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+        .highlight-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(102, 126, 234, 0.2);
+            color: #555;
+            line-height: 1.8;
+            display: none;
+        }
+        body.dark-mode .highlight-details { color: #bbb; border-top-color: rgba(240, 147, 251, 0.2); }
+        .generate-btn {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
         .back-btn { display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--primary); margin-bottom: 20px; font-weight: bold; }
         body.dark-mode .back-btn { color: var(--accent); }
         .review-item {
@@ -747,33 +814,234 @@
         function renderHighlights() {
             const study = getCurrentStudy();
             if (!study) return;
-            let html = `<div class="back-btn" onclick="goBack()">← Torna alla Libreria</div><h2>${study.name}</h2><h3>⭐ Punti Salienti</h3>`;
-            (study.data.highlights || []).forEach((h, i) => { 
-                html += `<div class="card"><strong>${i+1}.</strong> <span class="key-concept">${h}</span></div>`; 
-            });
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>⭐ Punti Salienti (${(study.data.highlights || []).length})</h3>
+                <p style="color: #666; margin-bottom: 20px;">Clicca su ogni punto per vedere la spiegazione dettagliata</p>
+            `;
+            
+            if (!study.data.highlights || study.data.highlights.length === 0) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">⭐</div>
+                        <h3>Nessun punto saliente trovato</h3>
+                        <p style="margin-top: 10px; color: #666;">
+                            I punti chiave verranno estratti automaticamente dal contenuto.
+                        </p>
+                    </div>
+                `;
+            } else {
+                (study.data.highlights || []).forEach((h, i) => {
+                    const highlightId = `highlight_${i}`;
+                    const hasExplanation = study.data.highlightDetails && study.data.highlightDetails[i];
+                    
+                    html += `
+                        <div class="highlight-item" onclick="toggleHighlight('${highlightId}')">
+                            <div class="highlight-header">
+                                <div class="highlight-title">
+                                    <strong style="color: var(--primary);">${i + 1}.</strong> 
+                                    <span class="key-concept" style="display: inline; padding: 4px 10px;">${h}</span>
+                                </div>
+                                <span class="highlight-icon" id="${highlightId}_icon">▼</span>
+                            </div>
+                            
+                            <div class="highlight-details" id="${highlightId}_details">
+                                ${hasExplanation ? `
+                                    <p>${study.data.highlightDetails[i]}</p>
+                                ` : `
+                                    <p style="color: #999; font-style: italic;">
+                                        Nessuna spiegazione disponibile. Generane una con l'AI!
+                                    </p>
+                                    <button class="generate-btn" onclick="generateHighlightExplanation(${i}, event)">
+                                        🤖 Genera Spiegazione Dettagliata
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
             document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function toggleHighlight(highlightId) {
+            const details = document.getElementById(`${highlightId}_details`);
+            const icon = document.getElementById(`${highlightId}_icon`);
+            
+            if (details.style.display === 'none' || details.style.display === '') {
+                details.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                details.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        async function generateHighlightExplanation(index, event) {
+            event.stopPropagation();
+            
+            const study = getCurrentStudy();
+            const highlight = study.data.highlights[index];
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Generazione in corso...';
+            
+            try {
+                const context = `Materia: ${study.subject}\nLezione: ${study.name}\n\nContenuto: ${study.fullText.substring(0, 1000)}`;
+                
+                const prompt = `Fornisci una spiegazione dettagliata e approfondita di questo punto saliente:\n\n"${highlight}"\n\nContesto:\n${context}\n\nLa spiegazione deve essere:\n- Chiara e completa (4-6 frasi)\n- Con esempi concreti se possibile\n- Collegata al contesto della lezione\n- Utile per lo studio e la memorizzazione`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore nella generazione');
+                
+                const data = await response.json();
+                
+                if (!study.data.highlightDetails) {
+                    study.data.highlightDetails = {};
+                }
+                study.data.highlightDetails[index] = data.response;
+                
+                saveStudies();
+                renderHighlights();
+                
+                setTimeout(() => {
+                    toggleHighlight(`highlight_${index}`);
+                }, 100);
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('❌ Errore nella generazione: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = '🤖 Genera Spiegazione Dettagliata';
+            }
         }
 
         function renderGlossary() {
             const study = getCurrentStudy();
             if (!study) return;
-            let html = `<div class="back-btn" onclick="goBack()">← Torna alla Libreria</div><h2>${study.name}</h2><h3>📖 Glossario</h3>`;
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>📖 Glossario (${(study.data.glossary || []).length} termini)</h3>
+                <p style="color: #666; margin-bottom: 15px;">Clicca su ogni termine per vedere definizione ed esempi</p>
+            `;
+            
             html += '<input type="text" class="search-box" id="glossarySearch" placeholder="🔍 Cerca un termine..." onkeyup="filterGlossary()">';
             html += '<div id="glossaryContent">';
-            (study.data.glossary || []).forEach(item => { 
-                html += `<div class="card" data-term="${item.term.toLowerCase()}"><strong>${item.term}</strong><p>${item.definition}</p></div>`; 
-            });
+            
+            if (!study.data.glossary || study.data.glossary.length === 0) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">📖</div>
+                        <h3>Nessun termine nel glossario</h3>
+                        <p style="margin-top: 10px; color: #666;">
+                            I termini chiave verranno estratti automaticamente dal contenuto.
+                        </p>
+                    </div>
+                `;
+            } else {
+                (study.data.glossary || []).forEach((item, i) => {
+                    const glossaryId = `glossary_${i}`;
+                    const hasExample = study.data.glossaryExamples && study.data.glossaryExamples[i];
+                    
+                    html += `
+                        <div class="highlight-item" data-term="${item.term.toLowerCase()}" onclick="toggleHighlight('${glossaryId}')">
+                            <div class="highlight-header">
+                                <div class="highlight-title">
+                                    <strong style="color: var(--secondary); font-size: 1.1em;">${item.term}</strong>
+                                </div>
+                                <span class="highlight-icon" id="${glossaryId}_icon">▼</span>
+                            </div>
+                            
+                            <div class="highlight-details" id="${glossaryId}_details">
+                                <p style="margin-bottom: 15px;"><strong>Definizione:</strong> ${item.definition}</p>
+                                
+                                ${hasExample ? `
+                                    <div style="background: rgba(102, 126, 234, 0.1); padding: 12px; border-radius: 8px; margin-top: 10px;">
+                                        <strong style="color: var(--primary);">💡 Esempio pratico:</strong>
+                                        <p style="margin-top: 8px;">${study.data.glossaryExamples[i]}</p>
+                                    </div>
+                                ` : `
+                                    <button class="generate-btn" onclick="generateGlossaryExample(${i}, event)">
+                                        💡 Genera Esempio Pratico
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
             html += '</div>';
             document.getElementById('contentArea').innerHTML = html;
         }
 
         function filterGlossary() {
             const searchTerm = document.getElementById('glossarySearch').value.toLowerCase();
-            const cards = document.querySelectorAll('#glossaryContent .card');
-            cards.forEach(card => {
-                const term = card.getAttribute('data-term');
-                card.style.display = term.includes(searchTerm) ? 'block' : 'none';
+            const items = document.querySelectorAll('#glossaryContent .highlight-item');
+            items.forEach(item => {
+                const term = item.getAttribute('data-term');
+                item.style.display = term.includes(searchTerm) ? 'block' : 'none';
             });
+        }
+
+        async function generateGlossaryExample(index, event) {
+            event.stopPropagation();
+            
+            const study = getCurrentStudy();
+            const glossaryItem = study.data.glossary[index];
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Generazione esempio...';
+            
+            try {
+                const prompt = `Fornisci un esempio pratico e concreto per questo termine:\n\nTermine: ${glossaryItem.term}\nDefinizione: ${glossaryItem.definition}\n\nMateria: ${study.subject}\n\nL'esempio deve essere:\n- Pratico e dalla vita reale\n- Facile da ricordare\n- Collegato alla materia di studio\n- Massimo 3 frasi`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore nella generazione');
+                
+                const data = await response.json();
+                
+                if (!study.data.glossaryExamples) {
+                    study.data.glossaryExamples = {};
+                }
+                study.data.glossaryExamples[index] = data.response;
+                
+                saveStudies();
+                renderGlossary();
+                
+                setTimeout(() => {
+                    toggleHighlight(`glossary_${index}`);
+                }, 100);
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('❌ Errore nella generazione: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = '💡 Genera Esempio Pratico';
+            }
         }
 
         function renderTimeline() {
