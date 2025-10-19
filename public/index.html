@@ -530,6 +530,99 @@
             border-left: 3px solid var(--accent);
         }
         body.dark-mode .connection-box { background: rgba(240, 147, 251, 0.15); }
+        
+        /* CUSTOM FORMAT STYLES */
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .format-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+        body.dark-mode .format-card { background: rgba(102, 126, 234, 0.15); }
+        .format-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
+        .format-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .format-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        body.dark-mode .format-title { color: var(--accent); }
+        .format-desc {
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.5;
+        }
+        body.dark-mode .format-desc { color: #aaa; }
+        .custom-input-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        body.dark-mode .custom-input-box { background: #2a2a3e; }
+        .custom-textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+        body.dark-mode .custom-textarea { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
+        .result-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary);
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+        body.dark-mode .result-box { background: #1a1a2e; color: #e0e0e0; }
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .history-item {
+            background: #f5f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 3px solid var(--secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        body.dark-mode .history-item { background: #1a1a2e; }
+        .history-item:hover { transform: translateX(5px); background: #e8eaff; }
+        body.dark-mode .history-item:hover { background: #2a2a3e; }
+        .history-meta {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -571,6 +664,7 @@
                 <button class="tab-btn hidden" id="tabMindmap" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
                 <button class="tab-btn hidden" id="tabStudyGuide" onclick="switchTab('studyguide', event)">📘 Guida di Studio</button>
                 <button class="tab-btn hidden" id="tabConceptAnalysis" onclick="switchTab('conceptanalysis', event)">🔍 Analisi Concetto</button>
+                <button class="tab-btn hidden" id="tabCustomFormat" onclick="switchTab('customformat', event)">✨ Crea il Tuo</button>
                 <button class="tab-btn hidden" id="tabFlashcards" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
                 <button class="tab-btn hidden" id="tabQuiz" onclick="switchTab('quiz', event)">❓ Quiz</button>
                 <button class="tab-btn hidden" id="tabChat" onclick="switchTab('chat', event)">💬 Chat AI</button>
@@ -720,6 +814,7 @@
                 case 'mindmap': renderMindMap(); break;
                 case 'studyguide': renderStudyGuide(); break;
                 case 'conceptanalysis': renderConceptAnalysis(); break;
+                case 'customformat': renderCustomFormat(); break;
                 case 'flashcards': renderFlashcardsAdvanced(); break;
                 case 'quiz': renderQuizAdvanced(); break;
                 case 'chat': renderChat(); break;
@@ -848,6 +943,7 @@
             document.getElementById('tabMindmap').classList.remove('hidden');
             document.getElementById('tabStudyGuide').classList.remove('hidden');
             document.getElementById('tabConceptAnalysis').classList.remove('hidden');
+            document.getElementById('tabCustomFormat').classList.remove('hidden');
             document.getElementById('tabFlashcards').classList.remove('hidden');
             document.getElementById('tabQuiz').classList.remove('hidden');
             document.getElementById('tabChat').classList.remove('hidden');
@@ -1524,6 +1620,482 @@
                     </div>
                 `;
             }
+        }
+
+        // ===== FORMATO PERSONALIZZATO =====
+        
+        function renderCustomFormat() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            const history = study.data.customFormats || [];
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>✨ Crea il Tuo Formato</h3>
+                <p style="color: #666; margin-bottom: 30px;">Trasforma il contenuto in qualsiasi formato desideri</p>
+                
+                <div class="section">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">📋 Suggerimenti Rapidi</h4>
+                    <p style="color: #666; font-size: 0.95em; margin-bottom: 20px;">Clicca su un formato per generarlo automaticamente</p>
+                    
+                    <div class="format-grid">
+                        <div class="format-card" onclick="generateCustomFormat('mappa-mentale')">
+                            <div class="format-icon">🗺️</div>
+                            <div class="format-title">Mappa Mentale</div>
+                            <div class="format-desc">Struttura gerarchica visuale con rami e collegamenti</div>
+                        </div>
+                        
+                        <div class="format-card" onclick="generateCustomFormat('slides')">
+                            <div class="format-icon">📊</div>
+                            <div class="format-title">Presentazione Slides</div>
+                            <div class="format-desc">10 slides con titoli, punti chiave e note</div>
+                        </div>
+                        
+                        <div class="format-card" onclick="generateCustomFormat('video')">
+                            <div class="format-icon">🎥</div>
+                            <div class="format-title">Script Video</div>
+                            <div class="format-desc">Script per video YouTube di 10 minuti</div>
+                        </div>
+                        
+                        <div class="format-card" onclick="generateCustomFormat('poesia')">
+                            <div class="format-icon">📝</div>
+                            <div class="format-title">Poesia Mnemonica</div>
+                            <div class="format-desc">Poesia o canzone per memorizzare facilmente</div>
+                        </div>
+                        
+                        <div class="format-card" onclick="generateCustomFormat('schema')">
+                            <div class="format-icon">📋</div>
+                            <div class="format-title">Schema di Studio</div>
+                            <div class="format-desc">Schema avanzato con priorità e collegamenti</div>
+                        </div>
+                        
+                        <div class="format-card" onclick="generateCustomFormat('tabella')">
+                            <div class="format-icon">📊</div>
+                            <div class="format-title">Tabella Comparativa</div>
+                            <div class="format-desc">Confronto organizzato in formato tabella</div>
+                        </div>
+                        
+                        <div class="format-card" onclick="generateCustomFormat('dialogo')">
+                            <div class="format-icon">💬</div>
+                            <div class="format-title">Dialogo Q&A</div>
+                            <div class="format-desc">Conversazione Socratica domanda-risposta</div>
+                        </div>
+                        
+                        <div class="format-card" onclick="generateCustomFormat('story')">
+                            <div class="format-icon">📖</div>
+                            <div class="format-title">Storytelling</div>
+                            <div class="format-desc">Racconto narrativo coinvolgente</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="custom-input-box">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">✍️ Oppure Scrivi la Tua Richiesta</h4>
+                    <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
+                        Esempio: "Crea un quiz interattivo", "Trasforma in infografica testuale", "Genera FAQ"
+                    </p>
+                    <textarea 
+                        class="custom-textarea" 
+                        id="customFormatInput" 
+                        placeholder="Scrivi cosa vuoi creare (es: 'Trasforma in mappa concettuale con collegamenti tra argomenti')..."
+                    ></textarea>
+                    <button class="btn" onclick="generateCustomFormat('custom')" style="margin-top: 15px;">
+                        🚀 Genera Formato Personalizzato
+                    </button>
+                </div>
+                
+                <div id="customFormatResult"></div>
+            `;
+            
+            if (history.length > 0) {
+                html += `
+                    <div class="section" style="margin-top: 40px;">
+                        <h4 style="color: var(--primary); margin-bottom: 15px;">📜 Storico Trasformazioni (${history.length})</h4>
+                        <div id="formatHistory">
+                `;
+                
+                history.slice().reverse().forEach((item, i) => {
+                    const timeAgo = getTimeAgo(item.timestamp);
+                    html += `
+                        <div class="history-item" onclick="showHistoryItem(${history.length - 1 - i})">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong>${item.icon} ${item.title}</strong>
+                                    <div class="history-meta">${timeAgo}</div>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn btn-export" onclick="copyHistoryItem(${history.length - 1 - i}, event)" style="padding: 6px 12px; font-size: 0.85em;">
+                                        📋 Copia
+                                    </button>
+                                    <button class="btn btn-delete" onclick="deleteHistoryItem(${history.length - 1 - i}, event)" style="padding: 6px 12px; font-size: 0.85em;">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        const formatTemplates = {
+            'mappa-mentale': {
+                icon: '🗺️',
+                title: 'Mappa Mentale',
+                prompt: `Crea una mappa mentale testuale strutturata gerarchicamente per questo argomento.
+
+Usa questa struttura:
+- CONCETTO CENTRALE (in maiuscolo)
+  ├─ Ramo principale 1
+  │  ├─ Sotto-ramo 1.1
+  │  ├─ Sotto-ramo 1.2
+  │  └─ Sotto-ramo 1.3
+  ├─ Ramo principale 2
+  │  ├─ Sotto-ramo 2.1
+  │  └─ Sotto-ramo 2.2
+  └─ Ramo principale 3
+
+Collegamenti: [collega i concetti tra rami diversi]
+
+Contenuto: {content}`
+            },
+            'slides': {
+                icon: '📊',
+                title: 'Presentazione Slides',
+                prompt: `Trasforma in una presentazione di 10 slides con questa struttura:
+
+SLIDE 1: [Titolo accattivante]
+- Sottotitolo
+- Immagine suggerita: [descrizione]
+
+SLIDE 2-9: [Contenuto principale]
+Per ogni slide includi:
+- Titolo della slide
+- 3-5 punti chiave (bullet points)
+- Note per il presentatore
+
+SLIDE 10: Conclusione
+- Riepilogo
+- Call to action
+
+Contenuto: {content}`
+            },
+            'video': {
+                icon: '🎥',
+                title: 'Script Video YouTube',
+                prompt: `Scrivi uno script completo per un video YouTube di 10 minuti con:
+
+[INTRO - 0:00-0:30]
+🎬 Hook iniziale
+📌 Cosa imparerà lo spettatore
+
+[CORPO - 0:30-9:00]
+Dividi in 3-4 sezioni principali con:
+- Timestamp
+- Spiegazione
+- Esempi visivi suggeriti
+- Analogie
+
+[OUTRO - 9:00-10:00]
+✅ Riepilogo
+👍 Call to action (like, subscribe)
+
+Contenuto: {content}`
+            },
+            'poesia': {
+                icon: '📝',
+                title: 'Poesia Mnemonica',
+                prompt: `Crea una poesia o canzone mnemonica per memorizzare facilmente questo argomento.
+
+Requisiti:
+- Rime alternate o baciate
+- Strofe di 4 versi
+- Facile da ricordare
+- Include i concetti chiave
+- Ritmo regolare
+
+Aggiungi anche:
+💡 Perché questa mnemonica funziona
+🎵 Melodia suggerita (canzone famosa)
+
+Contenuto: {content}`
+            },
+            'schema': {
+                icon: '📋',
+                title: 'Schema di Studio Avanzato',
+                prompt: `Crea uno schema di studio completo e strutturato:
+
+📚 ARGOMENTO PRINCIPALE
+━━━━━━━━━━━━━━━━━
+
+🎯 OBIETTIVI DI APPRENDIMENTO
+- Cosa devi sapere
+- Cosa devi saper fare
+
+📖 CONCETTI FONDAMENTALI
+[Organizza in ordine logico con priorità]
+★★★ Priorità ALTA
+★★☆ Priorità MEDIA  
+★☆☆ Priorità BASSA
+
+🔗 COLLEGAMENTI
+[Come si collegano i concetti]
+
+💡 STRATEGIE DI MEMORIZZAZIONE
+[Tecniche specifiche]
+
+✅ CHECKLIST PADRONANZA
+[Come verificare di aver capito]
+
+Contenuto: {content}`
+            },
+            'tabella': {
+                icon: '📊',
+                title: 'Tabella Comparativa',
+                prompt: `Crea una tabella comparativa ben strutturata:
+
+Identifica 3-5 elementi da confrontare e almeno 5 criteri di confronto.
+
+Formato:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+|  CRITERIO       | Elemento 1 | Elemento 2 | Elemento 3 |
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+| Definizione     |            |            |            |
+| Caratteristiche |            |            |            |
+| Pro             |            |            |            |
+| Contro          |            |            |            |
+| Applicazioni    |            |            |            |
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 Sintesi comparativa: [breve analisi]
+
+Contenuto: {content}`
+            },
+            'dialogo': {
+                icon: '💬',
+                title: 'Dialogo Socratico',
+                prompt: `Crea un dialogo Socratico (domanda-risposta) per esplorare l'argomento:
+
+Personaggi:
+👨‍🏫 MAESTRO - Guida con domande
+👨‍🎓 STUDENTE - Scopre attraverso il ragionamento
+
+Struttura:
+MAESTRO: [Domanda aperta]
+STUDENTE: [Risposta iniziale]
+MAESTRO: [Domanda di approfondimento]
+STUDENTE: [Riflessione più profonda]
+[continua per 8-10 scambi]
+
+Finale: Lo studente arriva alla comprensione profonda
+
+Contenuto: {content}`
+            },
+            'story': {
+                icon: '📖',
+                title: 'Storytelling Narrativo',
+                prompt: `Trasforma in una storia coinvolgente e memorabile:
+
+Struttura narrativa:
+🌅 INIZIO - Presenta protagonista e situazione
+⚡ CONFLITTO - Problema da risolvere
+🔄 SVILUPPO - Viaggio di scoperta
+✨ CLIMAX - Momento di rivelazione
+🎯 CONCLUSIONE - Risoluzione e lezione
+
+Usa:
+- Linguaggio vivido e descrittivo
+- Dialoghi
+- Emozioni
+- Analogie con la vita reale
+
+Alla fine: 💡 Cosa ci insegna questa storia
+
+Contenuto: {content}`
+            }
+        };
+
+        async function generateCustomFormat(formatType) {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let prompt = '';
+            let formatInfo = null;
+            
+            if (formatType === 'custom') {
+                const customInput = document.getElementById('customFormatInput').value.trim();
+                if (!customInput) {
+                    alert('⚠️ Inserisci una richiesta personalizzata!');
+                    return;
+                }
+                prompt = `${customInput}\n\nContenuto da trasformare:\n${study.data.summary_long}\n\nPunti chiave: ${(study.data.highlights || []).join(', ')}`;
+                formatInfo = { icon: '✨', title: customInput.substring(0, 50) };
+            } else {
+                formatInfo = formatTemplates[formatType];
+                const content = `${study.data.summary_long}\n\nPunti chiave: ${(study.data.highlights || []).join(', ')}`;
+                prompt = formatInfo.prompt.replace('{content}', content);
+            }
+            
+            // Mostra loading
+            document.getElementById('customFormatResult').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>✨ Creazione in Corso</h3>
+                    <p>Sto generando il formato "${formatInfo.title}"...</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore nella generazione');
+                
+                const data = await response.json();
+                const result = data.response;
+                
+                // Salva nello storico
+                if (!study.data.customFormats) {
+                    study.data.customFormats = [];
+                }
+                
+                study.data.customFormats.push({
+                    type: formatType,
+                    icon: formatInfo.icon,
+                    title: formatInfo.title,
+                    content: result,
+                    timestamp: Date.now()
+                });
+                
+                saveStudies();
+                
+                // Mostra risultato
+                displayFormatResult(result, formatInfo);
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                document.getElementById('customFormatResult').innerHTML = `
+                    <div class="error-message">
+                        ❌ Errore nella generazione: ${error.message}
+                        <button class="btn" onclick="renderCustomFormat()" style="margin-top: 15px;">
+                            🔄 Riprova
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function displayFormatResult(content, formatInfo) {
+            const resultHTML = `
+                <div class="section" style="margin-top: 30px;">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">
+                        ${formatInfo.icon} Risultato: ${formatInfo.title}
+                    </h4>
+                    
+                    <div class="result-box">${content}</div>
+                    
+                    <div class="export-buttons">
+                        <button class="btn" onclick="copyFormatResult()">
+                            📋 Copia negli Appunti
+                        </button>
+                        <button class="btn" onclick="downloadFormatResult('${formatInfo.title.replace(/[^a-z0-9]/gi, '_')}')">
+                            📥 Scarica TXT
+                        </button>
+                        <button class="btn" onclick="renderCustomFormat()">
+                            ✨ Crea Altro Formato
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('customFormatResult').innerHTML = resultHTML;
+            
+            // Scroll al risultato
+            document.getElementById('customFormatResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function copyFormatResult() {
+            const resultBox = document.querySelector('.result-box');
+            if (!resultBox) return;
+            
+            const text = resultBox.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Contenuto copiato negli appunti!');
+            }).catch(() => {
+                alert('❌ Errore nella copia');
+            });
+        }
+
+        function downloadFormatResult(filename) {
+            const resultBox = document.querySelector('.result-box');
+            if (!resultBox) return;
+            
+            const text = resultBox.textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('✅ File scaricato!');
+        }
+
+        function showHistoryItem(index) {
+            const study = getCurrentStudy();
+            const item = study.data.customFormats[index];
+            if (!item) return;
+            
+            displayFormatResult(item.content, { icon: item.icon, title: item.title });
+        }
+
+        function copyHistoryItem(index, event) {
+            event.stopPropagation();
+            const study = getCurrentStudy();
+            const item = study.data.customFormats[index];
+            if (!item) return;
+            
+            navigator.clipboard.writeText(item.content).then(() => {
+                alert('✅ Contenuto copiato!');
+            });
+        }
+
+        function deleteHistoryItem(index, event) {
+            event.stopPropagation();
+            const study = getCurrentStudy();
+            
+            if (confirm('Eliminare questa trasformazione dallo storico?')) {
+                study.data.customFormats.splice(index, 1);
+                saveStudies();
+                renderCustomFormat();
+            }
+        }
+
+        function getTimeAgo(timestamp) {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            
+            if (seconds < 60) return 'Pochi secondi fa';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} minuti fa`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} ore fa`;
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)} giorni fa`;
+            
+            return new Date(timestamp).toLocaleDateString('it-IT');
         }
 
         function renderFlashcardsAdvanced() {
