@@ -858,27 +858,46 @@
         }
 
         function renderLibrary() {
-            let html = '<h2>📚 Le tue lezioni</h2>';
-            html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
-            const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
-            
-            if (studies.length === 0) {
-                html += '<p style="text-align: center; color: #999; margin-top: 20px;">Nessuna lezione caricata. Carica i tuoi PDF per iniziare.</p>';
-            } else {
-                studies.forEach(study => {
-                    html += `
-                        <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
-                            <div class="study-left">
-                                <strong>📄 ${study.name}</strong>
-                                <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
-                            </div>
-                            <div class="study-right">
-                                <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
-                                <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                });
+    let html = '<h2>📚 Le tue lezioni</h2>';
+    html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
+    const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
+    
+    if (studies.length === 0) {
+        html += `
+            <div style="text-align: center; padding: 60px 20px;">
+                <div style="font-size: 4em; margin-bottom: 20px;">📚</div>
+                <h3 style="color: var(--primary); margin-bottom: 15px;">Nessuna lezione caricata</h3>
+                <p style="color: #999; margin-bottom: 30px;">
+                    La tua libreria è vuota. Inizia caricando i tuoi PDF!
+                </p>
+                <button class="btn" onclick="resetApp()" style="font-size: 1.1em; padding: 15px 30px;">
+                    📂 Carica Nuovi PDF
+                </button>
+            </div>
+        `;
+    } else {
+        studies.forEach(study => {
+            html += `
+                <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
+                    <div class="study-left">
+                        <strong>📄 ${study.name}</strong>
+                        <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
+                    </div>
+                    <div class="study-right">
+                        <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
+                        <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+        html += `
+            <div style="margin-top: 20px;">
+                <button class="btn" onclick="resetApp()" style="width: 100%;">📄 Carica Altri PDF</button>
+            </div>
+        `;
+    }
+    document.getElementById('contentArea').innerHTML = html;
+}
                 html += `
                     <div style="margin-top: 20px;">
                         <button class="btn" onclick="resetApp()" style="width: 100%;">📄 Carica Altri PDF</button>
