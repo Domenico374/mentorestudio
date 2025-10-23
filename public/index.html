@@ -781,24 +781,22 @@
             renderLibrary();
             switchTab('library');
         }
-
-        async function extractPDFText(file) {
-            const reader = new FileReader();
-            return new Promise((resolve) => {
-                reader.onload = async (e) => {
-                    const pdf = await pdfjsLib.getDocument(e.target.result).promise;
-                    let text = '';
-                    for (let i = 0; i < Math.min(pdf.numPages, 20); i++) {
-                        const page = await pdf.getPage(i + 1);
-                        const content = await page.getTextContent();
-                        text += content.items.map(x => x.str).join(' ') + '\n';
-                    }
-                    resolve(text);
-                };
-                reader.readAsArrayBuffer(file);
-            });
-        }
-
+       async function extractPDFText(file) {
+    const reader = new FileReader();
+    return new Promise((resolve) => {
+        reader.onload = async (e) => {
+            const pdf = await pdfjsLib.getDocument({ data: e.target.result }).promise;
+            let text = '';
+            for (let i = 0; i < Math.min(pdf.numPages, 20); i++) {
+                const page = await pdf.getPage(i + 1);
+                const content = await page.getTextContent();
+                text += content.items.map(x => x.str).join(' ') + '\n';
+            }
+            resolve(text);
+        };
+        reader.readAsArrayBuffer(file);
+    });
+}
         function showMainApp() {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
