@@ -38,6 +38,16 @@
         body.dark-mode .header { background: #2a2a3e; color: #e0e0e0; }
         h1 { font-size: 1.8em; color: var(--primary); }
         body.dark-mode h1 { color: var(--accent); }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
         .header-controls { display: flex; gap: 10px; }
         .toggle-btn {
             padding: 10px 15px;
@@ -664,7 +674,10 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📚 MentoreStudio</h1>
+            <div class="logo-container">
+                <img src="images/MentoreStudio_logo.png" alt="MentoreStudio Logo" class="logo-img">
+                <h1>MentoreStudio</h1>
+            </div>
             <div class="header-controls">
                 <button class="toggle-btn" onclick="toggleDarkMode()">🌙</button>
             </div>
