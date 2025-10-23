@@ -30,11 +30,14 @@
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
+        .header-left { justify-self: start; }
+        .header-center { justify-self: center; }
+        .header-right { justify-self: end; display: flex; gap: 10px; align-items: center; }
         body.dark-mode .header { background: #2a2a3e; color: #e0e0e0; }
         h1 { font-size: 1.8em; color: var(--primary); }
         body.dark-mode h1 { color: var(--accent); }
@@ -669,16 +672,75 @@
             color: #555;
         }
         body.dark-mode .mindmap-leaf { color: #aaa; }
+    
+        /* Tutorial Modal */
+        .tutorial-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .tutorial-modal.active { display: flex; }
+        .tutorial-content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        body.dark-mode .tutorial-content { background: #2a2a3e; color: #e0e0e0; }
+        .tutorial-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tutorial-close:hover { transform: scale(1.1); }
+        .tutorial-step {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f7ff;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        body.dark-mode .tutorial-step { background: #1a1a2e; }
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo-container">
-                <img src="https://github.com/Domenico374/mentorestudio/blob/main/images/MentoreStudio_logo.png?raw=true" alt="MentoreStudio Logo" style="width: 60px; height: 60px; object-fit: contain;">
-                <h1>MentoreStudio</h1>
+            <div class="header-left">
+                <div class="logo-container">
+                    <img src="https://github.com/Domenico374/mentorestudio/blob/main/images/MentoreStudio_logo.png?raw=true" alt="MentoreStudio Logo" style="width: 60px; height: 60px; object-fit: contain;">
+                    <h1>MentoreStudio</h1>
+                </div>
             </div>
-            <div class="header-controls">
+            <div class="header-center" id="headerCenterButtons">
+                <button class="btn" onclick="document.getElementById('uploadSection').scrollIntoView({behavior: 'smooth'})">📚 Carica</button>
+            </div>
+            <div class="header-right">
+                <button class="btn" onclick="showTutorial()" style="background: var(--accent);">💡 Tutorial</button>
                 <button class="toggle-btn" onclick="toggleDarkMode()">🌙</button>
             </div>
         </div>
@@ -720,6 +782,60 @@
             </div>
             <div class="content-area" id="contentArea"></div>
         </div>
+    
+    <!-- Tutorial Modal -->
+    <div class="tutorial-modal" id="tutorialModal">
+        <div class="tutorial-content">
+            <button class="tutorial-close" onclick="closeTutorial()">×</button>
+            <h2 style="color: var(--primary); margin-bottom: 30px;">💡 Guida Rapida MentoreStudio</h2>
+            
+            <div class="tutorial-step">
+                <h3>📚 1. Carica i tuoi PDF</h3>
+                <p>Seleziona la materia, scegli uno o più PDF e clicca "Carica PDF". Puoi caricare più file contemporaneamente!</p>
+            </div>
+            
+            <div class="tutorial-step">
+                <h3>🤖 2. Genera contenuti con AI</h3>
+                <p>Clicca su una lezione dalla libreria. L'AI genererà automaticamente:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>📝 Riassunti (brevi e completi)</li>
+                    <li>⭐ Punti salienti</li>
+                    <li>📖 Glossario dei termini</li>
+                    <li>📅 Timeline eventi</li>
+                    <li>🧠 Mappe mentali</li>
+                    <li>🎴 Flashcard per memorizzare</li>
+                    <li>❓ Quiz di autovalutazione</li>
+                </ul>
+            </div>
+            
+            <div class="tutorial-step">
+                <h3>🎯 3. Studia in modo efficace</h3>
+                <p>Usa i vari strumenti per studiare:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>🎴 <strong>Flashcard:</strong> Memorizza con carte interattive</li>
+                    <li>❓ <strong>Quiz:</strong> Testa le tue conoscenze</li>
+                    <li>💬 <strong>Chat AI:</strong> Fai domande specifiche sul materiale</li>
+                    <li>🔍 <strong>Analisi Concetto:</strong> Approfondisci argomenti complessi</li>
+                </ul>
+            </div>
+            
+            <div class="tutorial-step">
+                <h3>💾 4. Esporta i tuoi materiali</h3>
+                <p>Salva i contenuti generati in formato PDF o PowerPoint per studiare offline!</p>
+            </div>
+            
+            <div class="tutorial-step">
+                <h3>🔄 5. Tutto salvato localmente</h3>
+                <p>I tuoi dati sono salvati nel browser. Nessuna sincronizzazione cloud, massima privacy!</p>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 20px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 10px; text-align: center;">
+                <h3>🎓 Pronto per iniziare?</h3>
+                <p>Carica il tuo primo PDF e inizia a studiare in modo intelligente!</p>
+            </div>
+        </div>
+    </div>
+
     </div>
 
     <script>
@@ -813,6 +929,7 @@
         function showMainApp() {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
+            updateHeaderButtons();
         }
 
         function updateProgress(current, total, message) {
@@ -3119,6 +3236,47 @@ Contenuto: {content}`
             document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('pdfFile').value = '';
         }
+
+        
+        // Tutorial Functions
+        function showTutorial() {
+            document.getElementById('tutorialModal').classList.add('active');
+        }
+        
+        function closeTutorial() {
+            document.getElementById('tutorialModal').classList.remove('active');
+        }
+        
+        // Chiudi con ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeTutorial();
+            }
+        });
+        
+        // Chiudi cliccando fuori
+        document.getElementById('tutorialModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTutorial();
+            }
+        });
+        
+        // Gestisci visibilità pulsante Carica nell'header
+        function updateHeaderButtons() {
+            const headerCenter = document.getElementById('headerCenterButtons');
+            const uploadSection = document.getElementById('uploadSection');
+            const mainApp = document.getElementById('mainApp');
+            
+            if (headerCenter) {
+                // Nascondi il pulsante Carica quando l'app è attiva
+                if (mainApp && !mainApp.classList.contains('hidden')) {
+                    headerCenter.style.display = 'none';
+                } else {
+                    headerCenter.style.display = 'block';
+                }
+            }
+        }
+
 
         if (Object.keys(appState.studies).length > 0) {
             showMainApp();
