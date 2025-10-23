@@ -669,6 +669,60 @@
             color: #555;
         }
         body.dark-mode .mindmap-leaf { color: #aaa; }
+    
+        /* === RICERCA GLOBALE === */
+        .global-search-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        body.dark-mode .global-search-container { background: #2a2a3e; }
+        .search-filters {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .search-result-item {
+            background: #f5f7ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        body.dark-mode .search-result-item { background: #1a1a2e; }
+        .search-result-item:hover { 
+            transform: translateX(5px); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+        }
+        .search-result-title { 
+            font-weight: bold; 
+            font-size: 1.1em; 
+            margin-bottom: 10px; 
+            color: var(--primary); 
+        }
+        .search-result-context { 
+            color: #666; 
+            line-height: 1.6; 
+        }
+        body.dark-mode .search-result-context { color: #aaa; }
+        .search-highlight { 
+            background: yellow; 
+            color: black; 
+            padding: 2px 4px; 
+            border-radius: 3px; 
+            font-weight: bold; 
+        }
+        .search-meta { 
+            font-size: 0.9em; 
+            color: #999; 
+            margin-top: 10px; 
+        }
+
     </style>
 </head>
 <body>
@@ -717,6 +771,7 @@
                 <button class="tab-btn hidden" id="tabFlashcards" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
                 <button class="tab-btn hidden" id="tabQuiz" onclick="switchTab('quiz', event)">❓ Quiz</button>
                 <button class="tab-btn hidden" id="tabChat" onclick="switchTab('chat', event)">💬 Chat AI</button>
+                <button class="tab-btn" onclick="switchTab('globalsearch', event)">🔍 Ricerca Globale</button>
             </div>
             <div class="content-area" id="contentArea"></div>
         </div>
@@ -865,6 +920,7 @@
                 case 'flashcards': renderFlashcardsAdvanced(); break;
                 case 'quiz': renderQuizAdvanced(); break;
                 case 'chat': renderChat(); break;
+                case 'globalsearch': renderGlobalSearch(); break;
             }
         }
 
@@ -3119,6 +3175,238 @@ Contenuto: {content}`
             document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('pdfFile').value = '';
         }
+
+        
+        // ============================================
+        // 🔍 RICERCA GLOBALE
+        // ============================================
+        
+        function renderGlobalSearch() {
+            let html = '<div class="global-search-container">';
+            html += '<h2>🔍 Ricerca Globale</h2>';
+            html += '<p style="color: #666; margin-bottom: 20px;">Cerca in tutte le tue lezioni, riassunti, flashcard e quiz</p>';
+            
+            // Campo di ricerca
+            html += '<input type="text" class="search-box" id="globalSearchInput" placeholder="🔍 Cerca termini, concetti, domande..." onkeyup="if(event.key===\'Enter\') performGlobalSearch()">';
+            
+            // Filtri
+            html += '<div class="search-filters">';
+            html += '<select id="searchSubjectFilter" class="subject-select" style="max-width: 200px;" onchange="performGlobalSearch()">';
+            html += '<option value="all">📚 Tutte le materie</option>';
+            
+            const subjects = [...new Set(Object.values(appState.studies).map(s => s.subject))];
+            subjects.forEach(subj => {
+                html += `<option value="${subj}">${subj}</option>`;
+            });
+            html += '</select>';
+            
+            html += '<button class="btn" onclick="performGlobalSearch()">🔍 Cerca</button>';
+            html += '<button class="btn" onclick="clearGlobalSearch()" style="background: #666;">🔄 Reset</button>';
+            html += '</div>';
+            
+            // Risultati
+            html += '<div id="searchResults" style="margin-top: 30px;">';
+            html += '<p style="text-align: center; color: #999; padding: 40px;">Inserisci un termine di ricerca</p>';
+            html += '</div>';
+            html += '</div>';
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function performGlobalSearch() {
+            const query = document.getElementById('globalSearchInput').value.toLowerCase().trim();
+            const subject = document.getElementById('searchSubjectFilter').value;
+            
+            if (!query) {
+                document.getElementById('searchResults').innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Inserisci un termine di ricerca</p>';
+                return;
+            }
+            
+            const results = [];
+            
+            // Cerca in tutte le lezioni
+            Object.values(appState.studies).forEach(study => {
+                // Filtra per materia
+                if (subject !== 'all' && study.subject !== subject) return;
+                
+                // Cerca nel nome
+                if (study.name.toLowerCase().includes(query)) {
+                    results.push({
+                        studyId: study.id,
+                        studyName: study.name,
+                        subject: study.subject,
+                        date: study.date,
+                        type: 'Nome Lezione',
+                        context: study.name,
+                        relevance: 10
+                    });
+                }
+                
+                // Cerca nel riassunto
+                if (study.data.summary_short && study.data.summary_short.toLowerCase().includes(query)) {
+                    const context = getContextAround(study.data.summary_short, query, 150);
+                    results.push({
+                        studyId: study.id,
+                        studyName: study.name,
+                        subject: study.subject,
+                        date: study.date,
+                        type: 'Riassunto',
+                        context: highlightQuery(context, query),
+                        relevance: 9
+                    });
+                }
+                
+                // Cerca nei punti salienti
+                if (study.data.highlights) {
+                    study.data.highlights.forEach(highlight => {
+                        if (highlight.toLowerCase().includes(query)) {
+                            results.push({
+                                studyId: study.id,
+                                studyName: study.name,
+                                subject: study.subject,
+                                date: study.date,
+                                type: 'Punto Saliente',
+                                context: highlightQuery(highlight, query),
+                                relevance: 8
+                            });
+                        }
+                    });
+                }
+                
+                // Cerca nel glossario
+                if (study.data.glossary) {
+                    study.data.glossary.forEach(item => {
+                        if (item.term.toLowerCase().includes(query) || item.definition.toLowerCase().includes(query)) {
+                            results.push({
+                                studyId: study.id,
+                                studyName: study.name,
+                                subject: study.subject,
+                                date: study.date,
+                                type: 'Glossario',
+                                context: highlightQuery(`<strong>${item.term}:</strong> ${item.definition}`, query),
+                                relevance: 7
+                            });
+                        }
+                    });
+                }
+                
+                // Cerca nelle flashcard
+                if (study.data.flashcards) {
+                    study.data.flashcards.forEach(card => {
+                        if (card.question.toLowerCase().includes(query) || card.answer.toLowerCase().includes(query)) {
+                            results.push({
+                                studyId: study.id,
+                                studyName: study.name,
+                                subject: study.subject,
+                                date: study.date,
+                                type: 'Flashcard',
+                                context: highlightQuery(`<strong>D:</strong> ${card.question}<br><strong>R:</strong> ${card.answer.substring(0, 100)}`, query),
+                                relevance: 6
+                            });
+                        }
+                    });
+                }
+                
+                // Cerca nei quiz
+                if (study.data.quiz) {
+                    study.data.quiz.forEach(q => {
+                        if (q.question.toLowerCase().includes(query)) {
+                            results.push({
+                                studyId: study.id,
+                                studyName: study.name,
+                                subject: study.subject,
+                                date: study.date,
+                                type: 'Quiz',
+                                context: highlightQuery(q.question, query),
+                                relevance: 5
+                            });
+                        }
+                    });
+                }
+            });
+            
+            // Ordina per rilevanza
+            results.sort((a, b) => b.relevance - a.relevance);
+            
+            displaySearchResults(query, results);
+        }
+
+        function displaySearchResults(query, results) {
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (results.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <div style="font-size: 4em; margin-bottom: 20px;">🔍</div>
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">Nessun risultato trovato</h3>
+                        <p style="color: #999;">Prova con altri termini di ricerca o modifica i filtri</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `<h3 style="margin-bottom: 20px;">📊 Trovati ${results.length} risultati per "${query}"</h3>`;
+            
+            results.forEach(result => {
+                html += `
+                    <div class="search-result-item" onclick="openSearchResult('${result.studyId}', '${result.type}')">
+                        <div class="search-result-title">
+                            📄 ${result.studyName}
+                            <span style="background: var(--primary); color: white; padding: 3px 8px; border-radius: 5px; font-size: 0.8em; margin-left: 10px;">${result.type}</span>
+                        </div>
+                        <div class="search-result-context">${result.context}</div>
+                        <div class="search-meta">📚 ${result.subject} • 📅 ${result.date}</div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html;
+        }
+
+        function highlightQuery(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+
+        function getContextAround(text, query, length) {
+            const lowerText = text.toLowerCase();
+            const lowerQuery = query.toLowerCase();
+            const index = lowerText.indexOf(lowerQuery);
+            
+            if (index === -1) return text.substring(0, length) + '...';
+            
+            const start = Math.max(0, index - length / 2);
+            const end = Math.min(text.length, index + query.length + length / 2);
+            
+            let context = text.substring(start, end);
+            if (start > 0) context = '...' + context;
+            if (end < text.length) context = context + '...';
+            
+            return context;
+        }
+
+        function openSearchResult(studyId, type) {
+            appState.currentStudyId = studyId;
+            showStudyTabs();
+            
+            const typeToTab = {
+                'Nome Lezione': 'summary',
+                'Riassunto': 'summary',
+                'Punto Saliente': 'highlights',
+                'Glossario': 'glossary',
+                'Flashcard': 'flashcards',
+                'Quiz': 'quiz'
+            };
+            
+            switchTab(typeToTab[type] || 'summary');
+        }
+
+        function clearGlobalSearch() {
+            document.getElementById('globalSearchInput').value = '';
+            document.getElementById('searchSubjectFilter').value = 'all';
+            document.getElementById('searchResults').innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Inserisci un termine di ricerca</p>';
+        }
+
 
         if (Object.keys(appState.studies).length > 0) {
             showMainApp();
