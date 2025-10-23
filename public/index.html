@@ -771,7 +771,7 @@
                 <button class="tab-btn hidden" id="tabFlashcards" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
                 <button class="tab-btn hidden" id="tabQuiz" onclick="switchTab('quiz', event)">❓ Quiz</button>
                 <button class="tab-btn hidden" id="tabChat" onclick="switchTab('chat', event)">💬 Chat AI</button>
-                <button class="tab-btn" onclick="switchTab('globalsearch', event)">🔍 Ricerca Globale</button>
+                <button class="tab-btn" id="tabGlobalSearch" onclick="switchTab('globalsearch', event)">🔍 Ricerca Globale</button>
             </div>
             <div class="content-area" id="contentArea"></div>
         </div>
@@ -1062,6 +1062,7 @@
             document.getElementById('tabFlashcards').classList.remove('hidden');
             document.getElementById('tabQuiz').classList.remove('hidden');
             document.getElementById('tabChat').classList.remove('hidden');
+            document.getElementById('tabGlobalSearch').classList.remove('hidden');
             
             switchTab('summary');
         }
