@@ -1,8 +1,6 @@
-# 🤖 MentoreStudio
+# 📚 MentoreStudio - Studia Intelligente
 
 **Il tuo mentore personale per lo studio intelligente**
-
-MentoreStudio è un'applicazione AI che ti aiuta a organizzare, analizzare e ottimizzare il tuo percorso di studio attraverso l'intelligenza artificiale.
 
 ## ✨ Funzionalità principali
 
@@ -32,7 +30,7 @@ MentoreStudio è un'applicazione AI che ti aiuta a organizzare, analizzare e ott
 ## 🚀 Come iniziare
 
 ### Utilizzo online
-Visita [memo-ai-tyart.vercel.app](https://memo-ai-tyart.vercel.app)
+Visita [mentorestudio.vercel.app](https://mentorestudio.vercel.app)
 
 ### Installazione locale
 ```bash
@@ -113,8 +111,7 @@ Questo progetto è distribuito sotto licenza MIT. Vedi `LICENSE` per maggiori in
 **Domenico374**
 
 - GitHub: [@Domenico374](https://github.com/Domenico374)
-- Website: [memo-ai-tyart.vercel.app](https://memo-ai-tyart.vercel.app)
-
+- Website: [mentorestudio.vercel.app](https://mentorestudio.vercel.app)
 ## 🙏 Ringraziamenti
 
 - OpenAI per Whisper API
