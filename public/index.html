@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MentoreStudio — Studio Intelligente</title>
 
-  <!-- pdf.js (solo per lettura PDF lato client) -->
+  <!-- pdf.js per estrazione testo PDF lato client -->
   <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
   <script>
     if (window.pdfjsLib) {
@@ -16,16 +16,9 @@
 
   <style>
     :root{
-      --bg:#0f172a;        /* slate-900 */
-      --card:#111827;      /* gray-900  */
-      --muted:#94a3b8;     /* slate-400 */
-      --text:#e5e7eb;      /* gray-200  */
-      --primary:#22d3ee;   /* cyan-400  */
-      --accent:#a78bfa;    /* violet-400*/
-      --danger:#ef4444;    /* red-500   */
-      --ok:#22c55e;        /* green-500 */
-      --shadow:0 10px 30px rgba(0,0,0,.35);
-      --radius:18px;
+      --bg:#0f172a; --card:#111827; --muted:#94a3b8; --text:#e5e7eb;
+      --primary:#22d3ee; --accent:#a78bfa; --danger:#ef4444; --ok:#22c55e;
+      --shadow:0 10px 30px rgba(0,0,0,.35); --radius:18px;
     }
     *{box-sizing:border-box}
     html,body{margin:0; padding:0; background:var(--bg); color:var(--text); font-family:Inter,system-ui,Arial,sans-serif}
@@ -58,7 +51,6 @@
     .study-right{display:flex; gap:8px}
     .study-info{color:var(--muted); font-size:.92rem}
     .search-box{margin:10px 0 4px 0}
-    .pill{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14); color:var(--muted); font-size:.85rem}
     .row{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
     .content{min-height:260px}
     .kpi{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px}
@@ -141,7 +133,7 @@
     document.getElementById('backendStatus').style.color = online ? '#22c55e' : '#f97316';
   }
 
-  // Ping "gentile" al backend (opzionale). Non blocca nulla.
+  // Ping non bloccante al backend (se inesistente resta offline)
   (async function pingBackend(){
     try{
       const res = await fetch('/api/health', {method:'GET'});
@@ -152,7 +144,7 @@
   })();
 
   // ==============================
-  // FALLBACK FETCH JSON (per /api/generate, /api/chat)
+  // FALLBACK FETCH JSON (/api/generate, /api/chat)
   // ==============================
   async function safeFetchJSON(url, payload){
     try{
@@ -167,6 +159,7 @@
       console.warn('Endpoint non disponibile:', url, err);
       alert('⚠️ Funzione AI non disponibile: configura il backend per ' + url + '. Verrà usato un contenuto segnaposto.');
       return {
+        answer: '(N/D: backend non attivo)',
         summary_short: '(N/D: backend non attivo)',
         summary_long: '(Contenuto di esempio — attiva il backend per generare il riassunto completo.)',
         highlights: [],
@@ -178,7 +171,6 @@
   }
 
   async function generateContent(text, subject){
-    // taglia il testo per non saturare eventuali proxy
     return await safeFetchJSON('/api/generate', {
       text: (text || '').slice(0, 8000),
       subject: subject || 'Generico'
@@ -202,7 +194,7 @@
         try{
           const pdf = await pdfjsLib.getDocument({ data: e.target.result }).promise;
           let text = '';
-          const MAX_PAGES = Math.min(pdf.numPages, 100); // alzato da 20 a 100
+          const MAX_PAGES = Math.min(pdf.numPages, 100); // alzato a 100
           for(let i=1;i<=MAX_PAGES;i++){
             const page = await pdf.getPage(i);
             const content = await page.getTextContent();
@@ -243,7 +235,7 @@
         rawText = '';
       }
 
-      // Contenuti AI (con fallback se backend non c'è)
+      // Contenuti AI (con fallback)
       const data = await generateContent(rawText, subject);
 
       appState.studies[id] = {
@@ -264,14 +256,13 @@
   }
 
   function guessSubjectFromName(name){
-    // euristica semplice sul nome file
-    const s = name.toLowerCase();
+    const s = (name||'').toLowerCase();
     if(s.includes('agcom')) return 'AGCOM';
     if(s.includes('econom')||s.includes('market')) return 'Economia';
     if(s.includes('rete')||s.includes('network')) return 'Reti';
     if(s.includes('ai')||s.includes('gpt')||s.includes('machine')) return 'AI/ML';
     return 'Generico';
-    }
+  }
 
   function demoSeed(){
     const id = humanId();
@@ -317,7 +308,7 @@
     }else{
       studies.forEach(study=>{
         const searchData = [
-          study.name.toLowerCase(),
+          (study.name||'').toLowerCase(),
           (study.data.highlights||[]).join(' ').toLowerCase(),
           (study.data.glossary||[]).map(g=>g.term.toLowerCase()).join(' ')
         ].join(' ');
@@ -366,12 +357,12 @@
     }
   }
 
+  // **FIX: usa <\/script> per non chiudere il tag script dell’HTML**
   function exportStudyPDF(id, ev){
     ev?.stopPropagation();
     const s = appState.studies[id];
     if(!s){ alert('Lezione non trovata'); return; }
 
-    // Semplice “stampa” in una finestra (puoi sostituire con jsPDF se preferisci)
     const w = window.open('', '_blank');
     w.document.write(`
       <html><head><title>${escapeHtml(s.name)} — Export</title></head>
@@ -393,7 +384,7 @@
         }).join('')}</ol>
         <hr/>
         <small>Generato con MentoreStudio</small>
-        <script>window.print();</script>
+        <script>window.print();<\/script>
       </body></html>
     `);
     w.document.close();
@@ -421,7 +412,7 @@
       <nav class="tabs">
         <div class="tab active" id="tab-overview" onclick="switchTab('overview')">Overview</div>
         <div class="tab" id="tab-chat" onclick="switchTab('chat')">Chat</div>
-        <div class="tab" id="tab-flash" onclick="switchTab('flashcards')">Flashcards</div>
+        <div class="tab" id="tab-flash" onclick="switchTab('flash')">Flashcards</div>
         <div class="tab" id="tab-quiz" onclick="switchTab('quiz')">Quiz</div>
         <div class="tab" id="tab-text" onclick="switchTab('text')">Testo</div>
       </nav>
