@@ -845,7 +845,69 @@
 
         function saveChatHistory() {
             localStorage.setItem('chatHistory', JSON.stringify(appState.chatHistory));
+        }function saveStudies() {
+    localStorage.setItem('mentorestudio_studies', JSON.stringify(appState.studies));
+}
+
+function saveChatHistory() {
+    localStorage.setItem('chatHistory', JSON.stringify(appState.chatHistory));
+}
+
+// ===== EXPORT / IMPORT JSON =====
+
+// 📤 Esporta la lezione attualmente selezionata
+function exportStudyJSON() {
+    const id = appState.currentStudyId;
+    const s = id ? appState.studies[id] : null;
+    if (!s) { alert("Seleziona una lezione da esportare."); return; }
+    const blob = new Blob([JSON.stringify(s, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `lezione_${s.name.replace(/\s+/g, "_")}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    alert("Lezione esportata con successo!");
+}
+
+// 📥 Importa una lezione da file .json
+function importStudyJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const imported = JSON.parse(e.target.result);
+            if (!imported.id || !imported.name) throw new Error("Formato non valido");
+            appState.studies[imported.id] = imported;
+            saveStudies();
+            renderLibrary();
+            alert(`Lezione "${imported.name}" importata correttamente!`);
+        } catch (err) {
+            alert("Errore nel file o formato non valido.");
         }
+    };
+    reader.readAsText(file);
+    event.target.value = "";
+}
+
+// 📦 Esporta tutte le lezioni (backup completo)
+function exportAllJSON() {
+    const all = Object.values(appState.studies || {});
+    if (!all.length) { alert("Nessuna lezione da esportare."); return; }
+    const blob = new Blob([JSON.stringify(all, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `backup_MentoreStudio.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    alert("Backup completo esportato!");
+}
+
+function switchTab(tab, e) {
+    ...
+
 
         function switchTab(tab, e) {
             if (e) {
@@ -869,9 +931,22 @@
         }
 
         function renderLibrary() {
-    let html = '<h2>📚 Le tue lezioni</h2>';
-    html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
-    const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
+let html = '<h2>📚 Le tue lezioni</h2>';
+html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
+
+// 🔽 🔽 🔽  INCOLLA QUI IL BLOCCO DEI PULSANTI  🔽 🔽 🔽
+html += `
+  <div class="row" style="margin:10px 0; display:flex; gap:8px; flex-wrap:wrap;">
+    <button class="btn" onclick="exportStudyJSON()">📤 Esporta lezione</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importStudyJSON(event)">
+    <button class="btn" onclick="document.getElementById('importFile').click()">📥 Importa lezione</button>
+    <button class="btn btn-ghost" onclick="exportAllJSON()">📦 Esporta tutto</button>
+  </div>
+`;
+// 🔼 🔼 🔼  FINO A QUI  🔼 🔼 🔼
+
+const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
+
     
     if (studies.length === 0) {
         html += `
