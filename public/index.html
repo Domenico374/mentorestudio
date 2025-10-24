@@ -723,6 +723,126 @@
         }
         body.dark-mode .tutorial-step { background: #1a1a2e; }
 
+    
+        /* === TIMER POMODORO === */
+        .pomodoro-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            min-width: 280px;
+            transition: all 0.3s;
+        }
+        body.dark-mode .pomodoro-widget { background: #2a2a3e; color: #e0e0e0; }
+        .pomodoro-widget.minimized {
+            padding: 15px;
+            min-width: auto;
+        }
+        .pomodoro-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .pomodoro-header h3 {
+            margin: 0;
+            font-size: 1.1em;
+            color: var(--primary);
+        }
+        .pomodoro-minimize {
+            background: none;
+            border: none;
+            font-size: 1.3em;
+            cursor: pointer;
+            color: #666;
+        }
+        .pomodoro-minimize:hover { color: var(--primary); }
+        .pomodoro-display {
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+        }
+        .pomodoro-display.running { color: var(--success); }
+        .pomodoro-display.paused { color: var(--danger); }
+        .pomodoro-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .pomodoro-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .pomodoro-btn:hover { transform: scale(1.05); }
+        .pomodoro-btn-start {
+            background: var(--success);
+            color: white;
+        }
+        .pomodoro-btn-pause {
+            background: var(--danger);
+            color: white;
+        }
+        .pomodoro-btn-reset {
+            background: #666;
+            color: white;
+        }
+        .pomodoro-settings {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .pomodoro-preset {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        body.dark-mode .pomodoro-preset { color: #e0e0e0; }
+        .pomodoro-preset:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .pomodoro-preset.active {
+            background: var(--primary);
+            color: white;
+        }
+        .pomodoro-stats {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        body.dark-mode .pomodoro-stats { color: #aaa; border-color: #444; }
+        .pomodoro-widget.minimized .pomodoro-display {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+        .pomodoro-widget.minimized .pomodoro-controls,
+        .pomodoro-widget.minimized .pomodoro-settings,
+        .pomodoro-widget.minimized .pomodoro-stats {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
@@ -3255,10 +3375,219 @@ Contenuto: {content}`
 
 
 
+        
+        // ============================================
+        // ⏱️ TIMER POMODORO
+        // ============================================
+        
+        let pomodoroState = {
+            timeLeft: 25 * 60, // secondi
+            totalTime: 25 * 60,
+            isRunning: false,
+            isPaused: false,
+            intervalId: null,
+            sessionsToday: parseInt(localStorage.getItem('pomodoroSessionsToday') || '0'),
+            lastDate: localStorage.getItem('pomodoroLastDate') || new Date().toDateString()
+        };
+        
+        // Reset contatore se è un nuovo giorno
+        function checkPomodoroDate() {
+            const today = new Date().toDateString();
+            if (pomodoroState.lastDate !== today) {
+                pomodoroState.sessionsToday = 0;
+                pomodoroState.lastDate = today;
+                localStorage.setItem('pomodoroSessionsToday', '0');
+                localStorage.setItem('pomodoroLastDate', today);
+            }
+            updatePomodoroCount();
+        }
+        
+        // Aggiorna display del contatore
+        function updatePomodoroCount() {
+            document.getElementById('pomodoroCount').textContent = pomodoroState.sessionsToday;
+        }
+        
+        // Formatta tempo per display
+        function formatPomodoroTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Aggiorna display
+        function updatePomodoroDisplay() {
+            const display = document.getElementById('pomodoroDisplay');
+            display.textContent = formatPomodoroTime(pomodoroState.timeLeft);
+            
+            // Cambia colore in base allo stato
+            display.classList.remove('running', 'paused');
+            if (pomodoroState.isRunning && !pomodoroState.isPaused) {
+                display.classList.add('running');
+            } else if (pomodoroState.isPaused) {
+                display.classList.add('paused');
+            }
+        }
+        
+        // Avvia timer
+        function startPomodoro() {
+            if (pomodoroState.isRunning) return;
+            
+            pomodoroState.isRunning = true;
+            pomodoroState.isPaused = false;
+            
+            document.getElementById('pomodoroStart').style.display = 'none';
+            document.getElementById('pomodoroPause').style.display = 'inline-block';
+            
+            pomodoroState.intervalId = setInterval(() => {
+                if (pomodoroState.timeLeft > 0) {
+                    pomodoroState.timeLeft--;
+                    updatePomodoroDisplay();
+                    
+                    // Aggiorna titolo pagina con tempo rimanente
+                    document.title = `⏱️ ${formatPomodoroTime(pomodoroState.timeLeft)} - MentoreStudio`;
+                } else {
+                    // Timer finito!
+                    finishPomodoro();
+                }
+            }, 1000);
+            
+            updatePomodoroDisplay();
+        }
+        
+        // Pausa timer
+        function pausePomodoro() {
+            if (!pomodoroState.isRunning) return;
+            
+            pomodoroState.isPaused = true;
+            clearInterval(pomodoroState.intervalId);
+            
+            document.getElementById('pomodoroStart').style.display = 'inline-block';
+            document.getElementById('pomodoroPause').style.display = 'none';
+            
+            pomodoroState.isRunning = false;
+            updatePomodoroDisplay();
+            
+            // Ripristina titolo
+            document.title = '📚 MentoreStudio';
+        }
+        
+        // Reset timer
+        function resetPomodoro() {
+            clearInterval(pomodoroState.intervalId);
+            pomodoroState.isRunning = false;
+            pomodoroState.isPaused = false;
+            pomodoroState.timeLeft = pomodoroState.totalTime;
+            
+            document.getElementById('pomodoroStart').style.display = 'inline-block';
+            document.getElementById('pomodoroPause').style.display = 'none';
+            
+            updatePomodoroDisplay();
+            document.title = '📚 MentoreStudio';
+        }
+        
+        // Timer finito
+        function finishPomodoro() {
+            clearInterval(pomodoroState.intervalId);
+            pomodoroState.isRunning = false;
+            
+            // Incrementa contatore
+            pomodoroState.sessionsToday++;
+            localStorage.setItem('pomodoroSessionsToday', pomodoroState.sessionsToday.toString());
+            updatePomodoroCount();
+            
+            // Notifica
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('⏱️ Pomodoro Completato!', {
+                    body: '🎉 Sessione di studio completata! Fai una pausa.',
+                    icon: 'https://github.com/Domenico374/mentorestudio/blob/main/images/MentoreStudio_logo.png?raw=true'
+                });
+            }
+            
+            // Alert visivo
+            alert('🎉 Pomodoro completato! Ottimo lavoro!\n\n☕ Prenditi una pausa di 5 minuti.');
+            
+            // Reset per la prossima sessione
+            resetPomodoro();
+        }
+        
+        // Imposta tempo predefinito
+        function setPomodoroTime(minutes) {
+            if (pomodoroState.isRunning) {
+                if (!confirm('Timer in corso. Vuoi fermarlo e cambiare durata?')) {
+                    return;
+                }
+                resetPomodoro();
+            }
+            
+            pomodoroState.totalTime = minutes * 60;
+            pomodoroState.timeLeft = minutes * 60;
+            updatePomodoroDisplay();
+            
+            // Aggiorna pulsanti attivi
+            document.querySelectorAll('.pomodoro-preset').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        // Minimizza/Massimizza widget
+        function togglePomodoroSize() {
+            const widget = document.getElementById('pomodoroWidget');
+            const btn = event.target;
+            
+            if (widget.classList.contains('minimized')) {
+                widget.classList.remove('minimized');
+                btn.textContent = '−';
+            } else {
+                widget.classList.add('minimized');
+                btn.textContent = '+';
+            }
+        }
+        
+        // Richiedi permesso notifiche
+        function requestPomodoroNotifications() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+        
+        // Inizializza al caricamento
+        checkPomodoroDate();
+        updatePomodoroDisplay();
+        requestPomodoroNotifications();
+
+
         if (Object.keys(appState.studies).length > 0) {
             showMainApp();
             switchTab('library');
         }
     </script>
+
+    <!-- Timer Pomodoro Widget -->
+    <div class="pomodoro-widget" id="pomodoroWidget">
+        <div class="pomodoro-header">
+            <h3>⏱️ Pomodoro</h3>
+            <button class="pomodoro-minimize" onclick="togglePomodoroSize()">−</button>
+        </div>
+        
+        <div class="pomodoro-display" id="pomodoroDisplay">25:00</div>
+        
+        <div class="pomodoro-controls">
+            <button class="pomodoro-btn pomodoro-btn-start" id="pomodoroStart" onclick="startPomodoro()">▶️ Start</button>
+            <button class="pomodoro-btn pomodoro-btn-pause" id="pomodoroPause" onclick="pausePomodoro()" style="display: none;">⏸️ Pausa</button>
+            <button class="pomodoro-btn pomodoro-btn-reset" onclick="resetPomodoro()">🔄 Reset</button>
+        </div>
+        
+        <div class="pomodoro-settings">
+            <button class="pomodoro-preset active" onclick="setPomodoroTime(25)">25 min</button>
+            <button class="pomodoro-preset" onclick="setPomodoroTime(15)">15 min</button>
+            <button class="pomodoro-preset" onclick="setPomodoroTime(45)">45 min</button>
+        </div>
+        
+        <div class="pomodoro-stats">
+            🍅 Sessioni oggi: <strong><span id="pomodoroCount">0</span></strong>
+        </div>
+    </div>
+
 </body>
 </html>
