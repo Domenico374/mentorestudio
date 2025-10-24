@@ -711,7 +711,6 @@
                 <button class="tab-btn hidden" id="tabGlossary" onclick="switchTab('glossary', event)">📖 Glossario</button>
                 <button class="tab-btn hidden" id="tabTimeline" onclick="switchTab('timeline', event)">📅 Timeline</button>
                 <button class="tab-btn hidden" id="tabMindmap" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
-                <button class="tab-btn hidden" id="tabStudyGuide" onclick="switchTab('studyguide', event)">📘 Guida di Studio</button>
                 <button class="tab-btn hidden" id="tabConceptAnalysis" onclick="switchTab('conceptanalysis', event)">🔍 Analisi Concetto</button>
                 <button class="tab-btn hidden" id="tabCustomFormat" onclick="switchTab('customformat', event)">✨ Crea il Tuo</button>
                 <button class="tab-btn hidden" id="tabFlashcards" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
@@ -1000,7 +999,6 @@
             document.getElementById('tabGlossary').classList.remove('hidden');
             document.getElementById('tabTimeline').classList.remove('hidden');
             document.getElementById('tabMindmap').classList.remove('hidden');
-            document.getElementById('tabStudyGuide').classList.remove('hidden');
             document.getElementById('tabConceptAnalysis').classList.remove('hidden');
             document.getElementById('tabCustomFormat').classList.remove('hidden');
             document.getElementById('tabFlashcards').classList.remove('hidden');
@@ -1499,32 +1497,7 @@
             alert('✅ Mappa mentale scaricata!');
         }
 
-        // ===== GUIDA DI STUDIO =====
         
-        function renderStudyGuide() {
-            const study = getCurrentStudy();
-            if (!study) return;
-            
-            let html = `
-                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
-                <h2>${study.name}</h2>
-                <h3>📘 Guida di Studio</h3>
-                <p style="color: #666; margin-bottom: 30px;">Domande per saggi, esami orali e scritti</p>
-            `;
-            
-            if (study.data.quiz && study.data.quiz.length > 0) {
-                html += `
-                    <div class="section">
-                        <h3 style="color: var(--primary); margin-top: 30px;">❓ Quiz a Risposta Multipla</h3>
-                        <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
-                            Vai alla sezione Quiz per esercitarti con ${study.data.quiz.length} domande
-                        </p>
-                        <button class="btn" onclick="switchTab('quiz')">
-                            🎯 Vai ai Quiz
-                        </button>
-                    </div>
-                `;
-            }
             
             html += `
                 <div class="section">
@@ -1630,20 +1603,7 @@
                 });
                 
                 saveStudies();
-                renderStudyGuide();
                 
-            } catch (error) {
-                console.error('Errore:', error);
-                document.getElementById('contentArea').innerHTML = `
-                    <div class="error-message">
-                        ❌ Errore nella generazione: ${error.message}
-                        <button class="btn" onclick="renderStudyGuide()" style="margin-top: 15px;">
-                            🔄 Riprova
-                        </button>
-                    </div>
-                `;
-            }
-        }
 
         // ===== ANALISI DEL CONCETTO =====
         
