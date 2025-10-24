@@ -745,6 +745,693 @@
 
         let flashcardStats = JSON.parse(localStorage.getItem('flashcardStats')) || {};
         let quizStats = JSON.parse(localStorage.getItem('quizStats')) || {};
+        // ===== SISTEMA SPACED REPETITION PER MENTORESTUDIO =====
+// Aggiungi questo codice al tuo file index.html dopo la definizione di flashcardStats
+
+// Estendi flashcardStats per includere info di spaced repetition
+// La struttura diventa:
+// flashcardStats[cardId] = {
+//   difficulty: 'easy' | 'medium' | 'difficult',
+//   views: number,
+//   correct: number,
+//   lastReview: timestamp,
+//   nextReview: timestamp,
+//   repetition: number (numero di ripetizioni consecutive corrette),
+//   interval: number (giorni fino prossima revisione)
+// }
+
+// Intervalli di base per l'algoritmo (in ore)
+const SPACED_INTERVALS = {
+    easy: [72, 168, 504, 1440],      // 3 giorni, 7 giorni, 21 giorni, 60 giorni
+    medium: [24, 72, 168, 336],      // 1 giorno, 3 giorni, 7 giorni, 14 giorni  
+    difficult: [1, 24, 72, 168]      // 1 ora, 1 giorno, 3 giorni, 7 giorni
+};
+
+// Calcola la prossima data di revisione basata sulla difficoltà
+function calculateNextReview(cardId, difficulty) {
+    const stats = flashcardStats[cardId] || {
+        difficulty: difficulty,
+        views: 0,
+        correct: 0,
+        lastReview: Date.now(),
+        nextReview: Date.now(),
+        repetition: 0,
+        interval: 1
+    };
+    
+    // Aggiorna timestamp ultima revisione
+    stats.lastReview = Date.now();
+    
+    // Se la difficoltà è cambiata, resetta le ripetizioni
+    if (stats.difficulty !== difficulty) {
+        stats.repetition = 0;
+    }
+    
+    stats.difficulty = difficulty;
+    
+    // Ottieni gli intervalli per questa difficoltà
+    const intervals = SPACED_INTERVALS[difficulty];
+    
+    // Determina quale intervallo usare basandosi sulle ripetizioni
+    let intervalIndex = Math.min(stats.repetition, intervals.length - 1);
+    let hoursToAdd = intervals[intervalIndex];
+    
+    // Calcola prossima revisione
+    stats.nextReview = Date.now() + (hoursToAdd * 60 * 60 * 1000);
+    stats.interval = hoursToAdd / 24; // Salva in giorni per visualizzazione
+    
+    // Incrementa ripetizioni se risposta corretta (easy o medium)
+    if (difficulty === 'easy' || difficulty === 'medium') {
+        stats.repetition++;
+    } else {
+        // Se difficile, resetta le ripetizioni
+        stats.repetition = 0;
+    }
+    
+    // Salva stats aggiornate
+    flashcardStats[cardId] = stats;
+    localStorage.setItem('flashcardStats', JSON.stringify(flashcardStats));
+    
+    return stats;
+}
+
+// Ottieni tutte le flashcard che devono essere riviste
+function getCardsToReview(studyId) {
+    const study = appState.studies[studyId];
+    if (!study || !study.data.flashcards) return [];
+    
+    const now = Date.now();
+    const cardsToReview = [];
+    
+    study.data.flashcards.forEach((card, index) => {
+        const cardId = `${studyId}_${card.q}`;
+        const stats = flashcardStats[cardId];
+        
+        // Se non ha stats, deve essere rivista
+        if (!stats || !stats.nextReview) {
+            cardsToReview.push({
+                ...card,
+                index: index,
+                cardId: cardId,
+                dueIn: 0
+            });
+        } else if (stats.nextReview <= now) {
+            // Se è scaduta, deve essere rivista
+            cardsToReview.push({
+                ...card,
+                index: index,
+                cardId: cardId,
+                dueIn: 0,
+                stats: stats
+            });
+        }
+    });
+    
+    return cardsToReview;
+}
+
+// Ottieni prossime flashcard in programma
+function getUpcomingCards(studyId, limit = 10) {
+    const study = appState.studies[studyId];
+    if (!study || !study.data.flashcards) return [];
+    
+    const now = Date.now();
+    const upcomingCards = [];
+    
+    study.data.flashcards.forEach((card, index) => {
+        const cardId = `${studyId}_${card.q}`;
+        const stats = flashcardStats[cardId];
+        
+        if (stats && stats.nextReview && stats.nextReview > now) {
+            upcomingCards.push({
+                ...card,
+                index: index,
+                cardId: cardId,
+                dueIn: stats.nextReview - now,
+                stats: stats
+            });
+        }
+    });
+    
+    // Ordina per data di scadenza
+    upcomingCards.sort((a, b) => a.dueIn - b.dueIn);
+    
+    return upcomingCards.slice(0, limit);
+}
+
+// Formatta tempo rimanente in modo leggibile
+function formatTimeUntilReview(milliseconds) {
+    const hours = milliseconds / (1000 * 60 * 60);
+    const days = hours / 24;
+    
+    if (hours < 1) {
+        return 'Tra meno di un\'ora';
+    } else if (hours < 24) {
+        return `Tra ${Math.round(hours)} ore`;
+    } else if (days < 7) {
+        return `Tra ${Math.round(days)} giorni`;
+    } else {
+        return `Tra ${Math.round(days / 7)} settimane`;
+    }
+}
+
+// MODIFICA LA FUNZIONE markDifficulty ESISTENTE
+function markDifficulty(difficulty) {
+    const study = getCurrentStudy();
+    const filteredFlashcards = filterFlashcardsByMode(study.data.flashcards);
+    const currentCard = filteredFlashcards[appState.currentFlashcardFiltered];
+    const cardId = `${study.id}_${currentCard.q}`;
+    
+    // Calcola prossima revisione con spaced repetition
+    const stats = calculateNextReview(cardId, difficulty);
+    
+    // Mostra feedback all'utente
+    const reviewText = formatTimeUntilReview(stats.nextReview - Date.now());
+    
+    // Crea un popup di feedback
+    const popup = document.createElement('div');
+    popup.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        z-index: 1000;
+        text-align: center;
+        animation: popIn 0.3s ease;
+    `;
+    
+    const difficultyEmoji = {
+        easy: '🟢',
+        medium: '🟠', 
+        difficult: '🔴'
+    };
+    
+    popup.innerHTML = `
+        <h3 style="margin-bottom: 10px; color: #667eea;">
+            ${difficultyEmoji[difficulty]} Difficoltà Impostata!
+        </h3>
+        <p style="margin-bottom: 15px;">Prossima revisione: <strong>${reviewText}</strong></p>
+        <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">
+            Ripetizione #${stats.repetition} • Intervallo: ${stats.interval} giorni
+        </p>
+        <button onclick="this.parentElement.remove()" style="
+            padding: 8px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        ">OK</button>
+    `;
+    
+    document.body.appendChild(popup);
+    
+    // Rimuovi dopo 3 secondi se non cliccato
+    setTimeout(() => {
+        if (document.body.contains(popup)) {
+            popup.remove();
+        }
+    }, 3000);
+    
+    // Auto-avanza alla prossima carta se è facile
+    if (difficulty === 'easy') {
+        setTimeout(() => {
+            nextFlashcard();
+        }, 1500);
+    }
+}
+
+// AGGIUNGI NUOVA VISTA PER FLASHCARD DA RIVEDERE
+function renderSpacedRepetitionView() {
+    const study = getCurrentStudy();
+    if (!study) return;
+    
+    const cardsToReview = getCardsToReview(study.id);
+    const upcomingCards = getUpcomingCards(study.id, 5);
+    
+    let html = `
+        <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+        <h2>${study.name}</h2>
+        <h3>🎴 Ripasso con Spaced Repetition</h3>
+    `;
+    
+    // Cards da rivedere oggi
+    html += `
+        <div class="section">
+            <h4 style="color: var(--primary);">📅 Da Rivedere Oggi (${cardsToReview.length})</h4>
+    `;
+    
+    if (cardsToReview.length === 0) {
+        html += `
+            <div class="card" style="text-align: center; padding: 30px;">
+                <div style="font-size: 3em; margin-bottom: 15px;">✅</div>
+                <h3>Ottimo lavoro!</h3>
+                <p style="color: #666;">Non hai flashcard da rivedere oggi.</p>
+            </div>
+        `;
+    } else {
+        html += `
+            <div class="card" style="background: #fff3cd; border-left-color: #ffc107;">
+                <p style="margin-bottom: 15px;">
+                    <strong>💡 Hai ${cardsToReview.length} flashcard da ripassare!</strong>
+                </p>
+                <button class="btn" onclick="startSpacedReview()">
+                    🚀 Inizia Ripasso
+                </button>
+            </div>
+        `;
+        
+        // Mostra anteprima delle prime 3
+        cardsToReview.slice(0, 3).forEach(card => {
+            html += `
+                <div class="study-item" style="margin: 10px 0;">
+                    <strong>❓</strong> ${card.q.substring(0, 60)}${card.q.length > 60 ? '...' : ''}
+                </div>
+            `;
+        });
+        
+        if (cardsToReview.length > 3) {
+            html += `<p style="text-align: center; color: #666;">... e altre ${cardsToReview.length - 3} flashcard</p>`;
+        }
+    }
+    
+    html += `</div>`;
+    
+    // Prossime in programma
+    html += `
+        <div class="section">
+            <h4 style="color: var(--primary);">⏰ Prossime in Programma</h4>
+    `;
+    
+    if (upcomingCards.length === 0) {
+        html += `<p style="color: #666;">Nessuna flashcard programmata.</p>`;
+    } else {
+        upcomingCards.forEach(card => {
+            const timeText = formatTimeUntilReview(card.dueIn);
+            const difficultyEmoji = {
+                easy: '🟢',
+                medium: '🟠', 
+                difficult: '🔴'
+            }[card.stats.difficulty] || '⚪';
+            
+            html += `
+                <div class="study-item" style="margin: 10px 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            ${difficultyEmoji} ${card.q.substring(0, 50)}${card.q.length > 50 ? '...' : ''}
+                        </div>
+                        <div style="color: #666; font-size: 0.9em;">
+                            ${timeText}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    
+    html += `</div>`;
+    
+    // Statistiche generali
+    const totalCards = study.data.flashcards.length;
+    let masteredCards = 0;
+    let learningCards = 0;
+    
+    study.data.flashcards.forEach(card => {
+        const cardId = `${study.id}_${card.q}`;
+        const stats = flashcardStats[cardId];
+        if (stats) {
+            if (stats.repetition >= 3 && stats.difficulty === 'easy') {
+                masteredCards++;
+            } else if (stats.repetition > 0) {
+                learningCards++;
+            }
+        }
+    });
+    
+    html += `
+        <div class="section">
+            <h4 style="color: var(--primary);">📊 Statistiche di Apprendimento</h4>
+            <div class="progress-bar" style="margin: 15px 0;">
+                <div class="progress-fill" style="width: ${(masteredCards/totalCards)*100}%; background: #4caf50;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <span>🎯 Padroneggiate: ${masteredCards}</span>
+                <span>📚 In Apprendimento: ${learningCards}</span>
+                <span>📝 Totali: ${totalCards}</span>
+            </div>
+        </div>
+    `;
+    
+    html += `
+        <div class="controls" style="margin-top: 30px;">
+            <button class="btn" onclick="renderFlashcardsAdvanced()">
+                📚 Tutte le Flashcard
+            </button>
+            <button class="btn" onclick="exportSpacedRepetitionData()">
+                📥 Esporta Dati Ripasso
+            </button>
+        </div>
+    `;
+    
+    document.getElementById('contentArea').innerHTML = html;
+}
+
+// Inizia sessione di ripasso spaced repetition
+function startSpacedReview() {
+    const study = getCurrentStudy();
+    const cardsToReview = getCardsToReview(study.id);
+    
+    if (cardsToReview.length === 0) {
+        renderSpacedRepetitionView();
+        return;
+    }
+    
+    // Imposta modalità speciale per mostrare solo card da rivedere
+    appState.spacedReviewMode = true;
+    appState.spacedReviewCards = cardsToReview;
+    appState.spacedReviewIndex = 0;
+    
+    renderSpacedReviewCard();
+}
+
+// Render singola card in modalità spaced review
+function renderSpacedReviewCard() {
+    if (!appState.spacedReviewMode || appState.spacedReviewIndex >= appState.spacedReviewCards.length) {
+        // Fine del ripasso
+        appState.spacedReviewMode = false;
+        showReviewComplete();
+        return;
+    }
+    
+    const study = getCurrentStudy();
+    const card = appState.spacedReviewCards[appState.spacedReviewIndex];
+    const stats = flashcardStats[card.cardId] || { difficulty: 'medium', views: 0 };
+    
+    let html = `
+        <div class="back-btn" onclick="endSpacedReview()">← Termina Ripasso</div>
+        <h2>${study.name}</h2>
+        <h3>🎴 Ripasso Spaced Repetition (${appState.spacedReviewIndex + 1}/${appState.spacedReviewCards.length})</h3>
+        
+        <div class="progress-bar" style="margin: 20px 0;">
+            <div class="progress-fill" style="width: ${((appState.spacedReviewIndex + 1) / appState.spacedReviewCards.length) * 100}%;"></div>
+        </div>
+
+        <div class="flashcard ${stats.difficulty}" onclick="flipCard()">
+            <div class="flashcard-inner" id="flashcardInner">
+                <div class="flashcard-front">
+                    <div class="flashcard-question">${card.q}</div>
+                    <div style="font-size: 0.8em; opacity: 0.8; margin-top: 15px;">
+                        👆 Clicca per vedere la risposta
+                    </div>
+                </div>
+                <div class="flashcard-back">
+                    <div class="flashcard-answer">${card.a}</div>
+                    ${card.explanation ? `
+                        <div class="flashcard-extra">
+                            <div class="flashcard-extra-title">💡 Spiegazione:</div>
+                            <div>${card.explanation}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        </div>
+
+        <div class="controls" style="margin-top: 30px;">
+            <h4 style="text-align: center; margin-bottom: 15px;">Come è andata?</h4>
+            <button class="btn" style="background: #f44336;" onclick="markSpacedDifficulty('difficult')">
+                🔴 Difficile<br>
+                <small>(Rivedi tra 1 ora)</small>
+            </button>
+            <button class="btn" style="background: #ffa726;" onclick="markSpacedDifficulty('medium')">
+                🟠 Medio<br>
+                <small>(Rivedi tra ${SPACED_INTERVALS.medium[Math.min(stats.repetition || 0, 3)] / 24} giorni)</small>
+            </button>
+            <button class="btn" style="background: #4caf50;" onclick="markSpacedDifficulty('easy')">
+                🟢 Facile<br>
+                <small>(Rivedi tra ${SPACED_INTERVALS.easy[Math.min(stats.repetition || 0, 3)] / 24} giorni)</small>
+            </button>
+        </div>
+    `;
+    
+    document.getElementById('contentArea').innerHTML = html;
+}
+
+// Mark difficulty in spaced review mode
+function markSpacedDifficulty(difficulty) {
+    const card = appState.spacedReviewCards[appState.spacedReviewIndex];
+    
+    // Calcola prossima revisione
+    calculateNextReview(card.cardId, difficulty);
+    
+    // Avanza alla prossima card
+    appState.spacedReviewIndex++;
+    
+    // Mostra feedback veloce
+    const feedback = document.createElement('div');
+    feedback.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${difficulty === 'easy' ? '#4caf50' : difficulty === 'medium' ? '#ffa726' : '#f44336'};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        font-weight: bold;
+        animation: slideIn 0.3s ease;
+    `;
+    feedback.textContent = difficulty === 'easy' ? '✅ Ottimo!' : difficulty === 'medium' ? '👍 Bene!' : '💪 Continua così!';
+    document.body.appendChild(feedback);
+    
+    setTimeout(() => feedback.remove(), 1500);
+    
+    // Render prossima card dopo breve delay
+    setTimeout(() => {
+        renderSpacedReviewCard();
+    }, 300);
+}
+
+// Fine sessione di ripasso
+function endSpacedReview() {
+    appState.spacedReviewMode = false;
+    renderSpacedRepetitionView();
+}
+
+// Mostra completamento ripasso
+function showReviewComplete() {
+    const reviewedCount = appState.spacedReviewIndex;
+    
+    document.getElementById('contentArea').innerHTML = `
+        <div style="text-align: center; padding: 60px 20px;">
+            <div style="font-size: 5em; margin-bottom: 20px;">🎉</div>
+            <h2 style="color: var(--primary); margin-bottom: 15px;">Ripasso Completato!</h2>
+            <p style="font-size: 1.2em; color: #666; margin-bottom: 30px;">
+                Hai ripassato ${reviewedCount} flashcard oggi.
+            </p>
+            <div class="controls">
+                <button class="btn" onclick="renderSpacedRepetitionView()">
+                    📊 Vedi Statistiche
+                </button>
+                <button class="btn" onclick="renderFlashcardsAdvanced()">
+                    🎴 Tutte le Flashcard
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// Esporta dati spaced repetition
+function exportSpacedRepetitionData() {
+    const study = getCurrentStudy();
+    if (!study) return;
+    
+    let csvContent = "Domanda,Risposta,Difficoltà,Ripetizioni,Ultima Revisione,Prossima Revisione,Intervallo (giorni)\n";
+    
+    study.data.flashcards.forEach(card => {
+        const cardId = `${study.id}_${card.q}`;
+        const stats = flashcardStats[cardId] || {};
+        
+        csvContent += `"${card.q}","${card.a}","${stats.difficulty || 'N/A'}",`;
+        csvContent += `${stats.repetition || 0},`;
+        csvContent += `"${stats.lastReview ? new Date(stats.lastReview).toLocaleDateString('it-IT') : 'Mai'}",`;
+        csvContent += `"${stats.nextReview ? new Date(stats.nextReview).toLocaleDateString('it-IT') : 'N/A'}",`;
+        csvContent += `${stats.interval || 0}\n`;
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `SpacedRepetition_${study.name.replace(/[^a-z0-9]/gi, '_')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    alert('✅ Dati di ripasso esportati!');
+}
+
+// AGGIUNGI BOTTONE SPACED REPETITION NELLA TAB FLASHCARD
+// Modifica la funzione switchTab per aggiungere l'opzione spaced repetition
+const originalSwitchTab = switchTab;
+switchTab = function(tab, e) {
+    if (tab === 'spacedrepetition') {
+        if (e) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+        }
+        renderSpacedRepetitionView();
+    } else {
+        originalSwitchTab(tab, e);
+    }
+};
+
+// AGGIUNGI IL TAB DOPO CHE UNO STUDIO È SELEZIONATO
+// Modifica selectStudy per aggiungere il tab spaced repetition
+const originalSelectStudy = selectStudy;
+selectStudy = function(studyId) {
+    originalSelectStudy(studyId);
+    
+    // Aggiungi tab Spaced Repetition se ci sono flashcard
+    const study = appState.studies[studyId];
+    if (study && study.data.flashcards && study.data.flashcards.length > 0) {
+        const tabsContainer = document.querySelector('.tabs');
+        if (tabsContainer && !document.getElementById('tabSpacedRepetition')) {
+            const spacedTab = document.createElement('button');
+            spacedTab.className = 'tab-btn hidden';
+            spacedTab.id = 'tabSpacedRepetition';
+            spacedTab.textContent = '🔁 Ripasso Intelligente';
+            spacedTab.onclick = (e) => switchTab('spacedrepetition', e);
+            
+            // Inserisci dopo il tab Flashcard
+            const flashcardTab = document.getElementById('tabFlashcards');
+            if (flashcardTab) {
+                flashcardTab.parentNode.insertBefore(spacedTab, flashcardTab.nextSibling);
+                spacedTab.classList.remove('hidden');
+            }
+        }
+        
+        // Mostra notifica se ci sono card da rivedere
+        const cardsToReview = getCardsToReview(studyId);
+        if (cardsToReview.length > 0) {
+            setTimeout(() => {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    color: white;
+                    padding: 20px 25px;
+                    border-radius: 15px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    animation: slideInUp 0.5s ease;
+                    cursor: pointer;
+                    z-index: 1000;
+                `;
+                notification.innerHTML = `
+                    <h4 style="margin-bottom: 5px;">🔁 Flashcard da Ripassare!</h4>
+                    <p style="margin: 0;">Hai ${cardsToReview.length} flashcard pronte per il ripasso</p>
+                `;
+                notification.onclick = () => {
+                    notification.remove();
+                    switchTab('spacedrepetition');
+                };
+                document.body.appendChild(notification);
+                
+                // Rimuovi dopo 5 secondi
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        notification.style.animation = 'slideOutDown 0.5s ease';
+                        setTimeout(() => notification.remove(), 500);
+                    }
+                }, 5000);
+            }, 1000);
+        }
+    }
+};
+
+// CSS per animazioni
+const style = document.createElement('style');
+style.textContent = `
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOutDown {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+}
+
+.tab-btn#tabSpacedRepetition {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.tab-btn#tabSpacedRepetition.active {
+    background: linear-gradient(135deg, #764ba2, #f093fb);
+}
+`;
+document.head.appendChild(style);
+
+// INTEGRAZIONE CON LIBRERIA
+// Aggiungi indicatore nella libreria per studi con card da rivedere
+const originalRenderLibrary = renderLibrary;
+renderLibrary = function() {
+    originalRenderLibrary();
+    
+    // Aggiungi badge per card da rivedere
+    Object.values(appState.studies).forEach(study => {
+        const cardsToReview = getCardsToReview(study.id);
+        if (cardsToReview.length > 0) {
+            const studyItem = document.querySelector(`[onclick="selectStudy('${study.id}')"]`);
+            if (studyItem) {
+                const badge = document.createElement('span');
+                badge.style.cssText = `
+                    background: #f44336;
+                    color: white;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 0.8em;
+                    margin-left: 10px;
+                    font-weight: bold;
+                `;
+                badge.textContent = `${cardsToReview.length} da ripassare`;
+                
+                const studyInfo = studyItem.querySelector('.study-info');
+                if (studyInfo) {
+                    studyInfo.appendChild(badge);
+                }
+            }
+        }
+    });
+};
 
         if (appState.darkMode) document.body.classList.add('dark-mode');
 
