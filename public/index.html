@@ -59,6 +59,116 @@
             cursor: pointer;
             font-weight: bold;
         }
+        .upload-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        body.dark-mode .upload-section { background: #2a2a3e; color: #e0e0e0; }
+        input[type="file"], input[type="text"] {
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+        }
+        body.dark-mode input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
+        .subject-select {
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            font-size: 1em;
+        }
+        body.dark-mode .subject-select { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .btn-delete { background: var(--danger); padding: 8px 15px; margin: 0; font-size: 0.9em; }
+        .btn-export { background: #2196F3; padding: 8px 15px; margin: 0; font-size: 0.9em; }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        body.dark-mode .tabs { background: #2a2a3e; }
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        body.dark-mode .tab-btn { background: #1a1a2e; color: #e0e0e0; }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .content-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 500px;
+        }
+        body.dark-mode .content-area { background: #2a2a3e; color: #e0e0e0; }
+        .hidden { display: none !important; }
+        .section { margin-bottom: 30px; }
+        .section h2 { color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        body.dark-mode .section h2 { color: var(--accent); border-color: var(--accent); }
+        .card { background: #f5f7ff; padding: 20px; border-radius: 10px; margin: 10px 0; border-left: 4px solid var(--primary); }
+        body.dark-mode .card { background: #1a1a2e; border-left-color: var(--accent); }
+        .study-item {
+            background: #f5f7ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        body.dark-mode .study-item { background: #1a1a2e; }
+        .study-item:hover { transform: translateX(5px); background: #e8eaff; }
+        .study-info { font-size: 0.9em; color: #666; margin-top: 5px; }
+        body.dark-mode .study-info { color: #aaa; }
+        .study-left { flex: 1; }
+        .study-right { display: flex; gap: 10px; }
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        body.dark-mode .search-box { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
+        .loading { text-align: center; padding: 40px; }
+        .spinner { border: 4px solid #f0f0f0; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .progress-bar { background: #e0e0e0; height: 10px; border-radius: 5px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { background: var(--primary); height: 100%; transition: width 0.3s; }
         
         /* FLASHCARD STYLES - SISTEMATI */
         .flashcard { 
@@ -98,8 +208,24 @@
         .flashcard-back { background: linear-gradient(135deg, var(--accent), #f5576c); color: white; transform: rotateY(180deg); }
         .flashcard-question { font-size: 1.3em; font-weight: bold; margin-bottom: 15px; }
         .flashcard-answer { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; }
+        .flashcard-extra { 
+            font-size: 0.9em; 
+            margin-top: 15px; 
+            padding-top: 15px; 
+            border-top: 2px solid rgba(255,255,255,0.3);
+            text-align: left;
+            width: 100%;
+            line-height: 1.6;
+        }
+        .flashcard-extra-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8em;
+        }
 
-        /* NUOVI TEMPLATE STYLES */
+        /* NUOVI TEMPLATE STYLES MIGLIORATI */
         .format-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -218,123 +344,146 @@
         }
         body.dark-mode .custom-textarea { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
 
-        /* ALTRI STILI ESSENZIALI */
-        .upload-section {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        body.dark-mode .upload-section { background: #2a2a3e; color: #e0e0e0; }
-        input[type="file"], input[type="text"] {
-            padding: 12px;
-            margin: 10px 0;
-            border: 2px solid var(--primary);
-            border-radius: 8px;
-            width: 100%;
-            max-width: 400px;
-        }
-        body.dark-mode input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
-        .subject-select {
-            padding: 12px;
-            margin: 10px 0;
-            border: 2px solid var(--primary);
-            border-radius: 8px;
-            width: 100%;
-            max-width: 400px;
-            font-size: 1em;
-        }
-        body.dark-mode .subject-select { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            background: var(--primary);
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 15px;
-            transition: all 0.3s;
-        }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
-        .btn-delete { background: var(--danger); padding: 8px 15px; margin: 0; font-size: 0.9em; }
-        .btn-export { background: #2196F3; padding: 8px 15px; margin: 0; font-size: 0.9em; }
-        .tabs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        body.dark-mode .tabs { background: #2a2a3e; }
-        .tab-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            background: #f0f0f0;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        body.dark-mode .tab-btn { background: #1a1a2e; color: #e0e0e0; }
-        .tab-btn.active { background: var(--primary); color: white; }
-        .content-area {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            min-height: 500px;
-        }
-        body.dark-mode .content-area { background: #2a2a3e; color: #e0e0e0; }
-        .hidden { display: none !important; }
-        .section { margin-bottom: 30px; }
-        .section h2 { color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
-        body.dark-mode .section h2 { color: var(--accent); border-color: var(--accent); }
-        .card { background: #f5f7ff; padding: 20px; border-radius: 10px; margin: 10px 0; border-left: 4px solid var(--primary); }
-        body.dark-mode .card { background: #1a1a2e; border-left-color: var(--accent); }
-        .study-item {
+        /* HIGHLIGHTS STYLES */
+        .highlight-item {
             background: #f5f7ff;
             padding: 15px;
             border-radius: 10px;
             margin: 10px 0;
             cursor: pointer;
             transition: all 0.3s;
+            border-left: 4px solid var(--primary);
+        }
+        body.dark-mode .highlight-item { background: #1a1a2e; border-left-color: var(--accent); }
+        .highlight-item:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .highlight-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        body.dark-mode .study-item { background: #1a1a2e; }
-        .study-item:hover { transform: translateX(5px); background: #e8eaff; }
-        .study-info { font-size: 0.9em; color: #666; margin-top: 5px; }
-        body.dark-mode .study-info { color: #aaa; }
-        .study-left { flex: 1; }
-        .study-right { display: flex; gap: 10px; }
-        .search-box {
-            width: 100%;
+        .highlight-title {
+            font-size: 1.05em;
+            line-height: 1.6;
+        }
+        .highlight-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s;
+            color: var(--primary);
+        }
+        body.dark-mode .highlight-icon { color: var(--accent); }
+        .highlight-details {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(102, 126, 234, 0.2);
+            color: #555;
+            line-height: 1.7;
+        }
+        body.dark-mode .highlight-details { color: #ccc; border-color: rgba(240, 147, 251, 0.2); }
+        .key-concept {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+        .generate-btn {
+            background: linear-gradient(135deg, var(--accent), #f5576c);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+        /* ALTRI STILI NECESSARI */
+        .back-btn {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        body.dark-mode .back-btn { background: rgba(240, 147, 251, 0.2); color: var(--accent); }
+        .back-btn:hover { transform: translateX(-3px); }
+
+        /* CHAT STYLES */
+        .chat-container { max-height: 500px; overflow-y: auto; margin-bottom: 20px; }
+        .chat-message {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .chat-message.user { flex-direction: row-reverse; }
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+        .chat-message.user .chat-avatar { background: var(--primary); color: white; }
+        .chat-message.ai .chat-avatar { background: var(--accent); color: white; }
+        .chat-bubble {
+            background: #f0f0f0;
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 70%;
+            line-height: 1.5;
+        }
+        body.dark-mode .chat-bubble { background: #3a3a4e; }
+        .chat-message.user .chat-bubble { background: var(--primary); color: white; }
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        .chat-input {
+            flex: 1;
+            min-height: 50px;
             padding: 12px;
-            margin-bottom: 15px;
             border: 2px solid var(--primary);
             border-radius: 8px;
             font-size: 1em;
+            resize: none;
+            font-family: inherit;
         }
-        body.dark-mode .search-box { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
-        .loading { text-align: center; padding: 40px; }
-        .spinner { border: 4px solid #f0f0f0; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body.dark-mode .chat-input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
+        .chat-send-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .chat-send-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .chat-send-btn:disabled { background: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- HEADER -->
+        <!-- HEADER CON LOGO DEL GUFO -->
         <div class="header">
             <div class="logo-container">
-                <div class="logo-img">🎓</div>
+                <img src="https://github.com/Domenico374/mentorestudio/blob/main/images/MentoreStudio_logo.png?raw=true" alt="MentoreStudio Logo" class="logo-img">
                 <h1>MentoreStudio</h1>
             </div>
             <div class="header-controls">
@@ -347,7 +496,7 @@
             <h2>📚 Carica il tuo documento</h2>
             <p style="margin-bottom: 20px;">Trasforma qualsiasi PDF in materiali di studio intelligenti</p>
             
-            <input type="file" id="pdfFile" accept=".pdf">
+            <input type="file" id="pdfFile" accept=".pdf" multiple>
             <br>
             <input type="text" id="studyName" placeholder="Nome della lezione (es: Lezione 9 - Ottobre)">
             <br>
@@ -369,31 +518,25 @@
                 <option value="Altro">📝 Altro</option>
             </select>
             <br>
-            <button class="btn" onclick="uploadAndAnalyze()">🚀 Analizza Documento</button>
-            
-            <div id="uploadProgress" class="hidden">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Analizzando il documento...</p>
-                </div>
-            </div>
+            <button class="btn" onclick="loadMultiplePDFs()">🚀 Analizza Documento</button>
         </div>
 
         <!-- MAIN APP -->
         <div id="mainApp" class="hidden">
             <!-- TABS -->
             <div class="tabs">
-                <button class="tab-btn" id="tabLibrary" onclick="switchTab('library', event)">📚 Riassunto</button>
-                <button class="tab-btn" id="tabHighlights" onclick="switchTab('highlights', event)">⭐ Punti Salienti</button>
-                <button class="tab-btn" id="tabGlossary" onclick="switchTab('glossary', event)">📖 Glossario</button>
-                <button class="tab-btn" id="tabTimeline" onclick="switchTab('timeline', event)">📅 Timeline</button>
-                <button class="tab-btn" id="tabMindmap" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
-                <button class="tab-btn" id="tabStudyGuide" onclick="switchTab('studyguide', event)">📋 Guida di Studio</button>
-                <button class="tab-btn" id="tabConceptAnalysis" onclick="switchTab('conceptanalysis', event)">🔍 Analisi Concetto</button>
-                <button class="tab-btn" id="tabCustomFormat" onclick="switchTab('customformat', event)">✨ Crea il Tuo</button>
-                <button class="tab-btn" id="tabFlashcard" onclick="switchTab('flashcard', event)">🔲 Flashcard</button>
-                <button class="tab-btn" id="tabQuiz" onclick="switchTab('quiz', event)">❓ Quiz</button>
-                <button class="tab-btn" id="tabChat" onclick="switchTab('chat', event)">🤖 Chat AI</button>
+                <button class="tab-btn hidden" id="tabLibrary" onclick="switchTab('library', event)">📚 Libreria</button>
+                <button class="tab-btn hidden" id="tabSummary" onclick="switchTab('summary', event)">📄 Riassunto</button>
+                <button class="tab-btn hidden" id="tabHighlights" onclick="switchTab('highlights', event)">⭐ Punti Salienti</button>
+                <button class="tab-btn hidden" id="tabGlossary" onclick="switchTab('glossary', event)">📖 Glossario</button>
+                <button class="tab-btn hidden" id="tabTimeline" onclick="switchTab('timeline', event)">📅 Timeline</button>
+                <button class="tab-btn hidden" id="tabMindmap" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
+                <button class="tab-btn hidden" id="tabStudyGuide" onclick="switchTab('studyguide', event)">📋 Guida di Studio</button>
+                <button class="tab-btn hidden" id="tabConceptAnalysis" onclick="switchTab('conceptanalysis', event)">🔍 Analisi Concetto</button>
+                <button class="tab-btn hidden" id="tabCustomFormat" onclick="switchTab('customformat', event)">✨ Crea il Tuo</button>
+                <button class="tab-btn hidden" id="tabFlashcards" onclick="switchTab('flashcards', event)">🔲 Flashcard</button>
+                <button class="tab-btn hidden" id="tabQuiz" onclick="switchTab('quiz', event)">❓ Quiz</button>
+                <button class="tab-btn hidden" id="tabChat" onclick="switchTab('chat', event)">🤖 Chat AI</button>
             </div>
 
             <!-- CONTENT AREA -->
@@ -406,12 +549,19 @@
     <script>
         // APP STATE
         const appState = {
-            studies: JSON.parse(localStorage.getItem('mentore_studies') || '{}'),
-            currentStudy: localStorage.getItem('mentore_current_study') || null,
+            studies: JSON.parse(localStorage.getItem('mentorestudio_studies') || '{}'),
+            currentStudyId: null,
             currentTab: 'library',
-            chatHistory: JSON.parse(localStorage.getItem('mentore_chat_history') || '{}'),
+            chatHistory: JSON.parse(localStorage.getItem('chatHistory') || '{}'),
             isChatLoading: false,
-            customFormats: JSON.parse(localStorage.getItem('mentore_custom_formats') || '{}')
+            customFormats: JSON.parse(localStorage.getItem('mentore_custom_formats') || '{}'),
+            darkMode: localStorage.getItem('darkMode') === 'true',
+            currentFlashcardIndex: 0,
+            flashcardDifficulties: {},
+            quizScore: 0,
+            quizAnswers: [],
+            quizStartTime: null,
+            quizTimerId: null
         };
 
         // NUOVI TEMPLATE MIGLIORATI
@@ -666,140 +816,461 @@ Contenuto: {content}`
             }
         };
 
-        // FUNZIONI PRINCIPALI
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('mentore_dark_mode', document.body.classList.contains('dark-mode'));
+        // INITIALIZE
+        if (appState.darkMode) {
+            document.body.classList.add('dark-mode');
         }
 
-        function uploadAndAnalyze() {
-            const fileInput = document.getElementById('pdfFile');
-            const studyName = document.getElementById('studyName').value;
-            const subject = document.getElementById('subjectSelect').value;
-            
-            if (!fileInput.files[0]) {
-                alert('Seleziona un file PDF');
-                return;
-            }
-            
-            if (!studyName.trim()) {
-                alert('Inserisci un nome per la lezione');
-                return;
-            }
-            
-            if (!subject) {
-                alert('Seleziona una materia');
-                return;
-            }
-            
-            // Simula l'analisi
-            document.getElementById('uploadProgress').classList.remove('hidden');
-            
-            setTimeout(() => {
-                const studyId = 'study_' + Date.now();
-                const study = {
-                    id: studyId,
-                    name: studyName.trim(),
-                    subject: subject,
-                    timestamp: new Date().toISOString(),
-                    data: {
+        // FUNZIONI PRINCIPALI
+        function toggleDarkMode() {
+            appState.darkMode = !appState.darkMode;
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', appState.darkMode);
+        }
+
+        async function loadMultiplePDFs() {
+            const files = document.getElementById('pdfFile').files;
+            if (files.length === 0) { alert('Seleziona almeno un PDF'); return; }
+
+            showMainApp();
+            let processedCount = 0;
+
+            for (let file of files) {
+                try {
+                    // Simula l'estrazione del testo
+                    const text = "La lezione del 9 ottobre 2024, tenuta dalla prof.ssa [Nome Docente], tratta della Legge 104/1992, fondamentale per i diritti delle persone con disabilità. Si discute il ruolo del docente di sostegno e le sfide attuali nel sistema educativo italiano.";
+                    const studyId = Date.now() + Math.random();
+                    
+                    updateProgress(processedCount, files.length, `Elaborando: ${file.name}`);
+                    
+                    // Dati di esempio (normalmente generati dall'AI)
+                    const data = {
                         summary_short: "La lezione tratta della Legge 104/1992, fondamentale per i diritti delle persone con disabilità. Si discute il ruolo del docente di sostegno e le sfide attuali nel sistema educativo italiano.",
-                        summary_full: "Durante la lezione, la prof.ssa analizza la Legge 104/1992, che rappresenta un punto cruciale nella legislazione italiana per l'assistenza e l'integrazione delle persone con disabilità. Viene evidenziato il ruolo strategico del docente di sostegno, che deve coordinare le attività scolastiche e partecipare attivamente alle commissioni competenti. Nonostante i progressi, permangono sfide significative, come l'orientamento scolastico inadeguato e il rischio di indirizzare gli studenti verso scuole 'protette'. Si approfondisce anche l'ADHD, chiarendo che non è un deficit di attenzione, ma una difficoltà di selezione degli stimoli. Infine, si sottolinea l'importanza di prendersi cura dell'ambiente circostante per supportare le persone con disabilità, evidenziando come le barriere siano spesso ambientali piuttosto che individuali.",
+                        summary_long: "Durante la lezione, la prof.ssa analizza la Legge 104/1992, che rappresenta un punto cruciale nella legislazione italiana per l'assistenza e l'integrazione delle persone con disabilità. Viene evidenziato il ruolo strategico del docente di sostegno, che deve coordinare le attività scolastiche e partecipare attivamente alle commissioni competenti. Nonostante i progressi, permangono sfide significative, come l'orientamento scolastico inadeguato e il rischio di indirizzare gli studenti verso scuole 'protette'. Si approfondisce anche l'ADHD, chiarendo che non è un deficit di attenzione, ma una difficoltà di selezione degli stimoli. Infine, si sottolinea l'importanza di prendersi cura dell'ambiente circostante per supportare le persone con disabilità, evidenziando come le barriere siano spesso ambientali piuttosto che individuali.",
                         highlights: [
-                            "Legge 104/1992: fondamentale per i diritti delle persone con disabilità.",
-                            "Ruolo centrale del docente di sostegno nella scuola.",
-                            "Criticità nel sistema educativo attuale, come l'orientamento scolastico.",
-                            "Riflessioni sull'ADHD e sulla sua gestione in classe.",
-                            "Importanza dell'ambiente nel supporto alle persone con disabilità."
+                            "Legge 104/1992: fondamentale per i diritti delle persone con disabilità",
+                            "Ruolo centrale del docente di sostegno nella scuola",
+                            "Criticità nel sistema educativo attuale, come l'orientamento scolastico",
+                            "Riflessioni sull'ADHD e sulla sua gestione in classe",
+                            "Importanza dell'ambiente nel supporto alle persone con disabilità"
                         ],
-                        glossary: {
-                            "Legge 104/1992": "Normativa italiana per l'assistenza e l'integrazione sociale delle persone handicappate",
-                            "Docente di sostegno": "Figura professionale specializzata nell'accompagnamento di studenti con disabilità",
-                            "ADHD": "Disturbo dell'attenzione e iperattività, caratterizzato da difficoltà nella selezione degli stimoli",
-                            "Orientamento scolastico": "Processo di guida degli studenti nella scelta del percorso educativo"
-                        },
+                        glossary: [
+                            { term: "Legge 104/1992", definition: "Normativa italiana per l'assistenza e l'integrazione sociale delle persone handicappate" },
+                            { term: "Docente di sostegno", definition: "Figura professionale specializzata nell'accompagnamento di studenti con disabilità" },
+                            { term: "ADHD", definition: "Disturbo dell'attenzione e iperattività, caratterizzato da difficoltà nella selezione degli stimoli" },
+                            { term: "Orientamento scolastico", definition: "Processo di guida degli studenti nella scelta del percorso educativo" }
+                        ],
                         timeline: [
                             "1992: Approvazione della Legge 104",
-                            "Oggi: Implementazione nelle scuole italiane",
+                            "Oggi: Implementazione nelle scuole italiane", 
                             "Sfide attuali: Orientamento e inclusione",
                             "Futuro: Miglioramento dell'ambiente educativo"
+                        ],
+                        flashcards: [
+                            {
+                                question: "Cos'è la Legge 104/1992?",
+                                answer: "È la normativa italiana fondamentale per l'assistenza e l'integrazione sociale delle persone con disabilità, che stabilisce i diritti e i servizi per garantire l'inclusione sociale e lavorativa.",
+                                difficulty: 'medium'
+                            },
+                            {
+                                question: "Qual è il ruolo del docente di sostegno?",
+                                answer: "Il docente di sostegno deve coordinare le attività scolastiche, partecipare attivamente alle commissioni competenti e supportare l'integrazione degli studenti con disabilità nel contesto educativo.",
+                                difficulty: 'easy'
+                            },
+                            {
+                                question: "Cosa caratterizza l'ADHD secondo la lezione?",
+                                answer: "L'ADHD non è un deficit di attenzione, ma una difficoltà di selezione degli stimoli. È importante non categorizzare ma comprendere le specifiche necessità di supporto individuale.",
+                                difficulty: 'difficult'
+                            }
+                        ],
+                        quiz: [
+                            {
+                                question: "In che anno è stata approvata la Legge 104?",
+                                options: ["1990", "1992", "1994", "1996"],
+                                correct: 1,
+                                explanation: "La Legge 104 è stata approvata nel 1992 e rappresenta una pietra miliare nella legislazione italiana per i diritti delle persone con disabilità."
+                            },
+                            {
+                                question: "Cosa NON è l'ADHD secondo la lezione?",
+                                options: ["Un deficit di attenzione", "Una difficoltà di selezione degli stimoli", "Un disturbo neurobiologico", "Una condizione da supportare"],
+                                correct: 0,
+                                explanation: "Secondo la lezione, l'ADHD non è un deficit di attenzione ma una difficoltà di selezione degli stimoli, richiedendo un approccio di supporto specifico."
+                            }
                         ]
-                    }
-                };
-                
-                appState.studies[studyId] = study;
-                appState.currentStudy = studyId;
-                appState.chatHistory[studyId] = [];
-                appState.customFormats[studyId] = [];
-                
-                localStorage.setItem('mentore_studies', JSON.stringify(appState.studies));
-                localStorage.setItem('mentore_current_study', studyId);
-                localStorage.setItem('mentore_chat_history', JSON.stringify(appState.chatHistory));
-                localStorage.setItem('mentore_custom_formats', JSON.stringify(appState.customFormats));
-                
-                document.getElementById('uploadProgress').classList.add('hidden');
-                showMainApp();
-                switchTab('library');
-            }, 3000);
+                    };
+                    
+                    appState.studies[studyId] = {
+                        id: studyId,
+                        name: file.name.replace('.pdf', '') || `Lezione ${new Date().getDate()} ${new Date().toLocaleDateString('it-IT', {month: 'long'})}`,
+                        data: data,
+                        date: new Date().toLocaleDateString('it-IT'),
+                        subject: document.getElementById('subjectSelect').value,
+                        fullText: text,
+                        type: 'pdf'
+                    };
+                    
+                    appState.chatHistory[studyId] = [];
+                    appState.customFormats[studyId] = [];
+                    
+                    processedCount++;
+                    updateProgress(processedCount, files.length, `Completato: ${file.name}`);
+                } catch (e) {
+                    alert(`Errore con ${file.name}: ${e.message}`);
+                }
+            }
+
+            saveStudies();
+            saveChatHistory();
+            renderLibrary();
+            switchTab('library');
         }
 
         function showMainApp() {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
+            
+            // Mostra tutti i tab
+            document.getElementById('tabLibrary').classList.remove('hidden');
+            document.getElementById('tabSummary').classList.remove('hidden');
+            document.getElementById('tabHighlights').classList.remove('hidden');
+            document.getElementById('tabGlossary').classList.remove('hidden');
+            document.getElementById('tabTimeline').classList.remove('hidden');
+            document.getElementById('tabMindmap').classList.remove('hidden');
+            document.getElementById('tabStudyGuide').classList.remove('hidden');
+            document.getElementById('tabConceptAnalysis').classList.remove('hidden');
+            document.getElementById('tabCustomFormat').classList.remove('hidden');
+            document.getElementById('tabFlashcards').classList.remove('hidden');
+            document.getElementById('tabQuiz').classList.remove('hidden');
+            document.getElementById('tabChat').classList.remove('hidden');
         }
 
-        function switchTab(tabName, event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
+        function updateProgress(current, total, message) {
+            document.getElementById('contentArea').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>${message}</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${(current/total)*100}%"></div>
+                    </div>
+                    <p>${current}/${total}</p>
+                </div>
+            `;
+        }
+
+        function saveStudies() {
+            localStorage.setItem('mentorestudio_studies', JSON.stringify(appState.studies));
+        }
+
+        function saveChatHistory() {
+            localStorage.setItem('chatHistory', JSON.stringify(appState.chatHistory));
+        }
+
+        function switchTab(tab, e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
             
-            // Aggiorna stato
-            appState.currentTab = tabName;
+            // Stop quiz timer se attivo
+            if (appState.quizTimerId) {
+                clearInterval(appState.quizTimerId);
+                appState.quizTimerId = null;
+            }
+            
+            appState.currentTab = tab;
             
             // Aggiorna UI tabs
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.add('active');
+            const targetTab = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+            if (targetTab) targetTab.classList.add('active');
             
             // Carica contenuto
-            switch(tabName) {
+            switch(tab) {
                 case 'library':
-                    showLibrary();
+                    renderLibrary();
+                    break;
+                case 'summary':
+                    renderSummary();
+                    break;
+                case 'highlights':
+                    renderHighlights();
+                    break;
+                case 'glossary':
+                    renderGlossary();
+                    break;
+                case 'timeline':
+                    renderTimeline();
+                    break;
+                case 'mindmap':
+                    renderMindmap();
+                    break;
+                case 'studyguide':
+                    renderStudyGuide();
+                    break;
+                case 'conceptanalysis':
+                    renderConceptAnalysis();
                     break;
                 case 'customformat':
-                    showCustomFormat();
+                    renderCustomFormat();
                     break;
-                case 'flashcard':
-                    showFlashcards();
+                case 'flashcards':
+                    renderFlashcards();
+                    break;
+                case 'quiz':
+                    renderQuiz();
+                    break;
+                case 'chat':
+                    renderChat();
                     break;
                 default:
-                    showComingSoon(tabName);
+                    showComingSoon(tab);
             }
         }
 
-        function showLibrary() {
+        function renderLibrary() {
+            let html = `
+                <h2>📚 La tua Libreria di Studio</h2>
+                <p style="margin-bottom: 20px;">Gestisci i tuoi documenti e materiali di studio</p>
+            `;
+            
+            const studies = Object.values(appState.studies);
+            
+            if (studies.length === 0) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 4em; margin-bottom: 15px;">📚</div>
+                        <h3>Libreria vuota</h3>
+                        <p style="margin-top: 10px; color: #666;">
+                            Carica il tuo primo PDF per iniziare a studiare in modo intelligente!
+                        </p>
+                        <button class="btn" onclick="document.getElementById('uploadSection').classList.remove('hidden'); document.getElementById('mainApp').classList.add('hidden');" style="margin-top: 20px;">
+                            📁 Carica Documento
+                        </button>
+                    </div>
+                `;
+            } else {
+                html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca nelle tue lezioni..." onkeyup="filterLibrary()">';
+                html += '<div id="libraryContent">';
+                
+                studies.forEach(study => {
+                    const subject = study.subject || 'Materia non specificata';
+                    html += `
+                        <div class="study-item" onclick="openStudy('${study.id}')">
+                            <div class="study-left">
+                                <strong>${study.name}</strong>
+                                <div class="study-info">📅 ${study.date} • 📚 ${subject}</div>
+                            </div>
+                            <div class="study-right">
+                                <button class="btn btn-export" onclick="exportStudy('${study.id}', event)">📤 Esporta</button>
+                                <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️ Elimina</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+            }
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function openStudy(studyId) {
+            appState.currentStudyId = studyId;
+            switchTab('summary');
+        }
+
+        function deleteStudy(studyId, e) {
+            e.stopPropagation();
+            if (confirm('Eliminare questa lezione?')) {
+                delete appState.studies[studyId];
+                delete appState.chatHistory[studyId];
+                delete appState.customFormats[studyId];
+                saveStudies();
+                saveChatHistory();
+                localStorage.setItem('mentore_custom_formats', JSON.stringify(appState.customFormats));
+                renderLibrary();
+            }
+        }
+
+        function getCurrentStudy() {
+            return appState.studies[appState.currentStudyId];
+        }
+
+        function goBack() {
+            if (appState.quizTimerId) {
+                clearInterval(appState.quizTimerId);
+                appState.quizTimerId = null;
+            }
+            switchTab('library');
+        }
+
+        function renderSummary() {
             const study = getCurrentStudy();
             if (!study) return;
             
             document.getElementById('contentArea').innerHTML = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
+                <p style="margin-bottom: 20px;"><strong>Materia:</strong> ${study.subject || 'Non specificata'} • <strong>Data:</strong> ${study.date}</p>
                 <div class="section">
-                    <h3>📄 Riassunto Breve</h3>
-                    <div class="card">
-                        <p>${study.data.summary_short}</p>
-                    </div>
+                    <h3>📝 Riassunto Breve</h3>
+                    <div class="card">${study.data.summary_short || 'N/A'}</div>
                 </div>
                 <div class="section">
-                    <h3>📋 Riassunto Completo</h3>
-                    <div class="card">
-                        <p>${study.data.summary_full}</p>
-                    </div>
+                    <h3>📖 Riassunto Completo</h3>
+                    <div class="card">${study.data.summary_long || study.data.summary_short || 'N/A'}</div>
                 </div>
             `;
         }
 
-        function showCustomFormat() {
+        function renderHighlights() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>⭐ Punti Salienti (${(study.data.highlights || []).length})</h3>
+                <p style="color: #666; margin-bottom: 20px;">Clicca su ogni punto per vedere la spiegazione dettagliata</p>
+            `;
+            
+            if (!study.data.highlights || study.data.highlights.length === 0) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">⭐</div>
+                        <h3>Nessun punto saliente trovato</h3>
+                        <p style="margin-top: 10px; color: #666;">
+                            I punti chiave verranno estratti automaticamente dal contenuto.
+                        </p>
+                    </div>
+                `;
+            } else {
+                (study.data.highlights || []).forEach((h, i) => {
+                    const highlightId = `highlight_${i}`;
+                    const hasExplanation = study.data.highlightDetails && study.data.highlightDetails[i];
+                    
+                    html += `
+                        <div class="highlight-item" onclick="toggleHighlight('${highlightId}')">
+                            <div class="highlight-header">
+                                <div class="highlight-title">
+                                    <strong style="color: var(--primary);">${i + 1}.</strong> 
+                                    <span class="key-concept">${h}</span>
+                                </div>
+                                <span class="highlight-icon" id="${highlightId}_icon">▼</span>
+                            </div>
+                            
+                            <div class="highlight-details" id="${highlightId}_details">
+                                ${hasExplanation ? `
+                                    <p>${study.data.highlightDetails[i]}</p>
+                                ` : `
+                                    <p style="color: #999; font-style: italic;">
+                                        Nessuna spiegazione disponibile. Generane una con l'AI!
+                                    </p>
+                                    <button class="generate-btn" onclick="generateHighlightExplanation(${i}, event)">
+                                        🤖 Genera Spiegazione Dettagliata
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function toggleHighlight(highlightId) {
+            const details = document.getElementById(`${highlightId}_details`);
+            const icon = document.getElementById(`${highlightId}_icon`);
+            
+            if (details.style.display === 'none' || details.style.display === '') {
+                details.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                details.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        async function generateHighlightExplanation(index, event) {
+            event.stopPropagation();
+            
+            const study = getCurrentStudy();
+            const highlight = study.data.highlights[index];
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Generazione in corso...';
+            
+            // Simula la generazione
+            setTimeout(() => {
+                const explanation = `Questo punto saliente evidenzia un aspetto cruciale del contenuto. La spiegazione dettagliata fornisce contesto e collegamenti con altri concetti importanti, facilitando la comprensione e la memorizzazione.`;
+                
+                if (!study.data.highlightDetails) {
+                    study.data.highlightDetails = {};
+                }
+                study.data.highlightDetails[index] = explanation;
+                
+                saveStudies();
+                renderHighlights();
+                
+                setTimeout(() => {
+                    toggleHighlight(`highlight_${index}`);
+                }, 100);
+                
+            }, 2000);
+        }
+
+        function renderGlossary() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>📖 Glossario (${(study.data.glossary || []).length} termini)</h3>
+                <p style="color: #666; margin-bottom: 15px;">Clicca su ogni termine per vedere definizione ed esempi</p>
+            `;
+            
+            html += '<input type="text" class="search-box" id="glossarySearch" placeholder="🔍 Cerca un termine..." onkeyup="filterGlossary()">';
+            html += '<div id="glossaryContent">';
+            
+            if (!study.data.glossary || study.data.glossary.length === 0) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">📖</div>
+                        <h3>Nessun termine nel glossario</h3>
+                        <p style="margin-top: 10px; color: #666;">
+                            I termini chiave verranno estratti automaticamente dal contenuto.
+                        </p>
+                    </div>
+                `;
+            } else {
+                (study.data.glossary || []).forEach((item, i) => {
+                    const glossaryId = `glossary_${i}`;
+                    
+                    html += `
+                        <div class="highlight-item" data-term="${item.term.toLowerCase()}" onclick="toggleHighlight('${glossaryId}')">
+                            <div class="highlight-header">
+                                <div class="highlight-title">
+                                    <strong style="color: var(--secondary); font-size: 1.1em;">${item.term}</strong>
+                                </div>
+                                <span class="highlight-icon" id="${glossaryId}_icon">▼</span>
+                            </div>
+                            
+                            <div class="highlight-details" id="${glossaryId}_details">
+                                <p><strong>Definizione:</strong> ${item.definition}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            html += '</div>';
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function renderCustomFormat() {
             const study = getCurrentStudy();
             if (!study) return;
             
@@ -964,17 +1435,24 @@ Contenuto: {content}`
                     icon = '✨';
                     content = `🎨 FORMATO PERSONALIZZATO: ${customInput}
 
-Ecco il contenuto trasformato secondo le tue specifiche...
+Ecco il contenuto trasformato secondo le tue specifiche:
 
-[Il contenuto verrebbe generato qui usando l'AI basandosi sulla tua richiesta]`;
+[Il contenuto della lezione viene trasformato qui secondo la tua richiesta...]
+
+📚 CONTENUTO ORIGINALE UTILIZZATO:
+${study.data.summary_short}
+
+🎯 RISULTATO:
+Il formato richiesto è stato generato utilizzando tecniche di AI per soddisfare le tue specifiche esigenze di studio.`;
                 } else if (formatType === 'powerpoint') {
-                    generatePowerPoint();
+                    alert('🚧 Funzione PowerPoint in sviluppo! Sarà disponibile presto.');
+                    resultDiv.innerHTML = '';
                     return;
                 } else {
                     const template = enhancedFormatTemplates[formatType];
                     title = template.title;
                     icon = template.icon;
-                    content = template.prompt.replace('{content}', study.data.summary_full);
+                    content = template.prompt.replace('{content}', study.data.summary_long || study.data.summary_short);
                 }
                 
                 // Salva nello storico
@@ -1000,7 +1478,7 @@ Ecco il contenuto trasformato secondo le tue specifiche...
                             <pre style="white-space: pre-wrap; font-family: inherit; line-height: 1.6;">${content}</pre>
                         </div>
                         <div style="margin-top: 15px;">
-                            <button class="btn btn-export" onclick="copyToClipboard('${content.replace(/'/g, "\\'")}')">
+                            <button class="btn btn-export" onclick="copyToClipboard(\`${content.replace(/`/g, '\\`')}\`)">
                                 📋 Copia Contenuto
                             </button>
                         </div>
@@ -1008,58 +1486,38 @@ Ecco il contenuto trasformato secondo le tue specifiche...
                 `;
                 
                 // Refresh la pagina per mostrare nello storico
-                setTimeout(() => showCustomFormat(), 100);
+                setTimeout(() => renderCustomFormat(), 100);
                 
             }, 2000);
         }
 
-        function showFlashcards() {
+        function renderFlashcards() {
             const study = getCurrentStudy();
             if (!study) return;
             
-            // Genera flashcard di esempio
-            const flashcards = [
-                {
-                    question: "Cos'è la Legge 104/1992?",
-                    answer: "È la normativa italiana fondamentale per l'assistenza e l'integrazione sociale delle persone con disabilità, che stabilisce i diritti e i servizi per garantire l'inclusione sociale e lavorativa.",
-                    difficulty: 'medium'
-                },
-                {
-                    question: "Qual è il ruolo del docente di sostegno?",
-                    answer: "Il docente di sostegno deve coordinare le attività scolastiche, partecipare attivamente alle commissioni competenti e supportare l'integrazione degli studenti con disabilità nel contesto educativo.",
-                    difficulty: 'easy'
-                },
-                {
-                    question: "Cosa caratterizza l'ADHD secondo la lezione?",
-                    answer: "L'ADHD non è un deficit di attenzione, ma una difficoltà di selezione degli stimoli. È importante non categorizzare ma comprendere le specifiche necessità di supporto individuale.",
-                    difficulty: 'difficult'
-                }
-            ];
-            
-            let currentCard = 0;
-            
-            function renderFlashcard(index) {
-                const card = flashcards[index];
-                return `
-                    <div class="flashcard ${card.difficulty}" onclick="flipCard()">
-                        <div class="flashcard-inner" id="flashcardInner">
-                            <div class="flashcard-front">
-                                <div class="flashcard-question">${card.question}</div>
-                                <p style="margin-top: 20px; opacity: 0.8;">Clicca per vedere la risposta</p>
-                            </div>
-                            <div class="flashcard-back">
-                                <div class="flashcard-answer">${card.answer}</div>
-                                <p style="margin-top: 20px; opacity: 0.8;">Clicca per tornare alla domanda</p>
-                            </div>
-                        </div>
+            const flashcards = study.data.flashcards || [];
+            if (flashcards.length === 0) {
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                    <h2>${study.name}</h2>
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">🔲</div>
+                        <h3>Nessuna flashcard disponibile</h3>
+                        <p style="margin-top: 10px; color: #666;">
+                            Le flashcard verranno generate automaticamente dal contenuto.
+                        </p>
                     </div>
                 `;
+                return;
             }
+            
+            appState.currentFlashcardIndex = Math.min(appState.currentFlashcardIndex, flashcards.length - 1);
+            const currentCard = flashcards[appState.currentFlashcardIndex];
             
             document.getElementById('contentArea').innerHTML = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <h3>🔲 Flashcard (${currentCard + 1}/${flashcards.length})</h3>
+                <h3>🔲 Flashcard (${appState.currentFlashcardIndex + 1}/${flashcards.length})</h3>
                 
                 <div style="display: flex; gap: 10px; margin: 20px 0; justify-content: center;">
                     <button class="btn" style="background: #4caf50;" onclick="filterFlashcards('all')">🔲 Tutte</button>
@@ -1068,87 +1526,560 @@ Ecco il contenuto trasformato secondo le tue specifiche...
                     <button class="btn" style="background: #4caf50;" onclick="filterFlashcards('easy')">😊 Facili</button>
                 </div>
                 
-                ${renderFlashcard(currentCard)}
+                <div class="flashcard ${currentCard.difficulty || 'medium'}" onclick="flipFlashcard()">
+                    <div class="flashcard-inner" id="flashcardInner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-question">${currentCard.question}</div>
+                            <p style="margin-top: 20px; opacity: 0.8;">Clicca per vedere la risposta</p>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-answer">${currentCard.answer}</div>
+                            <p style="margin-top: 20px; opacity: 0.8;">Clicca per tornare alla domanda</p>
+                        </div>
+                    </div>
+                </div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
-                    <button class="btn" onclick="previousCard()" ${currentCard === 0 ? 'disabled' : ''}>
+                    <button class="btn" onclick="previousFlashcard()" ${appState.currentFlashcardIndex === 0 ? 'disabled' : ''}>
                         ⬅️ Precedente
                     </button>
                     
-                    <button class="btn" onclick="nextCard()" style="background: #2196F3;">
+                    <button class="btn" onclick="flipFlashcard()" style="background: #2196F3;">
                         🔄 Gira
                     </button>
                     
-                    <button class="btn" onclick="nextCard()" ${currentCard === flashcards.length - 1 ? 'disabled' : ''}>
+                    <button class="btn" onclick="nextFlashcard()" ${appState.currentFlashcardIndex === flashcards.length - 1 ? 'disabled' : ''}>
                         Successiva ➡️
                     </button>
                 </div>
                 
                 <div style="text-align: center; margin: 30px 0;">
                     <p style="margin-bottom: 15px;">Come è stata questa flashcard?</p>
-                    <button class="btn" style="background: #4caf50;" onclick="markDifficulty('easy')">✅ Facile</button>
-                    <button class="btn" style="background: #ffa726;" onclick="markDifficulty('medium')">⭐ Medio</button>
-                    <button class="btn" style="background: #f44336;" onclick="markDifficulty('difficult')">❌ Difficile</button>
-                </div>
-                
-                <div class="card" style="background: #fff9c4; border-left-color: #ffa726;">
-                    <h4 style="color: #f57c00; margin-bottom: 10px;">📊 Note Personali:</h4>
-                    <textarea 
-                        placeholder="Aggiungi note per questa flashcard..." 
-                        style="width: 100%; min-height: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; resize: vertical;"
-                    ></textarea>
-                    <button class="btn" style="margin-top: 10px; background: #2196F3;">💾 Salva Nota</button>
+                    <button class="btn" style="background: #4caf50;" onclick="markFlashcardDifficulty('easy')">✅ Facile</button>
+                    <button class="btn" style="background: #ffa726;" onclick="markFlashcardDifficulty('medium')">⭐ Medio</button>
+                    <button class="btn" style="background: #f44336;" onclick="markFlashcardDifficulty('difficult')">❌ Difficile</button>
                 </div>
                 
                 <div style="margin-top: 30px; text-align: center;">
-                    <p style="color: #666; font-size: 0.9em;">📈 Statistiche: Visualizzata 0 volte | Difficoltà: <span style="color: #ffa726;">⭐ Medio</span></p>
+                    <p style="color: #666; font-size: 0.9em;">📈 Difficoltà attuale: <span style="color: ${getDifficultyColor(currentCard.difficulty)};">${getDifficultyLabel(currentCard.difficulty)}</span></p>
                 </div>
             `;
-            
-            // Aggiungi le funzioni globalmente
-            window.flipCard = function() {
-                document.getElementById('flashcardInner').classList.toggle('flipped');
-            };
-            
-            window.nextCard = function() {
-                if (currentCard < flashcards.length - 1) {
-                    currentCard++;
-                    showFlashcards();
-                }
-            };
-            
-            window.previousCard = function() {
-                if (currentCard > 0) {
-                    currentCard--;
-                    showFlashcards();
-                }
-            };
-            
-            window.markDifficulty = function(level) {
-                flashcards[currentCard].difficulty = level;
-                showFlashcards();
-            };
         }
 
-        function showComingSoon(tabName) {
+        function flipFlashcard() {
+            document.getElementById('flashcardInner').classList.toggle('flipped');
+        }
+
+        function nextFlashcard() {
+            const study = getCurrentStudy();
+            const flashcards = study.data.flashcards || [];
+            if (appState.currentFlashcardIndex < flashcards.length - 1) {
+                appState.currentFlashcardIndex++;
+                renderFlashcards();
+            }
+        }
+
+        function previousFlashcard() {
+            if (appState.currentFlashcardIndex > 0) {
+                appState.currentFlashcardIndex--;
+                renderFlashcards();
+            }
+        }
+
+        function markFlashcardDifficulty(difficulty) {
+            const study = getCurrentStudy();
+            const flashcards = study.data.flashcards || [];
+            if (flashcards[appState.currentFlashcardIndex]) {
+                flashcards[appState.currentFlashcardIndex].difficulty = difficulty;
+                saveStudies();
+                renderFlashcards();
+            }
+        }
+
+        function getDifficultyColor(difficulty) {
+            const colors = {
+                'easy': '#4caf50',
+                'medium': '#ffa726',
+                'difficult': '#f44336'
+            };
+            return colors[difficulty] || colors.medium;
+        }
+
+        function getDifficultyLabel(difficulty) {
+            const labels = {
+                'easy': '😊 Facile',
+                'medium': '😐 Medio',
+                'difficult': '😰 Difficile'
+            };
+            return labels[difficulty] || labels.medium;
+        }
+
+        function renderQuiz() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            const questions = study.data.quiz || [];
+            if (questions.length === 0) {
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                    <h2>${study.name}</h2>
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">❓</div>
+                        <h3>Nessun quiz disponibile</h3>
+                        <p style="margin-top: 10px; color: #666;">
+                            Le domande quiz verranno generate automaticamente dal contenuto.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Se non è iniziato, mostra la schermata di avvio
+            if (!appState.quizStartTime) {
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                    <h2>${study.name}</h2>
+                    <h3>❓ Quiz di Verifica</h3>
+                    
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 4em; margin-bottom: 20px;">🎯</div>
+                        <h3>Pronto per il quiz?</h3>
+                        <p style="margin: 20px 0; font-size: 1.1em;">
+                            <strong>${questions.length} domande</strong> • Tempo stimato: ${Math.ceil(questions.length * 1.5)} minuti
+                        </p>
+                        <p style="color: #666; margin-bottom: 30px;">
+                            Metti alla prova la tua comprensione dell'argomento
+                        </p>
+                        <button class="btn" onclick="startQuiz()" style="font-size: 1.2em; padding: 15px 30px;">
+                            🚀 Inizia Quiz
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Quiz in corso o completato
+            renderQuizQuestion();
+        }
+
+        function startQuiz() {
+            appState.quizStartTime = Date.now();
+            appState.quizScore = 0;
+            appState.quizAnswers = [];
+            appState.currentQuestionIndex = 0;
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const study = getCurrentStudy();
+            const questions = study.data.quiz || [];
+            const currentIndex = appState.currentQuestionIndex || 0;
+            
+            if (currentIndex >= questions.length) {
+                // Quiz completato
+                showQuizResults();
+                return;
+            }
+            
+            const question = questions[currentIndex];
+            const timeElapsed = Math.floor((Date.now() - appState.quizStartTime) / 1000);
+            const minutes = Math.floor(timeElapsed / 60);
+            const seconds = timeElapsed % 60;
+            
             document.getElementById('contentArea').innerHTML = `
-                <div class="loading">
-                    <h3>🚧 ${tabName.toUpperCase()}</h3>
-                    <p>Questa funzione sarà disponibile a breve!</p>
-                    <button class="btn" onclick="switchTab('library')">← Torna al Riassunto</button>
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>❓ Quiz - Domanda ${currentIndex + 1}/${questions.length}</h3>
+                
+                <div style="background: #f0f0f0; padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                    ⏱️ Tempo: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}
+                </div>
+                
+                <div class="card" style="margin-bottom: 30px;">
+                    <h4 style="margin-bottom: 20px; font-size: 1.2em;">${question.question}</h4>
+                    
+                    <div style="display: grid; gap: 15px;">
+                        ${question.options.map((option, i) => `
+                            <button class="quiz-option" onclick="selectQuizAnswer(${i})" data-index="${i}">
+                                <span style="font-weight: bold; margin-right: 10px;">${String.fromCharCode(65 + i)}.</span>
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <button class="btn" onclick="nextQuizQuestion()" id="nextQuizBtn" disabled>
+                        ${currentIndex === questions.length - 1 ? '🏁 Termina Quiz' : 'Prossima Domanda ➡️'}
+                    </button>
+                </div>
+                
+                <style>
+                .quiz-option {
+                    background: white;
+                    border: 2px solid #ddd;
+                    padding: 15px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    text-align: left;
+                    transition: all 0.3s;
+                    font-size: 1em;
+                }
+                .quiz-option:hover {
+                    border-color: var(--primary);
+                    background: #f5f7ff;
+                }
+                .quiz-option.selected {
+                    border-color: var(--primary);
+                    background: var(--primary);
+                    color: white;
+                }
+                body.dark-mode .quiz-option {
+                    background: #2a2a3e;
+                    border-color: #444;
+                    color: #e0e0e0;
+                }
+                body.dark-mode .quiz-option:hover {
+                    background: #3a3a4e;
+                }
+                </style>
+            `;
+            
+            // Avvia o aggiorna il timer
+            if (appState.quizTimerId) clearInterval(appState.quizTimerId);
+            appState.quizTimerId = setInterval(() => {
+                renderQuizQuestion();
+            }, 1000);
+        }
+
+        function selectQuizAnswer(answerIndex) {
+            // Rimuovi selezione precedente
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Seleziona nuova opzione
+            document.querySelector(`[data-index="${answerIndex}"]`).classList.add('selected');
+            appState.selectedAnswer = answerIndex;
+            
+            // Abilita il pulsante next
+            document.getElementById('nextQuizBtn').disabled = false;
+        }
+
+        function nextQuizQuestion() {
+            const study = getCurrentStudy();
+            const questions = study.data.quiz || [];
+            const currentIndex = appState.currentQuestionIndex || 0;
+            const question = questions[currentIndex];
+            
+            // Salva la risposta
+            appState.quizAnswers[currentIndex] = appState.selectedAnswer;
+            
+            // Controlla se è corretta
+            if (appState.selectedAnswer === question.correct) {
+                appState.quizScore++;
+            }
+            
+            // Vai alla prossima domanda
+            appState.currentQuestionIndex = currentIndex + 1;
+            appState.selectedAnswer = null;
+            
+            renderQuizQuestion();
+        }
+
+        function showQuizResults() {
+            if (appState.quizTimerId) {
+                clearInterval(appState.quizTimerId);
+                appState.quizTimerId = null;
+            }
+            
+            const study = getCurrentStudy();
+            const questions = study.data.quiz || [];
+            const timeElapsed = Math.floor((Date.now() - appState.quizStartTime) / 1000);
+            const minutes = Math.floor(timeElapsed / 60);
+            const seconds = timeElapsed % 60;
+            const percentage = Math.round((appState.quizScore / questions.length) * 100);
+            
+            let emoji = '🎉';
+            let message = 'Eccellente!';
+            if (percentage < 60) {
+                emoji = '📚';
+                message = 'Continua a studiare!';
+            } else if (percentage < 80) {
+                emoji = '👍';
+                message = 'Buon lavoro!';
+            }
+            
+            document.getElementById('contentArea').innerHTML = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>🏁 Risultati Quiz</h3>
+                
+                <div class="card" style="text-align: center; padding: 40px;">
+                    <div style="font-size: 4em; margin: 20px 0;">${emoji}</div>
+                    <h3>${message}</h3>
+                    <p style="font-size: 1.5em; margin: 20px 0;"><strong>Punteggio: ${appState.quizScore}/${questions.length}</strong></p>
+                    <p style="font-size: 1.2em; color: var(--primary);">${percentage}%</p>
+                    <p style="margin-top: 20px; color: #666;">
+                        ⏱️ Tempo impiegato: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}
+                    </p>
+                </div>
+                
+                <h3 style="margin-top: 30px;">📝 Riepilogo Risposte</h3>
+                
+                ${questions.map((q, i) => {
+                    const userAnswer = appState.quizAnswers[i];
+                    const isCorrect = userAnswer === q.correct;
+                    
+                    return `
+                        <div class="card" style="margin: 15px 0; border-left-color: ${isCorrect ? '#4caf50' : '#f44336'};">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                <span style="font-size: 1.5em;">${isCorrect ? '✅' : '❌'}</span>
+                                <strong>Domanda ${i + 1}</strong>
+                            </div>
+                            <p style="margin-bottom: 15px;">${q.question}</p>
+                            <p><strong>La tua risposta:</strong> ${q.options[userAnswer]} ${isCorrect ? '✅' : '❌'}</p>
+                            ${!isCorrect ? `<p><strong>Risposta corretta:</strong> ${q.options[q.correct]} ✅</p>` : ''}
+                            ${q.explanation ? `<p style="margin-top: 10px; font-style: italic; color: #666;"><strong>Spiegazione:</strong> ${q.explanation}</p>` : ''}
+                        </div>
+                    `;
+                }).join('')}
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" onclick="restartQuiz()" style="margin-right: 10px;">🔄 Ripeti Quiz</button>
+                    <button class="btn" onclick="goBack()">📚 Torna alla Libreria</button>
                 </div>
             `;
+        }
+
+        function restartQuiz() {
+            appState.quizStartTime = null;
+            appState.quizScore = 0;
+            appState.quizAnswers = [];
+            appState.currentQuestionIndex = 0;
+            appState.selectedAnswer = null;
+            renderQuiz();
+        }
+
+        function renderChat() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            const chatHistory = appState.chatHistory[study.id] || [];
+            
+            document.getElementById('contentArea').innerHTML = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>🤖 Chat AI - ${study.name}</h2>
+                
+                <div class="chat-context-info">
+                    <strong>📘 Contesto attivo:</strong> ${study.subject} - ${study.name}<br>
+                    L'AI ha accesso al contenuto della lezione e può rispondere alle tue domande
+                </div>
+                
+                <div class="chat-suggestions">
+                    <div class="chat-suggestion" onclick="sendSuggestedQuestion('Spiegami i concetti principali')">💡 Concetti principali</div>
+                    <div class="chat-suggestion" onclick="sendSuggestedQuestion('Crea un piano di studio')">📋 Piano di studio</div>
+                    <div class="chat-suggestion" onclick="sendSuggestedQuestion('Esempi pratici')">🎯 Esempi pratici</div>
+                    <div class="chat-suggestion" onclick="sendSuggestedQuestion('Domande d\\'esame')">❓ Domande d'esame</div>
+                </div>
+                
+                <div class="chat-container" id="chatMessages">
+                    ${chatHistory.map(msg => createChatMessageHTML(msg)).join('')}
+                    ${chatHistory.length === 0 ? `
+                        <div style="text-align: center; padding: 40px; color: #666;">
+                            <div style="font-size: 3em; margin-bottom: 10px;">💬</div>
+                            <p>Inizia una conversazione!</p>
+                            <p style="font-size: 0.9em; margin-top: 5px;">Fai domande sulla lezione o usa i suggerimenti sopra</p>
+                        </div>
+                    ` : ''}
+                </div>
+                
+                <div class="chat-input-container">
+                    <textarea 
+                        class="chat-input" 
+                        id="chatInput" 
+                        placeholder="Scrivi la tua domanda..."
+                        onkeydown="handleChatKeydown(event)"
+                    ></textarea>
+                    <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()">
+                        Invia 📤
+                    </button>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
+                    <button class="btn btn-export" onclick="exportChatHistory()">📤 Esporta Chat</button>
+                    <button class="btn btn-delete" onclick="clearChatHistory()">🗑️ Cancella Chat</button>
+                </div>
+            `;
+            
+            scrollChatToBottom();
+        }
+
+        function createChatMessageHTML(message, messageId = '') {
+            const isUser = message.role === 'user';
+            const avatar = isUser ? '👤' : '🤖';
+            
+            return `
+                <div class="chat-message ${isUser ? 'user' : 'ai'}" ${messageId ? `id="${messageId}"` : ''}>
+                    <div class="chat-avatar">${avatar}</div>
+                    <div class="chat-bubble">
+                        ${message.content.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleChatKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        function sendSuggestedQuestion(question) {
+            document.getElementById('chatInput').value = question;
+            sendChatMessage();
+        }
+
+        async function sendChatMessage() {
+            const study = getCurrentStudy();
+            if (!study || appState.isChatLoading) return;
+            
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const userMessageId = `msg_${study.id}_${appState.chatHistory[study.id].length}`;
+            appState.chatHistory[study.id].push({
+                role: 'user',
+                content: message
+            });
+            
+            input.value = '';
+            input.style.height = 'auto';
+            
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML += createChatMessageHTML({
+                role: 'user',
+                content: message
+            }, userMessageId);
+            
+            messagesContainer.innerHTML += `
+                <div class="chat-message ai" id="typingIndicator">
+                    <div class="chat-avatar">🤖</div>
+                    <div class="chat-bubble">
+                        <div style="display: flex; gap: 5px; padding: 10px;">
+                            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); animation: typing 1.4s infinite;"></div>
+                            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); animation: typing 1.4s infinite; animation-delay: 0.2s;"></div>
+                            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); animation: typing 1.4s infinite; animation-delay: 0.4s;"></div>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                @keyframes typing {
+                    0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
+                    30% { transform: translateY(-10px); opacity: 1; }
+                }
+                </style>
+            `;
+            
+            scrollChatToBottom();
+            
+            const sendBtn = document.getElementById('chatSendBtn');
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Invio...';
+            appState.isChatLoading = true;
+            
+            // Simula risposta AI
+            setTimeout(() => {
+                document.getElementById('typingIndicator').remove();
+                
+                let aiResponse = '';
+                if (message.toLowerCase().includes('concetti principali')) {
+                    aiResponse = `Ecco i concetti principali dalla lezione "${study.name}":\n\n${study.data.highlights.map((h, i) => `${i + 1}. ${h}`).join('\n')}\n\nVuoi che approfondisca qualcuno di questi punti?`;
+                } else if (message.toLowerCase().includes('piano di studio')) {
+                    aiResponse = `Ecco un piano di studio personalizzato per "${study.name}":\n\n📚 **Fase 1** - Lettura (30 min)\n• Rileggi il riassunto completo\n• Evidenzia i punti unclear\n\n⭐ **Fase 2** - Concetti (45 min)\n• Studia ogni punto saliente\n• Crea collegamenti logici\n\n🔲 **Fase 3** - Verifica (30 min)\n• Usa le flashcard\n• Fai il quiz di verifica\n\n💬 **Fase 4** - Ripasso (15 min)\n• Rivedi gli errori del quiz\n• Fai domande qui se necessario`;
+                } else if (message.toLowerCase().includes('esempi pratici')) {
+                    aiResponse = `Esempi pratici per comprendere meglio la lezione:\n\n🏫 **Nella scuola**: Come si applica concretamente il ruolo del docente di sostegno nel coordinare le attività didattiche\n\n⚖️ **Nella legislazione**: L'impatto della Legge 104/1992 sui diritti delle persone con disabilità\n\n🧠 **In classe**: Strategie pratiche per gestire studenti con ADHD\n\nVuoi che elabori qualche esempio specifico?`;
+                } else {
+                    aiResponse = `Grazie per la domanda su "${message}". Basandomi sul contenuto della lezione "${study.name}", posso dirti che questo argomento è collegato a ${study.data.highlights[0]}.\n\nPer approfondire, ti suggerisco di:\n1. Rivedere il riassunto completo\n2. Consultare il glossario per i termini tecnici\n3. Usare le flashcard per memorizzare i concetti\n\nHai altre domande specifiche?`;
+                }
+                
+                const aiMessageId = `msg_${study.id}_${appState.chatHistory[study.id].length}`;
+                appState.chatHistory[study.id].push({
+                    role: 'assistant',
+                    content: aiResponse
+                });
+                
+                messagesContainer.innerHTML += createChatMessageHTML({
+                    role: 'assistant',
+                    content: aiResponse
+                }, aiMessageId);
+                
+                saveChatHistory();
+                scrollChatToBottom();
+                
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Invia 📤';
+                appState.isChatLoading = false;
+                
+            }, 2000);
+        }
+
+        function scrollChatToBottom() {
+            setTimeout(() => {
+                const messagesContainer = document.getElementById('chatMessages');
+                if (messagesContainer) {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            }, 100);
+        }
+
+        function clearChatHistory() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            if (confirm('Vuoi cancellare tutta la conversazione?')) {
+                appState.chatHistory[study.id] = [];
+                saveChatHistory();
+                renderChat();
+            }
+        }
+
+        function exportChatHistory() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            const chatHistory = appState.chatHistory[study.id] || [];
+            
+            if (chatHistory.length === 0) {
+                alert('Non ci sono messaggi da esportare');
+                return;
+            }
+            
+            let exportText = `Chat AI - ${study.name}\n`;
+            exportText += `Data: ${new Date().toLocaleDateString('it-IT')}\n`;
+            exportText += `Materia: ${study.subject}\n\n`;
+            exportText += '='.repeat(50) + '\n\n';
+            
+            chatHistory.forEach((msg, i) => {
+                const role = msg.role === 'user' ? '👤 Tu' : '🤖 AI';
+                exportText += `${role}:\n${msg.content}\n\n`;
+            });
+            
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chat_${study.name.replace(/[^a-z0-9]/gi, '_')}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('✅ Chat esportata!');
         }
 
         // UTILITY FUNCTIONS
-        function getCurrentStudy() {
-            return appState.studies[appState.currentStudy];
-        }
-
-        function goBack() {
-            switchTab('library');
-        }
-
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 alert('✅ Contenuto copiato negli appunti!');
@@ -1169,15 +2100,50 @@ Ecco il contenuto trasformato secondo le tue specifiche...
             return `${diffDays} giorni fa`;
         }
 
-        function generatePowerPoint() {
-            alert('🚧 Funzione PowerPoint in sviluppo! Sarà disponibile presto.');
+        // FUNZIONI PER LE ALTRE SEZIONI (COMING SOON)
+        function renderTimeline() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            document.getElementById('contentArea').innerHTML = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>📅 Timeline degli Eventi</h3>
+                
+                <div class="section">
+                    ${(study.data.timeline || []).map((event, i) => `
+                        <div class="card">
+                            <strong>${i + 1}.</strong> ${event}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderMindmap() {
+            showComingSoon('Mappa Mentale');
+        }
+
+        function renderStudyGuide() {
+            showComingSoon('Guida di Studio');
+        }
+
+        function renderConceptAnalysis() {
+            showComingSoon('Analisi Concetto');
+        }
+
+        function showComingSoon(featureName) {
+            document.getElementById('contentArea').innerHTML = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <div class="loading">
+                    <h3>🚧 ${featureName}</h3>
+                    <p>Questa funzione sarà disponibile a breve!</p>
+                    <button class="btn" onclick="goBack()">← Torna alla Libreria</button>
+                </div>
+            `;
         }
 
         // INITIALIZE APP
-        if (localStorage.getItem('mentore_dark_mode') === 'true') {
-            document.body.classList.add('dark-mode');
-        }
-
         if (Object.keys(appState.studies).length > 0) {
             showMainApp();
             switchTab('library');
