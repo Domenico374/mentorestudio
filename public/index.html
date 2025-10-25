@@ -691,24 +691,13 @@
         </div>
 
         <div id="mainApp" class="hidden">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('library', event)">📚 Libreria Studi</button>
-                <button class="tab-btn hidden" id="tabSummary" onclick="switchTab('summary', event)">📝 Riassunto</button>
-                <button class="tab-btn hidden" id="tabHighlights" onclick="switchTab('highlights', event)">⭐ Punti Salienti</button>
-                <button class="tab-btn hidden" id="tabGlossary" onclick="switchTab('glossary', event)">📖 Glossario</button>
-                <button class="tab-btn hidden" id="tabTimeline" onclick="switchTab('timeline', event)">📅 Timeline</button>
-                <button class="tab-btn hidden" id="tabMindmap" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
-                <button class="tab-btn hidden" id="tabStudyGuide" onclick="switchTab('studyguide', event)">📘 Guida di Studio</button>
-                <button class="tab-btn hidden" id="tabConceptAnalysis" onclick="switchTab('conceptanalysis', event)">🔍 Analisi Concetto</button>
-                <button class="tab-btn hidden" id="tabCustomFormat" onclick="switchTab('customformat', event)">✨ Crea il Tuo</button>
-                <button class="tab-btn hidden" id="tabFlashcards" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
-                <button class="tab-btn hidden" id="tabQuiz" onclick="switchTab('quiz', event)">❓ Quiz</button>
-                <button class="tab-btn hidden" id="tabChat" onclick="switchTab('chat', event)">💬 Chat AI</button>
-            </div>
-            <div class="content-area" id="contentArea"></div>
-        </div>
-    </div>
-
+          <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('library', event)">📚 Libreria Studi</button>
+    <button class="tab-btn hidden" id="tabExplore" onclick="switchTab('explore', event)">🔍 Esplora Lezione</button>
+    <button class="tab-btn hidden" id="tabMemory" onclick="switchTab('memory', event)">🎯 Memoria & Test</button>
+    <button class="tab-btn hidden" id="tabAI" onclick="switchTab('ai', event)">🤖 Ripasso con AI</button>
+    <button class="tab-btn hidden" id="tabCreate" onclick="switchTab('create', event)">✨ Crea il Tuo</button>
+</div>
     <script>
         let appState = {
             studies: JSON.parse(localStorage.getItem('mentorestudio_studies')) || {},
@@ -834,26 +823,46 @@
             localStorage.setItem('chatHistory', JSON.stringify(appState.chatHistory));
         }
 
-        function switchTab(tab, e) {
-            if (e) {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-            }
-            switch(tab) {
-                case 'library': renderLibrary(); break;
-                case 'summary': renderSummary(); break;
-                case 'highlights': renderHighlights(); break;
-                case 'glossary': renderGlossary(); break;
-                case 'timeline': renderTimeline(); break;
-                case 'mindmap': renderMindMap(); break;
-                case 'studyguide': renderStudyGuide(); break;
-                case 'conceptanalysis': renderConceptAnalysis(); break;
-                case 'customformat': renderCustomFormat(); break;
-                case 'flashcards': renderFlashcardsAdvanced(); break;
-                case 'quiz': renderQuizAdvanced(); break;
-                case 'chat': renderChat(); break;
-            }
-        }
+    function switchTab(tab, e) {
+    if (e) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+    }
+    switch(tab) {
+        case 'library': 
+            renderLibrary(); 
+            break;
+            
+        case 'explore': 
+            renderExploreContainer(); 
+            break;
+            
+        case 'memory': 
+            renderMemoryContainer(); 
+            break;
+            
+        case 'ai': 
+            renderAIContainer(); 
+            break;
+            
+        case 'create': 
+            renderCreateContainer(); 
+            break;
+        
+        // Mantieni i vecchi case per compatibilità
+        case 'summary': renderSummary(); break;
+        case 'highlights': renderHighlights(); break;
+        case 'glossary': renderGlossary(); break;
+        case 'timeline': renderTimeline(); break;
+        case 'mindmap': renderMindMap(); break;
+        case 'studyguide': renderStudyGuide(); break;
+        case 'conceptanalysis': renderConceptAnalysis(); break;
+        case 'customformat': renderCustomFormat(); break;
+        case 'flashcards': renderFlashcardsAdvanced(); break;
+        case 'quiz': renderQuizAdvanced(); break;
+        case 'chat': renderChat(); break;
+    }
+}
 
         function renderLibrary() {
     let html = '<h2>📚 Le tue lezioni</h2>';
@@ -966,36 +975,31 @@
             alert('✅ PDF scaricato!');
         }
 
-        function selectStudy(studyId) {
-            appState.currentStudyId = studyId;
-            appState.currentFlashcard = 0;
-            appState.currentFlashcardFiltered = 0;
-            appState.flashcardMode = 'all';
-            appState.currentQuiz = 0;
-            appState.currentQuizFiltered = 0;
-            appState.quizMode = 'all';
-            appState.quizScore = 0;
-            appState.quizAnswers = [];
-            
-            if (!appState.chatHistory[studyId]) {
-                appState.chatHistory[studyId] = [];
-            }
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.add('hidden'));
-            document.getElementById('tabSummary').classList.remove('hidden');
-            document.getElementById('tabHighlights').classList.remove('hidden');
-            document.getElementById('tabGlossary').classList.remove('hidden');
-            document.getElementById('tabTimeline').classList.remove('hidden');
-            document.getElementById('tabMindmap').classList.remove('hidden');
-            document.getElementById('tabStudyGuide').classList.remove('hidden');
-            document.getElementById('tabConceptAnalysis').classList.remove('hidden');
-            document.getElementById('tabCustomFormat').classList.remove('hidden');
-            document.getElementById('tabFlashcards').classList.remove('hidden');
-            document.getElementById('tabQuiz').classList.remove('hidden');
-            document.getElementById('tabChat').classList.remove('hidden');
-            
-            switchTab('summary');
-        }
+function selectStudy(studyId) {
+    appState.currentStudyId = studyId;
+    appState.currentFlashcard = 0;
+    appState.currentFlashcardFiltered = 0;
+    appState.flashcardMode = 'all';
+    appState.currentQuiz = 0;
+    appState.currentQuizFiltered = 0;
+    appState.quizMode = 'all';
+    appState.quizScore = 0;
+    appState.quizAnswers = [];
+    
+    if (!appState.chatHistory[studyId]) {
+        appState.chatHistory[studyId] = [];
+    }
+    
+    // MODIFICA: Mostra solo i 4 contenitori principali
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.add('hidden'));
+    document.getElementById('tabExplore').classList.remove('hidden');
+    document.getElementById('tabMemory').classList.remove('hidden');
+    document.getElementById('tabAI').classList.remove('hidden');
+    document.getElementById('tabCreate').classList.remove('hidden');
+    
+    // Vai direttamente al primo contenitore
+    switchTab('explore');
+}
 
         function deleteStudy(studyId, e) {
             e.stopPropagation();
