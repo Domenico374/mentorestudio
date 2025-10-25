@@ -659,44 +659,6 @@
             color: #555;
         }
         body.dark-mode .mindmap-leaf { color: #aaa; }
-        
-        /* ========== CONTENITORI (NUOVI) ========== */
-        .containers-view {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-        .container-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border: 3px solid transparent;
-            text-align: center;
-        }
-        body.dark-mode .container-card { background: #2a2a3e; color: #e0e0e0; }
-        .container-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            border-color: var(--primary);
-        }
-        .container-icon { font-size: 3.5em; margin-bottom: 15px; }
-        .container-title { font-size: 1.3em; font-weight: bold; margin-bottom: 12px; color: var(--primary); }
-        body.dark-mode .container-title { color: var(--accent); }
-        .container-description { font-size: 0.95em; color: #666; line-height: 1.6; margin-bottom: 15px; }
-        body.dark-mode .container-description { color: #aaa; }
-        .container-features { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 15px; }
-        .feature-badge { background: #f5f7ff; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; color: var(--primary); font-weight: 500; }
-        body.dark-mode .feature-badge { background: #1a1a2e; color: var(--accent); }
-        @media (max-width: 768px) {
-            .containers-view { grid-template-columns: 1fr; }
-            .container-card { padding: 25px; }
-            .container-icon { font-size: 2.8em; }
-        }
-
     </style>
 </head>
 <body>
@@ -1019,198 +981,21 @@
                 appState.chatHistory[studyId] = [];
             }
             
-            // Mostra i contenitori invece delle tab
-            showContainers();
-        }
-
-        function showContainers() {
-            const study = getCurrentStudy();
-            if (!study) return;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.add('hidden'));
+            document.getElementById('tabSummary').classList.remove('hidden');
+            document.getElementById('tabHighlights').classList.remove('hidden');
+            document.getElementById('tabGlossary').classList.remove('hidden');
+            document.getElementById('tabTimeline').classList.remove('hidden');
+            document.getElementById('tabMindmap').classList.remove('hidden');
+            document.getElementById('tabStudyGuide').classList.remove('hidden');
+            document.getElementById('tabConceptAnalysis').classList.remove('hidden');
+            document.getElementById('tabCustomFormat').classList.remove('hidden');
+            document.getElementById('tabFlashcards').classList.remove('hidden');
+            document.getElementById('tabQuiz').classList.remove('hidden');
+            document.getElementById('tabChat').classList.remove('hidden');
             
-            let html = \`
-                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
-                <h2>\${study.name}</h2>
-                <p style="margin-bottom: 20px; color: #666;">
-                    <strong>Materia:</strong> \${study.subject} • 
-                    <strong>Data:</strong> \${study.date}
-                </p>
-                
-                <div class="containers-view">
-                    <!-- Contenitore 1: Esplora Lezione -->
-                    <div class="container-card" onclick="openContainer('esplora')">
-                        <div class="container-icon">🔍</div>
-                        <div class="container-title">Esplora Lezione</div>
-                        <div class="container-description">
-                            Comprendi i concetti attraverso riassunti, punti chiave, glossario e timeline
-                        </div>
-                        <div class="container-features">
-                            <span class="feature-badge">Riassunto</span>
-                            <span class="feature-badge">Punti Salienti</span>
-                            <span class="feature-badge">Glossario</span>
-                            <span class="feature-badge">Timeline</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Contenitore 2: Memoria & Test -->
-                    <div class="container-card" onclick="openContainer('memoria')">
-                        <div class="container-icon">🧠</div>
-                        <div class="container-title">Memoria & Test</div>
-                        <div class="container-description">
-                            Verifica la tua preparazione con flashcard e quiz interattivi
-                        </div>
-                        <div class="container-features">
-                            <span class="feature-badge">\${study.data.flashcards?.length || 0} Flashcard</span>
-                            <span class="feature-badge">\${study.data.quiz?.length || 0} Quiz</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Contenitore 3: Approfondimento -->
-                    <div class="container-card" onclick="openContainer('approfondimento')">
-                        <div class="container-icon">📚</div>
-                        <div class="container-title">Approfondimento</div>
-                        <div class="container-description">
-                            Mappa mentale, guida di studio e analisi concetti approfondita
-                        </div>
-                        <div class="container-features">
-                            <span class="feature-badge">Mappa Mentale</span>
-                            <span class="feature-badge">Guida Studio</span>
-                            <span class="feature-badge">Analisi Concetto</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Contenitore 4: Crea & Chatta -->
-                    <div class="container-card" onclick="openContainer('crea')">
-                        <div class="container-icon">✨</div>
-                        <div class="container-title">Crea & Chatta</div>
-                        <div class="container-description">
-                            Formati personalizzati e chat AI per domande e approfondimenti
-                        </div>
-                        <div class="container-features">
-                            <span class="feature-badge">Crea Formato</span>
-                            <span class="feature-badge">Chat AI</span>
-                        </div>
-                    </div>
-                </div>
-            \`;
-            
-            document.getElementById('contentArea').innerHTML = html;
+            switchTab('summary');
         }
-
-        function openContainer(containerName) {
-            const study = getCurrentStudy();
-            if (!study) return;
-            
-            let html = \`
-                <div class="back-btn" onclick="showContainers()">← Torna ai Contenitori</div>
-                <h2>\${study.name}</h2>
-            \`;
-            
-            switch(containerName) {
-                case 'esplora':
-                    html += renderEsploraContainer();
-                    break;
-                case 'memoria':
-                    html += renderMemoriaContainer();
-                    break;
-                case 'approfondimento':
-                    html += renderApprofondimentoContainer();
-                    break;
-                case 'crea':
-                    html += renderCreaContainer();
-                    break;
-            }
-            
-            document.getElementById('contentArea').innerHTML = html;
-        }
-
-        function renderEsploraContainer() {
-            return \`
-                <h3 style="margin: 20px 0;">🔍 Esplora Lezione</h3>
-                <div class="format-grid">
-                    <div class="format-card" onclick="switchTab('summary')">
-                        <div class="format-icon">📝</div>
-                        <div class="format-title">Riassunto</div>
-                        <div class="format-desc">Riassunto breve e completo</div>
-                    </div>
-                    <div class="format-card" onclick="switchTab('highlights')">
-                        <div class="format-icon">⭐</div>
-                        <div class="format-title">Punti Salienti</div>
-                        <div class="format-desc">Concetti chiave evidenziati</div>
-                    </div>
-                    <div class="format-card" onclick="switchTab('glossary')">
-                        <div class="format-icon">📖</div>
-                        <div class="format-title">Glossario</div>
-                        <div class="format-desc">Termini e definizioni</div>
-                    </div>
-                    <div class="format-card" onclick="switchTab('timeline')">
-                        <div class="format-icon">📅</div>
-                        <div class="format-title">Timeline</div>
-                        <div class="format-desc">Cronologia degli eventi</div>
-                    </div>
-                </div>
-            \`;
-        }
-
-        function renderMemoriaContainer() {
-            const study = getCurrentStudy();
-            return \`
-                <h3 style="margin: 20px 0;">🧠 Memoria & Test</h3>
-                <div class="format-grid">
-                    <div class="format-card" onclick="switchTab('flashcards')">
-                        <div class="format-icon">🎴</div>
-                        <div class="format-title">Flashcard</div>
-                        <div class="format-desc">\${study.data.flashcards?.length || 0} flashcard disponibili</div>
-                    </div>
-                    <div class="format-card" onclick="switchTab('quiz')">
-                        <div class="format-icon">❓</div>
-                        <div class="format-title">Quiz</div>
-                        <div class="format-desc">\${study.data.quiz?.length || 0} domande</div>
-                    </div>
-                </div>
-            \`;
-        }
-
-        function renderApprofondimentoContainer() {
-            return \`
-                <h3 style="margin: 20px 0;">📚 Approfondimento</h3>
-                <div class="format-grid">
-                    <div class="format-card" onclick="switchTab('mindmap')">
-                        <div class="format-icon">🧠</div>
-                        <div class="format-title">Mappa Mentale</div>
-                        <div class="format-desc">Visualizza i collegamenti</div>
-                    </div>
-                    <div class="format-card" onclick="switchTab('studyguide')">
-                        <div class="format-icon">📘</div>
-                        <div class="format-title">Guida di Studio</div>
-                        <div class="format-desc">Percorso di apprendimento</div>
-                    </div>
-                    <div class="format-card" onclick="switchTab('conceptanalysis')">
-                        <div class="format-icon">🔍</div>
-                        <div class="format-title">Analisi Concetto</div>
-                        <div class="format-desc">Approfondisci singoli concetti</div>
-                    </div>
-                </div>
-            \`;
-        }
-
-        function renderCreaContainer() {
-            return \`
-                <h3 style="margin: 20px 0;">✨ Crea & Chatta</h3>
-                <div class="format-grid">
-                    <div class="format-card" onclick="switchTab('customformat')">
-                        <div class="format-icon">✨</div>
-                        <div class="format-title">Crea il Tuo</div>
-                        <div class="format-desc">Formati personalizzati</div>
-                    </div>
-                    <div class="format-card" onclick="switchTab('chat')">
-                        <div class="format-icon">💬</div>
-                        <div class="format-title">Chat AI</div>
-                        <div class="format-desc">Fai domande all'AI</div>
-                    </div>
-                </div>
-            \`;
-        }
-
 
         function deleteStudy(studyId, e) {
             e.stopPropagation();
@@ -3329,3 +3114,4 @@ Contenuto: {content}`
     </script>
 </body>
 </html>
+
