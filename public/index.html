@@ -999,7 +999,494 @@ function selectStudy(studyId) {
     
     // Vai direttamente al primo contenitore
     switchTab('explore');
+}// ========================================
+// MENTORESTUDIO - NUOVE FUNZIONI PER 4 CONTENITORI
+// Aggiungi questo codice DOPO la funzione selectStudy()
+// ========================================
+
+// ========================================
+// CONTENITORE 1: ESPLORA LEZIONE
+// ========================================
+
+function renderExploreContainer() {
+    const study = getCurrentStudy();
+    if (!study) return;
+    
+    let html = `
+        <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+        <h2>${study.name}</h2>
+        <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+            <h3 style="color: white; margin-bottom: 10px;">🔍 Esplora Lezione</h3>
+            <p style="opacity: 0.9;">Comprendi il contenuto attraverso riassunti, punti chiave e timeline</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <button class="format-card" onclick="showExploreSection('summary')" style="text-align: center;">
+                <div class="format-icon">📝</div>
+                <div class="format-title">Riassunto</div>
+                <div class="format-desc">Breve e Completo</div>
+            </button>
+            
+            <button class="format-card" onclick="showExploreSection('highlights')" style="text-align: center;">
+                <div class="format-icon">⭐</div>
+                <div class="format-title">Punti Salienti</div>
+                <div class="format-desc">${(study.data.highlights || []).length} concetti chiave</div>
+            </button>
+            
+            <button class="format-card" onclick="showExploreSection('glossary')" style="text-align: center;">
+                <div class="format-icon">📖</div>
+                <div class="format-title">Glossario</div>
+                <div class="format-desc">${(study.data.glossary || []).length} termini</div>
+            </button>
+            
+            <button class="format-card" onclick="showExploreSection('timeline')" style="text-align: center;">
+                <div class="format-icon">🕒</div>
+                <div class="format-title">Timeline</div>
+                <div class="format-desc">Sequenza temporale</div>
+            </button>
+        </div>
+        
+        <div id="exploreContentArea">
+            ${renderSummaryInline()}
+        </div>
+    `;
+    
+    document.getElementById('contentArea').innerHTML = html;
 }
+
+function showExploreSection(section) {
+    const contentArea = document.getElementById('exploreContentArea');
+    if (!contentArea) return;
+    
+    switch(section) {
+        case 'summary': contentArea.innerHTML = renderSummaryInline(); break;
+        case 'highlights': contentArea.innerHTML = renderHighlightsInline(); break;
+        case 'glossary': contentArea.innerHTML = renderGlossaryInline(); break;
+        case 'timeline': contentArea.innerHTML = renderTimelineInline(); break;
+    }
+    
+    contentArea.scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderSummaryInline() {
+    const study = getCurrentStudy();
+    return `
+        <div class="section">
+            <h3>📝 Riassunto Breve</h3>
+            <div class="card">${study.data.summary_short || 'N/A'}</div>
+        </div>
+        <div class="section">
+            <h3>📖 Riassunto Completo</h3>
+            <div class="card">${study.data.summary_long || 'N/A'}</div>
+        </div>
+    `;
+}
+
+function renderHighlightsInline() {
+    const study = getCurrentStudy();
+    let html = '<h3>⭐ Punti Salienti</h3>';
+    
+    (study.data.highlights || []).forEach((h, i) => {
+        const highlightId = `highlight_inline_${i}`;
+        const hasExplanation = study.data.highlightDetails && study.data.highlightDetails[i];
+        
+        html += `
+            <div class="highlight-item" onclick="toggleHighlight('${highlightId}')">
+                <div class="highlight-header">
+                    <div class="highlight-title">
+                        <strong style="color: var(--primary);">${i + 1}.</strong> 
+                        <span class="key-concept" style="display: inline; padding: 4px 10px;">${h}</span>
+                    </div>
+                    <span class="highlight-icon" id="${highlightId}_icon">▼</span>
+                </div>
+                <div class="highlight-details" id="${highlightId}_details">
+                    ${hasExplanation ? `<p>${study.data.highlightDetails[i]}</p>` : `
+                        <p style="color: #999; font-style: italic;">Genera spiegazione con l'AI</p>
+                        <button class="generate-btn" onclick="generateHighlightExplanation(${i}, event)">🤖 Genera Spiegazione</button>
+                    `}
+                </div>
+            </div>
+        `;
+    });
+    
+    return html;
+}
+
+function renderGlossaryInline() {
+    const study = getCurrentStudy();
+    let html = '<h3>📖 Glossario</h3>';
+    html += '<input type="text" class="search-box" id="glossarySearchInline" placeholder="🔍 Cerca..." onkeyup="filterGlossaryInline()">';
+    html += '<div id="glossaryContentInline">';
+    
+    (study.data.glossary || []).forEach((item, i) => {
+        const glossaryId = `glossary_inline_${i}`;
+        html += `
+            <div class="highlight-item" data-term="${item.term.toLowerCase()}" onclick="toggleHighlight('${glossaryId}')">
+                <div class="highlight-header">
+                    <div class="highlight-title">
+                        <strong style="color: var(--secondary); font-size: 1.1em;">${item.term}</strong>
+                    </div>
+                    <span class="highlight-icon" id="${glossaryId}_icon">▼</span>
+                </div>
+                <div class="highlight-details" id="${glossaryId}_details">
+                    <p><strong>Definizione:</strong> ${item.definition}</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    return html;
+}
+
+function filterGlossaryInline() {
+    const searchTerm = document.getElementById('glossarySearchInline').value.toLowerCase();
+    const items = document.querySelectorAll('#glossaryContentInline .highlight-item');
+    items.forEach(item => {
+        const term = item.getAttribute('data-term');
+        item.style.display = term.includes(searchTerm) ? 'block' : 'none';
+    });
+}
+
+function renderTimelineInline() {
+    const study = getCurrentStudy();
+    let timeline = study.data.timeline || [];
+    
+    if (timeline.length === 0 && study.data.highlights) {
+        timeline = study.data.highlights.slice(0, 8).map((h, i) => ({
+            date: `Punto ${i+1}`,
+            event: h,
+            details: h
+        }));
+    }
+    
+    let html = '<h3>🕒 Timeline</h3>';
+    html += '<div style="position: relative; padding: 20px 0;">';
+    html += '<div style="position: absolute; left: 30px; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--primary), var(--secondary));"></div>';
+    
+    timeline.forEach((item, i) => {
+        html += `
+            <div style="display: flex; align-items: flex-start; margin: 20px 0; position: relative;">
+                <div style="position: absolute; left: 21px; width: 20px; height: 20px; background: white; border: 4px solid var(--primary); border-radius: 50%; z-index: 1;"></div>
+                <div style="margin-left: 60px; flex: 1;">
+                    <div class="card" style="margin: 0;">
+                        <span style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9em;">${item.date}</span>
+                        <p style="margin: 10px 0 0 0; font-weight: 600;">${item.event}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    return html;
+}
+
+// ========================================
+// CONTENITORE 2: MEMORIA & TEST
+// ========================================
+
+function renderMemoryContainer() {
+    const study = getCurrentStudy();
+    if (!study) return;
+    
+    const flashcardCount = (study.data.flashcards || []).length;
+    const quizCount = (study.data.quiz || []).length;
+    
+    let html = `
+        <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+        <h2>${study.name}</h2>
+        <div style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+            <h3 style="color: white; margin-bottom: 10px;">🎯 Memoria & Test</h3>
+            <p style="opacity: 0.9;">Verifica la tua preparazione con flashcard e quiz</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div class="format-card" onclick="switchTab('flashcards')" style="text-align: center; cursor: pointer;">
+                <div class="format-icon">🎴</div>
+                <div class="format-title">Flashcard</div>
+                <div class="format-desc">${flashcardCount} carte disponibili</div>
+                <button class="btn" style="margin-top: 10px;" onclick="event.stopPropagation(); switchTab('flashcards')">Inizia Ripasso</button>
+            </div>
+            
+            <div class="format-card" onclick="switchTab('quiz')" style="text-align: center; cursor: pointer;">
+                <div class="format-icon">❓</div>
+                <div class="format-title">Quiz</div>
+                <div class="format-desc">${quizCount} domande disponibili</div>
+                <button class="btn" style="margin-top: 10px;" onclick="event.stopPropagation(); switchTab('quiz')">Inizia Quiz</button>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>📊 Statistiche di Apprendimento</h3>
+            ${renderProgressStats()}
+        </div>
+    `;
+    
+    document.getElementById('contentArea').innerHTML = html;
+}
+
+function renderProgressStats() {
+    const study = getCurrentStudy();
+    if (!study) return '<p>Dati non disponibili</p>';
+    
+    const flashcardStatsData = JSON.parse(localStorage.getItem('flashcardStats')) || {};
+    const totalFlashcards = (study.data.flashcards || []).length;
+    
+    let flashcardViews = 0;
+    let easyCards = 0, mediumCards = 0, difficultCards = 0;
+    
+    Object.keys(flashcardStatsData).forEach(key => {
+        if (key.startsWith(study.id)) {
+            flashcardViews += flashcardStatsData[key].views || 0;
+            const diff = flashcardStatsData[key].difficulty;
+            if (diff === 'easy') easyCards++;
+            else if (diff === 'medium') mediumCards++;
+            else if (diff === 'difficult') difficultCards++;
+        }
+    });
+    
+    return `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div class="card" style="text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">🎴</div>
+                <strong>Flashcard Studiate</strong>
+                <div style="font-size: 1.5em; color: var(--primary); margin-top: 5px;">${flashcardViews} / ${totalFlashcards}</div>
+            </div>
+            
+            <div class="card" style="text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">🟢</div>
+                <strong>Carte Facili</strong>
+                <div style="font-size: 1.5em; color: #4caf50; margin-top: 5px;">${easyCards}</div>
+            </div>
+            
+            <div class="card" style="text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">🟠</div>
+                <strong>Carte Medie</strong>
+                <div style="font-size: 1.5em; color: #ffa726; margin-top: 5px;">${mediumCards}</div>
+            </div>
+            
+            <div class="card" style="text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">🔴</div>
+                <strong>Carte Difficili</strong>
+                <div style="font-size: 1.5em; color: #f44336; margin-top: 5px;">${difficultCards}</div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <button class="btn" onclick="resetProgress()" style="background: var(--danger);">🔄 Azzera Statistiche</button>
+        </div>
+    `;
+}
+
+function resetProgress() {
+    if (confirm('Vuoi azzerare tutte le statistiche di apprendimento?')) {
+        localStorage.removeItem('flashcardStats');
+        localStorage.removeItem('quizStats');
+        alert('✅ Statistiche azzerate!');
+        renderMemoryContainer();
+    }
+}
+
+// ========================================
+// CONTENITORE 3: RIPASSO CON AI
+// ========================================
+
+function renderAIContainer() {
+    const study = getCurrentStudy();
+    if (!study) return;
+    
+    let html = `
+        <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+        <h2>${study.name}</h2>
+        <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+            <h3 style="color: white; margin-bottom: 10px;">🤖 Ripasso con AI</h3>
+            <p style="opacity: 0.9;">Approfondisci con l'intelligenza artificiale</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <button class="format-card" onclick="switchTab('chat')" style="text-align: center;">
+                <div class="format-icon">💬</div>
+                <div class="format-title">Chat AI</div>
+                <div class="format-desc">Fai domande sulla lezione</div>
+            </button>
+            
+            <button class="format-card" onclick="showAISection('critical')" style="text-align: center;">
+                <div class="format-icon">🎯</div>
+                <div class="format-title">Domande Critiche</div>
+                <div class="format-desc">Analisi approfondita</div>
+            </button>
+            
+            <button class="format-card" onclick="switchTab('studyguide')" style="text-align: center;">
+                <div class="format-icon">📋</div>
+                <div class="format-title">Guida di Studio</div>
+                <div class="format-desc">Domande per esami</div>
+            </button>
+        </div>
+        
+        <div id="aiContentArea">
+            <div class="card" style="text-align: center; padding: 40px;">
+                <div style="font-size: 3em; margin-bottom: 15px;">🤖</div>
+                <h3>Seleziona una funzione AI</h3>
+                <p style="color: #666; margin-top: 10px;">Scegli un'opzione sopra per iniziare il ripasso intelligente</p>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('contentArea').innerHTML = html;
+}
+
+function showAISection(section) {
+    const contentArea = document.getElementById('aiContentArea');
+    if (!contentArea) return;
+    
+    if (section === 'critical') {
+        contentArea.innerHTML = renderCriticalQuestions();
+    }
+    
+    contentArea.scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderCriticalQuestions() {
+    const study = getCurrentStudy();
+    const questions = study.data.criticalQuestions || [];
+    
+    let html = '<h3>🎯 Domande Critiche per Analisi Approfondita</h3>';
+    html += '<p style="color: #666; margin-bottom: 20px;">Domande che stimolano il pensiero critico</p>';
+    
+    if (questions.length === 0) {
+        html += `
+            <div class="card" style="text-align: center; padding: 30px;">
+                <p style="color: #999; margin-bottom: 15px;">Nessuna domanda critica ancora generata</p>
+                <button class="btn" onclick="generateCriticalQuestions()">🤖 Genera Domande Critiche</button>
+            </div>
+        `;
+    } else {
+        questions.forEach((q, i) => {
+            html += `
+                <div class="question-card">
+                    <span class="question-number">Domanda ${i + 1}</span>
+                    <div class="question-text">${q}</div>
+                </div>
+            `;
+        });
+        html += `<button class="btn" onclick="generateCriticalQuestions()" style="margin-top: 15px;">🔄 Genera Altre Domande</button>`;
+    }
+    
+    return html;
+}
+
+async function generateCriticalQuestions() {
+    const study = getCurrentStudy();
+    const contentArea = document.getElementById('aiContentArea');
+    
+    contentArea.innerHTML = `<div class="loading"><div class="spinner"></div><h3>🤖 Generazione Domande Critiche</h3><p>Creazione in corso...</p></div>`;
+    
+    try {
+        const context = `Materia: ${study.subject}\nLezione: ${study.name}\n\nRiassunto: ${study.data.summary_long}`;
+        const prompt = `Genera 5 domande critiche che richiedono analisi approfondita su:\n\n${context}\n\nLe domande devono:\n- Stimolare il pensiero critico\n- Richiedere collegamenti tra concetti\n- Iniziare con "Perché...", "Come...", "Quale impatto..."\n\nFormato: una domanda per riga, numerate.`;
+        
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: prompt, conversationHistory: [] })
+        });
+        
+        if (!response.ok) throw new Error('Errore nella generazione');
+        
+        const data = await response.json();
+        const questions = data.response.split('\n').filter(line => line.trim().length > 20).map(line => line.replace(/^\d+\.\s*/, '').trim());
+        
+        if (!study.data.criticalQuestions) study.data.criticalQuestions = [];
+        questions.forEach(q => { if (!study.data.criticalQuestions.includes(q)) study.data.criticalQuestions.push(q); });
+        
+        saveStudies();
+        showAISection('critical');
+        
+    } catch (error) {
+        contentArea.innerHTML = `<div class="error-message">❌ Errore: ${error.message}</div>`;
+    }
+}
+
+// ========================================
+// CONTENITORE 4: CREA IL TUO FORMATO
+// ========================================
+
+function renderCreateContainer() {
+    const study = getCurrentStudy();
+    if (!study) return;
+    
+    let html = `
+        <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+        <h2>${study.name}</h2>
+        <div style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+            <h3 style="color: white; margin-bottom: 10px;">✨ Crea il Tuo Formato</h3>
+            <p style="opacity: 0.9;">Trasforma il contenuto in qualsiasi formato desideri</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <button class="format-card" onclick="generateCustomFormat('powerpoint')" style="text-align: center;">
+                <div class="format-icon">📊</div>
+                <div class="format-title">Presentazione</div>
+                <div class="format-desc">PowerPoint (.pptx)</div>
+            </button>
+            
+            <button class="format-card" onclick="generateCustomFormat('schema')" style="text-align: center;">
+                <div class="format-icon">📋</div>
+                <div class="format-title">Schema di Studio</div>
+                <div class="format-desc">Struttura avanzata</div>
+            </button>
+            
+            <button class="format-card" onclick="generateCustomFormat('tabella')" style="text-align: center;">
+                <div class="format-icon">📊</div>
+                <div class="format-title">Tabella Comparativa</div>
+                <div class="format-desc">Confronto organizzato</div>
+            </button>
+            
+            <button class="format-card" onclick="switchTab('mindmap')" style="text-align: center;">
+                <div class="format-icon">🧠</div>
+                <div class="format-title">Mappa Mentale</div>
+                <div class="format-desc">Struttura gerarchica</div>
+            </button>
+            
+            <button class="format-card" onclick="switchTab('conceptanalysis')" style="text-align: center;">
+                <div class="format-icon">🔍</div>
+                <div class="format-title">Analisi Concetto</div>
+                <div class="format-desc">3 pilastri fondamentali</div>
+            </button>
+            
+            <button class="format-card" onclick="generateCustomFormat('dialogo')" style="text-align: center;">
+                <div class="format-icon">💬</div>
+                <div class="format-title">Dialogo Q&A</div>
+                <div class="format-desc">Conversazione Socratica</div>
+            </button>
+        </div>
+        
+        <div class="custom-input-box">
+            <h4 style="color: var(--primary); margin-bottom: 15px;">🎨 Formato Libero</h4>
+            <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">Scrivi qualsiasi richiesta di trasformazione</p>
+            <textarea class="custom-textarea" id="createCustomInput" placeholder="Es: 'Trasforma in FAQ', 'Genera script podcast'..."></textarea>
+            <button class="btn" onclick="generateCustomFromCreate()" style="margin-top: 15px;">🚀 Genera Formato Personalizzato</button>
+        </div>
+        
+        <div id="createContentArea"></div>
+    `;
+    
+    document.getElementById('contentArea').innerHTML = html;
+}
+
+function generateCustomFromCreate() {
+    const input = document.getElementById('createCustomInput').value.trim();
+    if (!input) {
+        alert('⚠️ Inserisci una richiesta!');
+        return;
+    }
+    generateCustomFormat('custom');
+}
+
+// ========================================
+// FINE NUOVE FUNZIONI
+// ========================================
 
         function deleteStudy(studyId, e) {
             e.stopPropagation();
