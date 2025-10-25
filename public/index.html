@@ -5,541 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MentoreStudio - Il tuo mentore personale per lo studio intelligente">
     <title>📚 MentoreStudio - Studia Intelligente</title>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
-        /* ===== RESET & BASE ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         :root {
             --primary: #667eea;
             --secondary: #764ba2;
             --accent: #f093fb;
             --success: #4caf50;
             --danger: #f44336;
-            
-            /* New Design Colors */
-            --comprendi-color: #10B981;
-            --comprendi-bg: #D1FAE5;
-            --memorizza-color: #3B82F6;
-            --memorizza-bg: #DBEAFE;
-            --approfondisci-color: #6366F1;
-            --approfondisci-bg: #E0E7FF;
-            --personalizza-color: #F97316;
-            --personalizza-bg: #FFEDD5;
         }
-        
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             min-height: 100vh;
             padding: 20px;
         }
-        
-        body.dark-mode { 
-            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
-        }
-        
-        .container { max-width: 1400px; margin: 0 auto; }
-        
-        /* ===== HEADER ===== */
+        body.dark-mode { background: #0f0f1e; }
+        .container { max-width: 1200px; margin: 0 auto; }
         .header {
             background: white;
             border-radius: 15px;
-            padding: 20px 30px;
-            margin-bottom: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        
-        body.dark-mode .header { 
-            background: #2a2a3e; 
-            color: #e0e0e0; 
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logo {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-        
-        h1 { 
-            font-size: 1.8em; 
-            color: #1f2937;
-            font-weight: 700;
-        }
-        
-        body.dark-mode h1 { color: #e0e0e0; }
-        
-        .header-controls { 
-            display: flex; 
-            gap: 10px; 
-        }
-        
+        body.dark-mode .header { background: #2a2a3e; color: #e0e0e0; }
+        h1 { font-size: 1.8em; color: var(--primary); }
+        body.dark-mode h1 { color: var(--accent); }
+        .header-controls { display: flex; gap: 10px; }
         .toggle-btn {
-            padding: 10px 18px;
+            padding: 10px 15px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             background: var(--primary);
             color: white;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9em;
-            transition: all 0.3s;
+            font-weight: bold;
         }
-        
-        .toggle-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-        
-        /* ===== UPLOAD SECTION ===== */
         .upload-section {
             background: white;
-            border-radius: 20px;
-            padding: 50px 40px;
+            border-radius: 15px;
+            padding: 40px;
             text-align: center;
             margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        
-        body.dark-mode .upload-section { 
-            background: #2a2a3e; 
-            color: #e0e0e0; 
-        }
-        
-        .upload-section h2 {
-            font-size: 2em;
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-        
-        .upload-section p {
-            color: #6b7280;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
-        
+        body.dark-mode .upload-section { background: #2a2a3e; color: #e0e0e0; }
         input[type="file"], input[type="text"] {
-            padding: 14px;
+            padding: 12px;
             margin: 10px 0;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
             width: 100%;
-            max-width: 450px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1em;
-            transition: all 0.3s;
+            max-width: 400px;
         }
-        
-        input[type="file"]:hover, input[type="text]:hover {
-            border-color: var(--primary);
-        }
-        
-        input[type="file"]:focus, input[type="text]:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        body.dark-mode input { 
-            background: #1a1a2e; 
-            color: #e0e0e0; 
-            border-color: #3a3a4e; 
-        }
-        
+        body.dark-mode input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
         .subject-select {
-            padding: 14px;
+            padding: 12px;
             margin: 10px 0;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
             font-size: 1em;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s;
         }
-        
-        .subject-select:hover {
-            border-color: var(--primary);
-        }
-        
-        .subject-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        body.dark-mode .subject-select { 
-            background: #1a1a2e; 
-            color: #e0e0e0; 
-            border-color: #3a3a4e; 
-        }
-        
+        body.dark-mode .subject-select { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
         .btn {
-            padding: 14px 32px;
+            padding: 12px 25px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             background: var(--primary);
             color: white;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 1em;
-            margin-top: 20px;
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
+            font-weight: bold;
+            margin-top: 15px;
         }
-        
-        .btn:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3); 
-        }
-        
-        .btn:disabled { 
-            background: #cbd5e1; 
-            cursor: not-allowed; 
-            transform: none; 
-            box-shadow: none;
-        }
-        
-        .btn-delete { 
-            background: var(--danger); 
-            padding: 8px 15px; 
-            margin: 0; 
-            font-size: 0.9em; 
-        }
-        
-        .btn-export { 
-            background: #2196F3; 
-            padding: 8px 15px; 
-            margin: 0; 
-            font-size: 0.9em; 
-        }
-
-        /* ===== NEW DESIGN: CARD GRID 2X2 ===== */
-        .new-home-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .new-home-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .new-home-header h2 {
-            font-size: 2.2em;
-            color: #1f2937;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        
-        body.dark-mode .new-home-header h2 {
-            color: #e0e0e0;
-        }
-        
-        .new-home-header p {
-            font-size: 1.1em;
-            color: #6b7280;
-        }
-        
-        body.dark-mode .new-home-header p {
-            color: #9ca3af;
-        }
-        
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 24px;
-            margin-bottom: 30px;
-        }
-        
-        @media (max-width: 1100px) {
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .function-card {
-            background: white;
-            border-radius: 16px;
-            padding: 28px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            border-left: 4px solid;
-        }
-        
-        body.dark-mode .function-card {
-            background: #2a2a3e;
-        }
-        
-        .function-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        }
-        
-        .function-card.comprendi {
-            background-color: var(--comprendi-bg);
-            border-left-color: var(--comprendi-color);
-        }
-        
-        body.dark-mode .function-card.comprendi {
-            background-color: rgba(16, 185, 129, 0.1);
-        }
-        
-        .function-card.memorizza {
-            background-color: var(--memorizza-bg);
-            border-left-color: var(--memorizza-color);
-        }
-        
-        body.dark-mode .function-card.memorizza {
-            background-color: rgba(59, 130, 246, 0.1);
-        }
-        
-        .function-card.approfondisci {
-            background-color: var(--approfondisci-bg);
-            border-left-color: var(--approfondisci-color);
-        }
-        
-        body.dark-mode .function-card.approfondisci {
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-        
-        .function-card.personalizza {
-            background-color: var(--personalizza-bg);
-            border-left-color: var(--personalizza-color);
-        }
-        
-        body.dark-mode .function-card.personalizza {
-            background-color: rgba(249, 115, 22, 0.1);
-        }
-        
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-        
-        .comprendi .card-icon {
-            background-color: rgba(16, 185, 129, 0.15);
-        }
-        
-        .memorizza .card-icon {
-            background-color: rgba(59, 130, 246, 0.15);
-        }
-        
-        .approfondisci .card-icon {
-            background-color: rgba(99, 102, 241, 0.15);
-        }
-        
-        .personalizza .card-icon {
-            background-color: rgba(249, 115, 22, 0.15);
-        }
-        
-        .card-title {
-            font-size: 1.5em;
-            font-weight: 700;
-            margin: 0;
-        }
-        
-        .comprendi .card-title {
-            color: var(--comprendi-color);
-        }
-        
-        .memorizza .card-title {
-            color: var(--memorizza-color);
-        }
-        
-        .approfondisci .card-title {
-            color: var(--approfondisci-color);
-        }
-        
-        .personalizza .card-title {
-            color: var(--personalizza-color);
-        }
-        
-        .card-description {
-            color: #6b7280;
-            font-size: 0.9em;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-        
-        body.dark-mode .card-description {
-            color: #9ca3af;
-        }
-        
-        .card-divider {
-            height: 1px;
-            background-color: rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        
-        body.dark-mode .card-divider {
-            background-color: rgba(255,255,255,0.1);
-        }
-        
-        .card-functions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .function-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            background-color: transparent;
-            border: none;
-            width: 100%;
-            text-align: left;
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .function-item:hover {
-            background-color: rgba(0,0,0,0.05);
-        }
-        
-        body.dark-mode .function-item:hover {
-            background-color: rgba(255,255,255,0.05);
-        }
-        
-        .comprendi .function-item:hover {
-            background-color: rgba(16, 185, 129, 0.1);
-        }
-        
-        .memorizza .function-item:hover {
-            background-color: rgba(59, 130, 246, 0.1);
-        }
-        
-        .approfondisci .function-item:hover {
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-        
-        .personalizza .function-item:hover {
-            background-color: rgba(249, 115, 22, 0.1);
-        }
-        
-        .function-icon {
-            font-size: 20px;
-            flex-shrink: 0;
-            transition: transform 0.2s;
-        }
-        
-        .function-item:hover .function-icon {
-            transform: scale(1.15);
-        }
-        
-        .function-name {
-            flex: 1;
-            font-weight: 500;
-            color: #1f2937;
-            font-size: 1em;
-        }
-        
-        body.dark-mode .function-name {
-            color: #e0e0e0;
-        }
-        
-        .function-arrow {
-            opacity: 0;
-            transition: all 0.2s;
-            color: inherit;
-            font-size: 18px;
-        }
-        
-        .function-item:hover .function-arrow {
-            opacity: 1;
-            transform: translateX(4px);
-        }
-        
-        .card-footer {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(0,0,0,0.1);
-        }
-        
-        body.dark-mode .card-footer {
-            border-top-color: rgba(255,255,255,0.1);
-        }
-        
-        .card-footer-text {
-            font-size: 0.85em;
-            color: #6b7280;
-            font-weight: 500;
-        }
-        
-        body.dark-mode .card-footer-text {
-            color: #9ca3af;
-        }
-
-        /* ===== BACK TO HOME BUTTON ===== */
-        .back-to-home-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            color: #6b7280;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 20px;
-            font-size: 0.95em;
-        }
-        
-        .back-to-home-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateX(-4px);
-        }
-        
-        body.dark-mode .back-to-home-btn {
-            background: #2a2a3e;
-            border-color: #3a3a4e;
-            color: #9ca3af;
-        }
-        
-        body.dark-mode .back-to-home-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* ===== REST OF ORIGINAL STYLES ===== */
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .btn-delete { background: var(--danger); padding: 8px 15px; margin: 0; font-size: 0.9em; }
+        .btn-export { background: #2196F3; padding: 8px 15px; margin: 0; font-size: 0.9em; }
         .tabs {
             display: flex;
             gap: 10px;
@@ -638,96 +192,145 @@
         .flashcard-extra-title {
             font-weight: bold;
             margin-bottom: 8px;
-            font-size: 1em;
-        }
-        .flashcard-stats {
             display: flex;
-            gap: 15px;
-            margin-top: 10px;
-            padding: 15px;
-            background: rgba(255,255,255,0.1);
+            align-items: center;
+            gap: 8px;
+        }
+        .expand-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.5);
+            color: white;
+            padding: 8px 15px;
             border-radius: 8px;
-        }
-        .flashcard-stat {
-            flex: 1;
-            text-align: center;
-        }
-        .flashcard-stat-label {
+            cursor: pointer;
             font-size: 0.85em;
-            opacity: 0.9;
-            margin-bottom: 4px;
-        }
-        .flashcard-stat-value {
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-        .flashcard-controls {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .flashcard-difficulty-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
+            margin: 5px;
             transition: all 0.3s;
-            min-width: 100px;
         }
-        .flashcard-difficulty-btn.easy { background: #4caf50; color: white; }
-        .flashcard-difficulty-btn.medium { background: #ffa726; color: white; }
-        .flashcard-difficulty-btn.difficult { background: #f44336; color: white; }
-        .flashcard-difficulty-btn:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .quiz-question { background: #f5f7ff; padding: 25px; border-radius: 10px; margin: 20px 0; border-left: 4px solid var(--primary); }
-        body.dark-mode .quiz-question { background: #1a1a2e; }
-        .quiz-question h3 { color: var(--primary); margin-bottom: 15px; font-size: 1.2em; }
-        body.dark-mode .quiz-question h3 { color: var(--accent); }
-        .quiz-options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
-        .quiz-option {
-            padding: 15px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            cursor: pointer;
+        .expand-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        .controls { display: flex; gap: 10px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
+        .quiz-option { 
+            background: #f5f7ff; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            border: 2px solid transparent; 
             transition: all 0.3s;
-            font-size: 1em;
         }
-        body.dark-mode .quiz-option { background: #2a2a3e; border-color: #3a3a4e; color: #e0e0e0; }
-        .quiz-option:hover { border-color: var(--primary); background: #f0f0ff; }
-        body.dark-mode .quiz-option:hover { background: #333347; }
-        .quiz-option.correct { border-color: var(--success); background: #e8f5e9; }
-        .quiz-option.wrong { border-color: var(--danger); background: #ffebee; }
-        .quiz-option.disabled { cursor: not-allowed; opacity: 0.6; }
-        .quiz-score {
+        body.dark-mode .quiz-option { background: #1a1a2e; }
+        .quiz-option:hover { background: #e8eaff; transform: translateX(5px); }
+        .quiz-option.selected { border-color: var(--primary); background: #e8eaff; }
+        .quiz-option.correct { border-color: var(--success); background: #c8e6c9; }
+        .quiz-option.incorrect { border-color: var(--danger); background: #ffcdd2; }
+        .timer-display {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 25px;
             border-radius: 10px;
-            text-align: center;
             margin: 20px 0;
         }
-        .quiz-score h3 { font-size: 2em; margin-bottom: 10px; }
-        .quiz-score p { font-size: 1.2em; }
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            height: 600px;
-            background: #f5f7ff;
-            border-radius: 10px;
-            overflow: hidden;
+        .timer-display.warning {
+            background: linear-gradient(135deg, #ffa726, #fb8c00);
+            animation: pulse 1s infinite;
         }
-        body.dark-mode .chat-container { background: #1a1a2e; }
-        .chat-header {
-            background: var(--primary);
-            color: white;
-            padding: 15px 20px;
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .note-section { background: #fff3cd; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #ffc107; }
+        body.dark-mode .note-section { background: #3d3d1a; color: #e0e0e0; }
+        .note-input { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9em; }
+        body.dark-mode .note-input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
+        .key-concept { 
+            display: inline-block; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            color: white; 
+            padding: 8px 15px; 
+            border-radius: 20px; 
+            margin: 3px; 
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+        .back-btn { display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--primary); margin-bottom: 20px; font-weight: bold; }
+        body.dark-mode .back-btn { color: var(--accent); }
+        .review-item {
+            background: #f5f7ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid var(--primary);
+        }
+        .review-item.wrong { border-left-color: var(--danger); background: #ffebee; }
+        .review-item.correct { border-left-color: var(--success); background: #e8f5e9; }
+
+        .highlight-item {
+            background: #f5f7ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        body.dark-mode .highlight-item { background: #1a1a2e; }
+        .highlight-item:hover { transform: translateX(5px); background: #e8eaff; }
+        body.dark-mode .highlight-item:hover { background: #2a2a3e; }
+        .highlight-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            gap: 15px;
         }
+        .highlight-title {
+            flex: 1;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+        .highlight-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+        .highlight-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(102, 126, 234, 0.2);
+            color: #555;
+            line-height: 1.8;
+            display: none;
+        }
+        body.dark-mode .highlight-details { color: #bbb; border-top-color: rgba(240, 147, 251, 0.2); }
+        .generate-btn {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* CHAT STYLES */
+        .chat-container { display: flex; flex-direction: column; height: 600px; max-height: 70vh; }
         .chat-messages {
             flex: 1;
             overflow-y: auto;
@@ -735,244 +338,697 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
-        .chat-message {
-            display: flex;
-            gap: 10px;
-            max-width: 80%;
+        body.dark-mode .chat-messages { background: #1a1a2e; }
+        .chat-message { display: flex; gap: 10px; animation: slideIn 0.3s ease; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .chat-message.user { align-self: flex-end; flex-direction: row-reverse; }
+        .chat-message.user { flex-direction: row-reverse; }
         .chat-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
             font-size: 1.2em;
+            flex-shrink: 0;
         }
-        .chat-message.user .chat-avatar { background: var(--secondary); }
+        .chat-message.user .chat-avatar { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+        .chat-message.ai .chat-avatar { background: linear-gradient(135deg, var(--accent), #f5576c); color: white; }
         .chat-bubble {
-            background: white;
+            max-width: 70%;
             padding: 12px 16px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            line-height: 1.5;
+            word-wrap: break-word;
         }
-        body.dark-mode .chat-bubble { background: #2a2a3e; color: #e0e0e0; }
-        .chat-message.user .chat-bubble { background: var(--primary); color: white; }
-        .typing-indicator {
-            display: flex;
-            gap: 4px;
-            padding: 5px 0;
+        .chat-message.user .chat-bubble {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-bottom-right-radius: 5px;
         }
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--primary);
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-        body.dark-mode .typing-dot { background: var(--accent); }
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-10px); }
-        }
-        .chat-input-area {
-            padding: 15px 20px;
+        .chat-message.ai .chat-bubble {
             background: white;
-            border-top: 1px solid #e0e0e0;
+            color: #333;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        body.dark-mode .chat-message.ai .chat-bubble { background: #2a2a3e; color: #e0e0e0; }
+        .chat-input-container {
             display: flex;
             gap: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
         }
-        body.dark-mode .chat-input-area { background: #2a2a3e; border-top-color: #3a3a4e; }
+        body.dark-mode .chat-input-container { background: #2a2a3e; }
         .chat-input {
             flex: 1;
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--primary);
             border-radius: 8px;
+            font-size: 1em;
             resize: none;
             font-family: inherit;
-            font-size: 1em;
         }
-        body.dark-mode .chat-input { background: #1a1a2e; color: #e0e0e0; border-color: #3a3a4e; }
-        .chat-input:focus { outline: none; border-color: var(--primary); }
+        body.dark-mode .chat-input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
         .chat-send-btn {
-            padding: 12px 20px;
-            background: var(--primary);
+            padding: 12px 25px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-        }
-        .chat-send-btn:hover { background: var(--secondary); }
-        .chat-send-btn:disabled { background: #ccc; cursor: not-allowed; }
-        .suggested-questions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .suggested-question-btn {
-            padding: 8px 14px;
-            background: #e8eaff;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
             transition: all 0.3s;
         }
-        body.dark-mode .suggested-question-btn { background: #333347; color: #e0e0e0; }
-        .suggested-question-btn:hover { background: var(--primary); color: white; }
+        .chat-send-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .chat-send-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .typing-indicator { display: flex; gap: 5px; padding: 10px; }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: typing 1.4s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
+            30% { transform: translateY(-10px); opacity: 1; }
+        }
+        .chat-context-info {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            font-size: 0.9em;
+        }
+        body.dark-mode .chat-context-info { background: rgba(102, 126, 234, 0.2); }
+        .chat-suggestions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
+        .chat-suggestion {
+            padding: 8px 15px;
+            background: #f0f0f0;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        body.dark-mode .chat-suggestion { background: #1a1a2e; color: #e0e0e0; }
+        .chat-suggestion:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
         .error-message {
             background: #ffebee;
-            color: var(--danger);
-            padding: 15px;
+            color: #c62828;
+            padding: 10px;
             border-radius: 8px;
             margin: 10px 0;
-            border-left: 4px solid var(--danger);
+            border-left: 4px solid #c62828;
         }
-        body.dark-mode .error-message { background: rgba(244, 67, 54, 0.2); }
-        .success-message {
-            background: #e8f5e9;
-            color: var(--success);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border-left: 4px solid var(--success);
-        }
-        body.dark-mode .success-message { background: rgba(76, 175, 80, 0.2); }
-        .format-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .format-card {
+        body.dark-mode .error-message { background: rgba(198, 40, 40, 0.2); color: #ff5252; }
+        
+        /* STUDY GUIDE & CONCEPT ANALYSIS STYLES */
+        .question-card {
             background: #f5f7ff;
             padding: 20px;
             border-radius: 10px;
-            text-align: center;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+        body.dark-mode .question-card { background: #1a1a2e; }
+        .question-card:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .question-number {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .question-text {
+            font-size: 1.05em;
+            line-height: 1.7;
+            margin-top: 10px;
+            color: #333;
+        }
+        body.dark-mode .question-text { color: #e0e0e0; }
+        .pillar-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid var(--primary);
+            transition: all 0.3s;
+        }
+        body.dark-mode .pillar-card { background: rgba(102, 126, 234, 0.15); }
+        .pillar-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .pillar-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        body.dark-mode .pillar-title { color: var(--accent); }
+        .pillar-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        .pillar-content {
+            line-height: 1.8;
+            color: #444;
+            font-size: 1.05em;
+        }
+        body.dark-mode .pillar-content { color: #ccc; }
+        .connection-box {
+            background: rgba(240, 147, 251, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 3px solid var(--accent);
+        }
+        body.dark-mode .connection-box { background: rgba(240, 147, 251, 0.15); }
+        
+        /* CUSTOM FORMAT STYLES */
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .format-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+            padding: 20px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s;
             border: 2px solid transparent;
+            text-align: center;
         }
-        body.dark-mode .format-card { background: #1a1a2e; }
+        body.dark-mode .format-card { background: rgba(102, 126, 234, 0.15); }
         .format-card:hover {
-            border-color: var(--primary);
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-color: var(--primary);
         }
         .format-icon {
-            font-size: 3em;
+            font-size: 2.5em;
             margin-bottom: 10px;
         }
         .format-title {
+            font-size: 1.1em;
             font-weight: bold;
             color: var(--primary);
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
         body.dark-mode .format-title { color: var(--accent); }
-        .format-description {
+        .format-desc {
             font-size: 0.9em;
             color: #666;
+            line-height: 1.5;
         }
-        body.dark-mode .format-description { color: #aaa; }
-        textarea {
+        body.dark-mode .format-desc { color: #aaa; }
+        .custom-input-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        body.dark-mode .custom-input-box { background: #2a2a3e; }
+        .custom-textarea {
             width: 100%;
-            min-height: 150px;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
+            padding: 15px;
+            border: 2px solid var(--primary);
             border-radius: 8px;
-            font-family: inherit;
             font-size: 1em;
+            font-family: inherit;
             resize: vertical;
+            min-height: 100px;
         }
-        body.dark-mode textarea { background: #1a1a2e; color: #e0e0e0; border-color: #3a3a4e; }
-        textarea:focus { outline: none; border-color: var(--primary); }
-        
+        body.dark-mode .custom-textarea { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
+        .result-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary);
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+        body.dark-mode .result-box { background: #1a1a2e; color: #e0e0e0; }
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .history-item {
+            background: #f5f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 3px solid var(--secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        body.dark-mode .history-item { background: #1a1a2e; }
+        .history-item:hover { transform: translateX(5px); background: #e8eaff; }
+        body.dark-mode .history-item:hover { background: #2a2a3e; }
+        .history-meta {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* MINDMAP STYLES */
+        .mindmap-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        body.dark-mode .mindmap-container { background: #1a1a2e; }
+        .mindmap-tree {
+            font-family: 'Courier New', monospace;
+            line-height: 2;
+            font-size: 1.05em;
+        }
+        .mindmap-node {
+            margin-left: 20px;
+            padding: 5px 0;
+        }
+        .mindmap-root {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        body.dark-mode .mindmap-root { color: var(--accent); }
+        .mindmap-branch {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        body.dark-mode .mindmap-branch { color: #f093fb; }
+        .mindmap-leaf {
+            color: #555;
+        }
+        body.dark-mode .mindmap-leaf { color: #aaa; }
+
+        /* ===== NEW DESIGN: 2X2 CARD SYSTEM ===== */
+        :root {
+            --comprendi-color: #10B981;
+            --comprendi-bg: #D1FAE5;
+            --memorizza-color: #3B82F6;
+            --memorizza-bg: #DBEAFE;
+            --approfondisci-color: #6366F1;
+            --approfondisci-bg: #E0E7FF;
+            --personalizza-color: #F97316;
+            --personalizza-bg: #FFEDD5;
+        }
+
+        .new-home-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .new-home-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .new-home-header h2 {
+            font-size: 2.2em;
+            color: #1f2937;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        body.dark-mode .new-home-header h2 {
+            color: #e0e0e0;
+        }
+
+        .new-home-header p {
+            font-size: 1.1em;
+            color: #6b7280;
+        }
+
+        body.dark-mode .new-home-header p {
+            color: #9ca3af;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1100px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .function-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        body.dark-mode .function-card {
+            background: #2a2a3e;
+        }
+
+        .function-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .function-card.comprendi {
+            background-color: var(--comprendi-bg);
+            border-left-color: var(--comprendi-color);
+        }
+
+        body.dark-mode .function-card.comprendi {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        .function-card.memorizza {
+            background-color: var(--memorizza-bg);
+            border-left-color: var(--memorizza-color);
+        }
+
+        body.dark-mode .function-card.memorizza {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .function-card.approfondisci {
+            background-color: var(--approfondisci-bg);
+            border-left-color: var(--approfondisci-color);
+        }
+
+        body.dark-mode .function-card.approfondisci {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        .function-card.personalizza {
+            background-color: var(--personalizza-bg);
+            border-left-color: var(--personalizza-color);
+        }
+
+        body.dark-mode .function-card.personalizza {
+            background-color: rgba(249, 115, 22, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .comprendi .card-icon {
+            background-color: rgba(16, 185, 129, 0.15);
+        }
+
+        .memorizza .card-icon {
+            background-color: rgba(59, 130, 246, 0.15);
+        }
+
+        .approfondisci .card-icon {
+            background-color: rgba(99, 102, 241, 0.15);
+        }
+
+        .personalizza .card-icon {
+            background-color: rgba(249, 115, 22, 0.15);
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .comprendi .card-title {
+            color: var(--comprendi-color);
+        }
+
+        .memorizza .card-title {
+            color: var(--memorizza-color);
+        }
+
+        .approfondisci .card-title {
+            color: var(--approfondisci-color);
+        }
+
+        .personalizza .card-title {
+            color: var(--personalizza-color);
+        }
+
+        .card-description {
+            color: #6b7280;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        body.dark-mode .card-description {
+            color: #9ca3af;
+        }
+
+        .card-divider {
+            height: 1px;
+            background-color: rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        body.dark-mode .card-divider {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .card-functions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .function-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+            font-size: 1em;
+        }
+
+        .function-item:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        body.dark-mode .function-item:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        .comprendi .function-item:hover {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        .memorizza .function-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .approfondisci .function-item:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        .personalizza .function-item:hover {
+            background-color: rgba(249, 115, 22, 0.1);
+        }
+
+        .function-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+
+        .function-item:hover .function-icon {
+            transform: scale(1.15);
+        }
+
+        .function-name {
+            flex: 1;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        body.dark-mode .function-name {
+            color: #e0e0e0;
+        }
+
+        .function-arrow {
+            opacity: 0;
+            transition: all 0.2s;
+            color: inherit;
+            font-size: 18px;
+        }
+
+        .function-item:hover .function-arrow {
+            opacity: 1;
+            transform: translateX(4px);
+        }
+
+        .card-footer {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        body.dark-mode .card-footer {
+            border-top-color: rgba(255,255,255,0.1);
+        }
+
+        .card-footer-text {
+            font-size: 0.85em;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        body.dark-mode .card-footer-text {
+            color: #9ca3af;
+        }
+
+        .back-to-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            color: #6b7280;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        .back-to-home-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateX(-4px);
+        }
+
+        body.dark-mode .back-to-home-btn {
+            background: #2a2a3e;
+            border-color: #3a3a4e;
+            color: #9ca3af;
+        }
+
+        body.dark-mode .back-to-home-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .header { flex-direction: column; gap: 15px; padding: 15px; }
-            .header-left { flex-direction: column; text-align: center; }
-            h1 { font-size: 1.4em; }
             .cards-grid {
                 grid-template-columns: 1fr;
                 gap: 16px;
             }
+            
             .function-card {
                 padding: 20px;
             }
+            
             .new-home-header h2 {
                 font-size: 1.6em;
             }
-            .chat-container { height: 500px; }
-            .quiz-options { gap: 10px; }
-            .format-options {
-                grid-template-columns: 1fr;
-            }
         }
+
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
-            <div class="header-left">
-                <div class="logo">📚</div>
-                <h1>MentoreStudio</h1>
-            </div>
+            <h1>📚 MentoreStudio</h1>
             <div class="header-controls">
-                <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Dark Mode</button>
-                <button class="toggle-btn" onclick="resetApp()" id="resetBtn" style="display:none;">🔙 Libreria</button>
+                <button class="toggle-btn" onclick="toggleDarkMode()">🌙</button>
             </div>
         </div>
 
-        <!-- Upload Section (Initial) -->
-        <div id="uploadSection" class="upload-section">
-            <h2>🚀 Carica il tuo PDF</h2>
-            <p>Inizia il tuo percorso di studio intelligente</p>
-            <input type="file" id="pdfFile" accept=".pdf" />
-            <br />
-            <input type="text" id="lessonName" placeholder="Nome della lezione (es: Capitolo 5)" />
-            <br />
-            <select class="subject-select" id="subjectSelect">
-                <option value="">-- Seleziona Materia --</option>
-                <option value="Matematica">📐 Matematica</option>
-                <option value="Fisica">⚛️ Fisica</option>
-                <option value="Chimica">🧪 Chimica</option>
-                <option value="Storia">📜 Storia</option>
-                <option value="Filosofia">💭 Filosofia</option>
-                <option value="Letteratura">📖 Letteratura</option>
-                <option value="Biologia">🧬 Biologia</option>
-                <option value="Economia">💰 Economia</option>
-                <option value="Diritto">⚖️ Diritto</option>
-                <option value="Inglese">🇬🇧 Inglese</option>
-                <option value="Spagnolo">🇪🇸 Spagnolo</option>
-                <option value="Francese">🇫🇷 Francese</option>
-                <option value="Informatica">💻 Informatica</option>
-                <option value="Arte">🎨 Arte</option>
-                <option value="Geografia">🌍 Geografia</option>
-                <option value="Musica">🎵 Musica</option>
-                <option value="Altro">📚 Altro</option>
-            </select>
-            <br />
-            <button class="btn" onclick="processPDF()" id="uploadBtn">📤 Inizia lo Studio</button>
-            <div id="uploadProgress" class="hidden">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-                </div>
-                <p id="progressText">Caricamento...</p>
+        <div class="upload-section" id="uploadSection">
+            <h2>🚀 Carica i tuoi PDF</h2>
+            <p style="margin-bottom: 15px; color: #666;">Puoi caricare più PDF contemporaneamente</p>
+            
+            <div style="max-width: 500px; margin: 30px auto;">
+                <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Materia:</label>
+                <select id="subjectSelect" class="subject-select">
+                    <option value="Generale">Generale</option>
+                    <option value="Storia">Storia</option>
+                    <option value="Matematica">Matematica</option>
+                    <option value="Biologia">Biologia</option>
+                    <option value="Diritto">Diritto</option>
+                </select>
+                <input type="file" id="pdfFile" accept=".pdf" multiple>
+                <button class="btn" onclick="loadMultiplePDFs()" style="width: 100%;">📂 Carica PDF</button>
             </div>
+            
+            <p style="font-size: 0.9em; margin-top: 20px; color: #666;">Tutto salvato offline • Nessuna chiave API visibile</p>
         </div>
 
-        <!-- Main App (Hidden Initially) -->
         <div id="mainApp" class="hidden">
-            <!-- New Home Screen with 2x2 Cards -->
+
+            <!-- NEW: Home Screen with 4 Cards -->
             <div id="newHomeScreen" class="new-home-container">
                 <div class="new-home-header">
                     <h2>Scegli come studiare</h2>
@@ -1056,27 +1112,22 @@
                         <div class="card-functions">
                             <button class="function-item" onclick="navigateToFunction('chat')">
                                 <span class="function-icon">💬</span>
-                                <span class="function-name">Chat Libera</span>
+                                <span class="function-name">Chat AI</span>
                                 <span class="function-arrow">→</span>
                             </button>
-                            <button class="function-item" onclick="navigateToFunction('essays')">
-                                <span class="function-icon">💭</span>
-                                <span class="function-name">Domande per Saggi</span>
+                            <button class="function-item" onclick="navigateToFunction('studyguide')">
+                                <span class="function-icon">📘</span>
+                                <span class="function-name">Guida di Studio</span>
                                 <span class="function-arrow">→</span>
                             </button>
-                            <button class="function-item" onclick="navigateToFunction('oral')">
-                                <span class="function-icon">🗣️</span>
-                                <span class="function-name">Esercizi Orali</span>
-                                <span class="function-arrow">→</span>
-                            </button>
-                            <button class="function-item" onclick="navigateToFunction('socratic')">
-                                <span class="function-icon">🎓</span>
-                                <span class="function-name">Dialogo Socratico</span>
+                            <button class="function-item" onclick="navigateToFunction('conceptanalysis')">
+                                <span class="function-icon">🔍</span>
+                                <span class="function-name">Analisi Concetto</span>
                                 <span class="function-arrow">→</span>
                             </button>
                         </div>
                         <div class="card-footer">
-                            <span class="card-footer-text">4 strumenti disponibili</span>
+                            <span class="card-footer-text">3 strumenti disponibili</span>
                         </div>
                     </div>
 
@@ -1089,84 +1140,2451 @@
                         <p class="card-description">Crea materiali di studio nel formato che preferisci</p>
                         <div class="card-divider"></div>
                         <div class="card-functions">
-                            <button class="function-item" onclick="navigateToFunction('presentation')">
-                                <span class="function-icon">📊</span>
-                                <span class="function-name">Presentazione</span>
-                                <span class="function-arrow">→</span>
-                            </button>
-                            <button class="function-item" onclick="navigateToFunction('schema')">
-                                <span class="function-icon">📋</span>
-                                <span class="function-name">Schema di Studio</span>
-                                <span class="function-arrow">→</span>
-                            </button>
-                            <button class="function-item" onclick="navigateToFunction('table')">
-                                <span class="function-icon">📑</span>
-                                <span class="function-name">Tabella Comparativa</span>
-                                <span class="function-arrow">→</span>
-                            </button>
-                            <button class="function-item" onclick="navigateToFunction('custom')">
-                                <span class="function-icon">✍️</span>
-                                <span class="function-name">Formato Personalizzato</span>
-                                <span class="function-arrow">→</span>
-                            </button>
-                            <button class="function-item" onclick="navigateToFunction('thesis')">
-                                <span class="function-icon">📄</span>
-                                <span class="function-name">Tesina/Elaborato</span>
+                            <button class="function-item" onclick="navigateToFunction('customformat')">
+                                <span class="function-icon">🎨</span>
+                                <span class="function-name">Crea il Tuo Formato</span>
                                 <span class="function-arrow">→</span>
                             </button>
                         </div>
                         <div class="card-footer">
-                            <span class="card-footer-text">5 strumenti disponibili</span>
+                            <span class="card-footer-text">1 strumento disponibile</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Original Tab Navigation (Hidden, will show when function selected) -->
+            <!-- Tab Navigation (hidden initially) -->
             <div id="tabNavigation" class="hidden">
                 <button class="back-to-home-btn" onclick="backToHome()">
                     <span>←</span>
                     <span>Torna alla Home</span>
                 </button>
-                
-                <div class="tabs">
-                    <button class="tab-btn" onclick="switchTab('library')">📚 Libreria</button>
-                    <button class="tab-btn" onclick="switchTab('summary')">📝 Riassunto</button>
-                    <button class="tab-btn" onclick="switchTab('highlights')">⭐ Punti Salienti</button>
-                    <button class="tab-btn" onclick="switchTab('glossary')">📖 Glossario</button>
-                    <button class="tab-btn" onclick="switchTab('timeline')">📅 Timeline</button>
-                    <button class="tab-btn" onclick="switchTab('mindmap')">🧠 Mappa Mentale</button>
-                    <button class="tab-btn" onclick="switchTab('flashcards')">🎴 Flashcard</button>
-                    <button class="tab-btn" onclick="switchTab('quiz')">❓ Quiz</button>
-                    <button class="tab-btn" onclick="switchTab('chat')">💬 Chat AI</button>
-                    <button class="tab-btn" onclick="switchTab('custom')">✨ Crea Formato</button>
-                </div>
-            </div>
 
-            <div class="content-area" id="contentArea">
-                <!-- Content will be dynamically loaded here -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('library', event)">📚 Libreria Studi</button>
+                <button class="tab-btn hidden" id="tabSummary" onclick="switchTab('summary', event)">📝 Riassunto</button>
+                <button class="tab-btn hidden" id="tabHighlights" onclick="switchTab('highlights', event)">⭐ Punti Salienti</button>
+                <button class="tab-btn hidden" id="tabGlossary" onclick="switchTab('glossary', event)">📖 Glossario</button>
+                <button class="tab-btn hidden" id="tabTimeline" onclick="switchTab('timeline', event)">📅 Timeline</button>
+                <button class="tab-btn hidden" id="tabMindmap" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
+                <button class="tab-btn hidden" id="tabStudyGuide" onclick="switchTab('studyguide', event)">📘 Guida di Studio</button>
+                <button class="tab-btn hidden" id="tabConceptAnalysis" onclick="switchTab('conceptanalysis', event)">🔍 Analisi Concetto</button>
+                <button class="tab-btn hidden" id="tabCustomFormat" onclick="switchTab('customformat', event)">✨ Crea il Tuo</button>
+                <button class="tab-btn hidden" id="tabFlashcards" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
+                <button class="tab-btn hidden" id="tabQuiz" onclick="switchTab('quiz', event)">❓ Quiz</button>
+                <button class="tab-btn hidden" id="tabChat" onclick="switchTab('chat', event)">💬 Chat AI</button>
             </div>
+            </div> <!-- end tabNavigation -->
+            <div class="content-area" id="contentArea"></div>
         </div>
     </div>
 
     <script>
-        // ===== GLOBAL STATE =====
         let appState = {
-            studies: JSON.parse(localStorage.getItem('mentoreStudies') || '{}'),
-            currentStudy: null,
-            currentTab: 'library',
-            flashcardIndex: 0,
-            quizIndex: 0,
+            studies: JSON.parse(localStorage.getItem('mentorestudio_studies')) || {},
+            currentStudyId: null,
+            currentFlashcard: 0,
+            currentFlashcardFiltered: 0,
+            flashcardMode: 'all',
+            currentQuiz: 0,
+            currentQuizFiltered: 0,
+            quizMode: 'all',
             quizScore: 0,
             quizAnswers: [],
-            chatHistory: JSON.parse(localStorage.getItem('mentoreChatHistory') || '{}'),
-            flashcardStats: JSON.parse(localStorage.getItem('mentoreFlashcardStats') || '{}'),
+            quizTimerEnabled: false,
+            quizTimeRemaining: 0,
+            quizTimerId: null,
+            notes: JSON.parse(localStorage.getItem('flashcardNotes')) || {},
+            darkMode: localStorage.getItem('darkMode') === 'true',
+            chatHistory: JSON.parse(localStorage.getItem('chatHistory')) || {},
             isChatLoading: false
         };
 
-        // ===== NEW NAVIGATION FUNCTIONS =====
+        let flashcardStats = JSON.parse(localStorage.getItem('flashcardStats')) || {};
+        let quizStats = JSON.parse(localStorage.getItem('quizStats')) || {};
+
+        if (appState.darkMode) document.body.classList.add('dark-mode');
+
+        function toggleDarkMode() {
+            appState.darkMode = !appState.darkMode;
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', appState.darkMode);
+        }
+
+        async function loadMultiplePDFs() {
+            const files = document.getElementById('pdfFile').files;
+            if (files.length === 0) { alert('Seleziona almeno un PDF'); return; }
+
+            showMainApp();
+            let processedCount = 0;
+
+            for (let file of files) {
+                try {
+                    const text = await extractPDFText(file);
+                    const studyId = Date.now() + Math.random();
+                    
+                    updateProgress(processedCount, files.length, `Elaborando: ${file.name}`);
+                    
+                    const data = await generateContent(text, document.getElementById('subjectSelect').value);
+                    
+                    appState.studies[studyId] = {
+                        id: studyId,
+                        name: file.name.replace('.pdf', ''),
+                        data: data,
+                        date: new Date().toLocaleDateString('it-IT'),
+                        subject: document.getElementById('subjectSelect').value,
+                        fullText: text.substring(0, 8000),
+                        type: 'pdf'
+                    };
+                    
+                    appState.chatHistory[studyId] = [];
+                    
+                    processedCount++;
+                    updateProgress(processedCount, files.length, `Completato: ${file.name}`);
+                } catch (e) {
+                    alert(`Errore con ${file.name}: ${e.message}`);
+                }
+            }
+
+            saveStudies();
+            saveChatHistory();
+            renderLibrary();
+            switchTab('library');
+        }
+       async function extractPDFText(file) {
+    const reader = new FileReader();
+    return new Promise((resolve) => {
+        reader.onload = async (e) => {
+            const pdf = await pdfjsLib.getDocument({ data: e.target.result }).promise;
+            let text = '';
+            for (let i = 0; i < Math.min(pdf.numPages, 20); i++) {
+                const page = await pdf.getPage(i + 1);
+                const content = await page.getTextContent();
+                text += content.items.map(x => x.str).join(' ') + '\n';
+            }
+            resolve(text);
+        };
+        reader.readAsArrayBuffer(file);
+    });
+}
+        function showMainApp() {
+            document.getElementById('uploadSection').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+        }
+
+        function updateProgress(current, total, message) {
+            document.getElementById('contentArea').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>${message}</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${(current/total)*100}%"></div>
+                    </div>
+                    <p>${current}/${total}</p>
+                </div>
+            `;
+        }
+
+        async function generateContent(text, subject) {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text.substring(0, 8000), subject: subject })
+            });
+
+            if (!response.ok) throw new Error('Errore server: ' + response.status);
+            return await response.json();
+        }
+
+        function saveStudies() {
+            localStorage.setItem('mentorestudio_studies', JSON.stringify(appState.studies));
+        }
+
+        function saveChatHistory() {
+            localStorage.setItem('chatHistory', JSON.stringify(appState.chatHistory));
+        }
+
+        function switchTab(tab, e) {
+            if (e) {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+            }
+            switch(tab) {
+                case 'library': renderLibrary(); break;
+                case 'summary': renderSummary(); break;
+                case 'highlights': renderHighlights(); break;
+                case 'glossary': renderGlossary(); break;
+                case 'timeline': renderTimeline(); break;
+                case 'mindmap': renderMindMap(); break;
+                case 'studyguide': renderStudyGuide(); break;
+                case 'conceptanalysis': renderConceptAnalysis(); break;
+                case 'customformat': renderCustomFormat(); break;
+                case 'flashcards': renderFlashcardsAdvanced(); break;
+                case 'quiz': renderQuizAdvanced(); break;
+                case 'chat': renderChat(); break;
+            }
+        }
+
+        function renderLibrary() {
+    let html = '<h2>📚 Le tue lezioni</h2>';
+    html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
+    const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
+    
+    if (studies.length === 0) {
+        html += `
+            <div style="text-align: center; padding: 60px 20px;">
+                <div style="font-size: 4em; margin-bottom: 20px;">📚</div>
+                <h3 style="color: var(--primary); margin-bottom: 15px;">Nessuna lezione caricata</h3>
+                <p style="color: #999; margin-bottom: 30px;">
+                    La tua libreria è vuota. Inizia caricando i tuoi PDF!
+                </p>
+                <button class="btn" onclick="resetApp()" style="font-size: 1.1em; padding: 15px 30px;">
+                    📂 Carica Nuovi PDF
+                </button>
+            </div>
+        `;
+    } else {
+        studies.forEach(study => {
+            html += `
+                <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
+                    <div class="study-left">
+                        <strong>📄 ${study.name}</strong>
+                        <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
+                    </div>
+                    <div class="study-right">
+                        <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
+                        <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+        html += `
+            <div style="margin-top: 20px;">
+                <button class="btn" onclick="resetApp()" style="width: 100%;">📄 Carica Altri PDF</button>
+            </div>
+        `;
+    }
+    document.getElementById('contentArea').innerHTML = html;
+}
+
+
+        function filterLibrary() {
+            const searchTerm = document.getElementById('librarySearch').value.toLowerCase();
+            const items = document.querySelectorAll('.study-item');
+            items.forEach(item => {
+                const searchData = item.getAttribute('data-search');
+                item.style.display = searchData.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        function exportStudyPDF(studyId, e) {
+            e.stopPropagation();
+            const study = appState.studies[studyId];
+            if (!study) return;
+
+            const element = document.createElement('div');
+            element.style.padding = '20px';
+            
+            element.innerHTML = `
+                <h1>${study.name}</h1>
+                <p><strong>Tipo:</strong> 📄 PDF | <strong>Materia:</strong> ${study.subject} | <strong>Data:</strong> ${study.date}</p>
+                
+                <h2>📝 Riassunto Breve</h2>
+                <p>${study.data.summary_short}</p>
+                
+                <h2>📖 Riassunto Completo</h2>
+                <p>${study.data.summary_long}</p>
+                
+                <h2>⭐ Punti Salienti</h2>
+                <ul>
+                    ${(study.data.highlights || []).map(h => `<li>${h}</li>`).join('')}
+                </ul>
+                
+                <h2>📖 Glossario</h2>
+                ${(study.data.glossary || []).map(g => `
+                    <div style="margin-bottom: 10px;">
+                        <strong>${g.term}:</strong> ${g.definition}
+                    </div>
+                `).join('')}
+                
+                <h2>🎴 Flashcard</h2>
+                ${(study.data.flashcards || []).map((f, i) => `
+                    <div style="margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                        <strong>Domanda ${i+1}:</strong> ${f.q}<br>
+                        <strong>Risposta:</strong> ${f.a}
+                    </div>
+                `).join('')}
+                
+                <h2>❓ Quiz</h2>
+                ${(study.data.quiz || []).map((q, i) => `
+                    <div style="margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                        <strong>Quiz ${i+1}:</strong> ${q.q}<br>
+                        ${q.options.map((o, j) => `<div style="margin-left: 20px;">• ${o}${j === q.correct ? ' ✓' : ''}</div>`).join('')}
+                    </div>
+                `).join('')}
+            `;
+
+            const opt = {
+                margin: 10,
+                filename: `${study.name.replace(/[^a-z0-9]/gi, '_')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+            alert('✅ PDF scaricato!');
+        }
+
+        function selectStudy(studyId) {
+            appState.currentStudyId = studyId;
+            appState.currentFlashcard = 0;
+            appState.currentFlashcardFiltered = 0;
+            appState.flashcardMode = 'all';
+            appState.currentQuiz = 0;
+            appState.currentQuizFiltered = 0;
+            appState.quizMode = 'all';
+            appState.quizScore = 0;
+            appState.quizAnswers = [];
+            
+            if (!appState.chatHistory[studyId]) {
+                appState.chatHistory[studyId] = [];
+            }
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.add('hidden'));
+            document.getElementById('tabSummary').classList.remove('hidden');
+            document.getElementById('tabHighlights').classList.remove('hidden');
+            document.getElementById('tabGlossary').classList.remove('hidden');
+            document.getElementById('tabTimeline').classList.remove('hidden');
+            document.getElementById('tabMindmap').classList.remove('hidden');
+            document.getElementById('tabStudyGuide').classList.remove('hidden');
+            document.getElementById('tabConceptAnalysis').classList.remove('hidden');
+            document.getElementById('tabCustomFormat').classList.remove('hidden');
+            document.getElementById('tabFlashcards').classList.remove('hidden');
+            document.getElementById('tabQuiz').classList.remove('hidden');
+            document.getElementById('tabChat').classList.remove('hidden');
+            
+            switchTab('summary');
+        }
+
+        function deleteStudy(studyId, e) {
+            e.stopPropagation();
+            if (confirm('Eliminare questa lezione?')) {
+                delete appState.studies[studyId];
+                delete appState.chatHistory[studyId];
+                saveStudies();
+                saveChatHistory();
+                renderLibrary();
+            }
+        }
+
+        function getCurrentStudy() {
+            return appState.studies[appState.currentStudyId];
+        }
+
+        function goBack() {
+            if (appState.quizTimerId) {
+                clearInterval(appState.quizTimerId);
+                appState.quizTimerId = null;
+            }
+            switchTab('library');
+        }
+
+        function renderSummary() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            document.getElementById('contentArea').innerHTML = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <p style="margin-bottom: 20px;"><strong>Tipo:</strong> 📄 PDF</p>
+                <div class="section"><h3>📝 Riassunto Breve</h3><div class="card">${study.data.summary_short || 'N/A'}</div></div>
+                <div class="section"><h3>📖 Riassunto Completo</h3><div class="card">${study.data.summary_long || 'N/A'}</div></div>
+            `;
+        }
+
+        function renderHighlights() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>⭐ Punti Salienti (${(study.data.highlights || []).length})</h3>
+                <p style="color: #666; margin-bottom: 20px;">Clicca su ogni punto per vedere la spiegazione dettagliata</p>
+            `;
+            
+            if (!study.data.highlights || study.data.highlights.length === 0) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">⭐</div>
+                        <h3>Nessun punto saliente trovato</h3>
+                        <p style="margin-top: 10px; color: #666;">
+                            I punti chiave verranno estratti automaticamente dal contenuto.
+                        </p>
+                    </div>
+                `;
+            } else {
+                (study.data.highlights || []).forEach((h, i) => {
+                    const highlightId = `highlight_${i}`;
+                    const hasExplanation = study.data.highlightDetails && study.data.highlightDetails[i];
+                    
+                    html += `
+                        <div class="highlight-item" onclick="toggleHighlight('${highlightId}')">
+                            <div class="highlight-header">
+                                <div class="highlight-title">
+                                    <strong style="color: var(--primary);">${i + 1}.</strong> 
+                                    <span class="key-concept" style="display: inline; padding: 4px 10px;">${h}</span>
+                                </div>
+                                <span class="highlight-icon" id="${highlightId}_icon">▼</span>
+                            </div>
+                            
+                            <div class="highlight-details" id="${highlightId}_details">
+                                ${hasExplanation ? `
+                                    <p>${study.data.highlightDetails[i]}</p>
+                                ` : `
+                                    <p style="color: #999; font-style: italic;">
+                                        Nessuna spiegazione disponibile. Generane una con l'AI!
+                                    </p>
+                                    <button class="generate-btn" onclick="generateHighlightExplanation(${i}, event)">
+                                        🤖 Genera Spiegazione Dettagliata
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function toggleHighlight(highlightId) {
+            const details = document.getElementById(`${highlightId}_details`);
+            const icon = document.getElementById(`${highlightId}_icon`);
+            
+            if (details.style.display === 'none' || details.style.display === '') {
+                details.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                details.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        async function generateHighlightExplanation(index, event) {
+            event.stopPropagation();
+            
+            const study = getCurrentStudy();
+            const highlight = study.data.highlights[index];
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Generazione in corso...';
+            
+            try {
+                const context = `Materia: ${study.subject}\nLezione: ${study.name}\n\nContenuto: ${study.fullText.substring(0, 1000)}`;
+                
+                const prompt = `Fornisci una spiegazione dettagliata e approfondita di questo punto saliente:\n\n"${highlight}"\n\nContesto:\n${context}\n\nLa spiegazione deve essere:\n- Chiara e completa (4-6 frasi)\n- Con esempi concreti se possibile\n- Collegata al contesto della lezione\n- Utile per lo studio e la memorizzazione`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore nella generazione');
+                
+                const data = await response.json();
+                
+                if (!study.data.highlightDetails) {
+                    study.data.highlightDetails = {};
+                }
+                study.data.highlightDetails[index] = data.response;
+                
+                saveStudies();
+                renderHighlights();
+                
+                setTimeout(() => {
+                    toggleHighlight(`highlight_${index}`);
+                }, 100);
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('❌ Errore nella generazione: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = '🤖 Genera Spiegazione Dettagliata';
+            }
+        }
+
+        function renderGlossary() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>📖 Glossario (${(study.data.glossary || []).length} termini)</h3>
+                <p style="color: #666; margin-bottom: 15px;">Clicca su ogni termine per vedere definizione ed esempi</p>
+            `;
+            
+            html += '<input type="text" class="search-box" id="glossarySearch" placeholder="🔍 Cerca un termine..." onkeyup="filterGlossary()">';
+            html += '<div id="glossaryContent">';
+            
+            if (!study.data.glossary || study.data.glossary.length === 0) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">📖</div>
+                        <h3>Nessun termine nel glossario</h3>
+                        <p style="margin-top: 10px; color: #666;">
+                            I termini chiave verranno estratti automaticamente dal contenuto.
+                        </p>
+                    </div>
+                `;
+            } else {
+                (study.data.glossary || []).forEach((item, i) => {
+                    const glossaryId = `glossary_${i}`;
+                    const hasExample = study.data.glossaryExamples && study.data.glossaryExamples[i];
+                    
+                    html += `
+                        <div class="highlight-item" data-term="${item.term.toLowerCase()}" onclick="toggleHighlight('${glossaryId}')">
+                            <div class="highlight-header">
+                                <div class="highlight-title">
+                                    <strong style="color: var(--secondary); font-size: 1.1em;">${item.term}</strong>
+                                </div>
+                                <span class="highlight-icon" id="${glossaryId}_icon">▼</span>
+                            </div>
+                            
+                            <div class="highlight-details" id="${glossaryId}_details">
+                                <p style="margin-bottom: 15px;"><strong>Definizione:</strong> ${item.definition}</p>
+                                
+                                ${hasExample ? `
+                                    <div style="background: rgba(102, 126, 234, 0.1); padding: 12px; border-radius: 8px; margin-top: 10px;">
+                                        <strong style="color: var(--primary);">💡 Esempio pratico:</strong>
+                                        <p style="margin-top: 8px;">${study.data.glossaryExamples[i]}</p>
+                                    </div>
+                                ` : `
+                                    <button class="generate-btn" onclick="generateGlossaryExample(${i}, event)">
+                                        💡 Genera Esempio Pratico
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            html += '</div>';
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function filterGlossary() {
+            const searchTerm = document.getElementById('glossarySearch').value.toLowerCase();
+            const items = document.querySelectorAll('#glossaryContent .highlight-item');
+            items.forEach(item => {
+                const term = item.getAttribute('data-term');
+                item.style.display = term.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        async function generateGlossaryExample(index, event) {
+            event.stopPropagation();
+            
+            const study = getCurrentStudy();
+            const glossaryItem = study.data.glossary[index];
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Generazione esempio...';
+            
+            try {
+                const prompt = `Fornisci un esempio pratico e concreto per questo termine:\n\nTermine: ${glossaryItem.term}\nDefinizione: ${glossaryItem.definition}\n\nMateria: ${study.subject}\n\nL'esempio deve essere:\n- Pratico e dalla vita reale\n- Facile da ricordare\n- Collegato alla materia di studio\n- Massimo 3 frasi`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore nella generazione');
+                
+                const data = await response.json();
+                
+                if (!study.data.glossaryExamples) {
+                    study.data.glossaryExamples = {};
+                }
+                study.data.glossaryExamples[index] = data.response;
+                
+                saveStudies();
+                renderGlossary();
+                
+                setTimeout(() => {
+                    toggleHighlight(`glossary_${index}`);
+                }, 100);
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('❌ Errore nella generazione: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = '💡 Genera Esempio Pratico';
+            }
+        }
+
+        function renderTimeline() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let timeline = study.data.timeline || [];
+            
+            if (timeline.length === 0 && study.data.highlights && study.data.highlights.length > 0) {
+                timeline = study.data.highlights.slice(0, 8).map((highlight, index) => ({
+                    date: `Punto ${index + 1}`,
+                    event: highlight,
+                    details: `Approfondimento su: ${highlight}`
+                }));
+            }
+            
+            if (timeline.length === 0) {
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                    <h2>${study.name}</h2>
+                    <h3>📅 Timeline Cronologica</h3>
+                    <p style="color: #666; margin-bottom: 20px;">Clicca su ogni evento per vedere i dettagli</p>
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">📅</div>
+                        <h3>Nessun evento temporale trovato</h3>
+                        <p style="margin-top: 10px; color: #666;">
+                            Questa lezione non contiene date o eventi cronologici specifici.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>📅 Timeline Cronologica (${timeline.length} eventi)</h3>
+                <p style="color: #666; margin-bottom: 20px;">Clicca su ogni evento per vedere i dettagli</p>
+                <div style="position: relative; padding: 20px 0;">
+                    <div style="position: absolute; left: 30px; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--primary), var(--secondary));"></div>
+            `;
+            
+            timeline.forEach((item, index) => {
+                const itemId = `timeline_${index}`;
+                html += `
+                    <div style="display: flex; align-items: flex-start; margin: 20px 0; position: relative;">
+                        <div style="position: absolute; left: 21px; width: 20px; height: 20px; background: white; border: 4px solid var(--primary); border-radius: 50%; z-index: 1;"></div>
+                        <div style="margin-left: 60px; flex: 1;">
+                            <div class="timeline-item" onclick="toggleTimelineItem('${itemId}')" style="cursor: pointer; transition: all 0.3s;">
+                                <div class="card" style="margin: 0; border-left: 4px solid var(--primary);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <span style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9em;">
+                                                ${item.date || `Evento ${index + 1}`}
+                                            </span>
+                                        </div>
+                                        <span id="${itemId}_icon" style="font-size: 1.2em; transition: transform 0.3s;">▼</span>
+                                    </div>
+                                    <p style="margin: 10px 0 0 0; line-height: 1.6; font-weight: 600;">
+                                        ${item.event}
+                                    </p>
+                                    <div id="${itemId}_details" class="timeline-details" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+                                        <p style="color: #666; line-height: 1.8;">
+                                            ${item.details || item.event}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function toggleTimelineItem(itemId) {
+            const details = document.getElementById(`${itemId}_details`);
+            const icon = document.getElementById(`${itemId}_icon`);
+            
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                details.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // ===== MAPPA MENTALE POTENZIATA =====
+        
+        function renderMindMap() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>🧠 Mappa Mentale Completa</h3>
+                <p style="color: #666; margin-bottom: 20px;">Struttura gerarchica con rami e collegamenti</p>
+            `;
+            
+            const mindmap = study.data.mindmapDetailed;
+            
+            if (!mindmap) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 20px;">🧠</div>
+                        <h3>Mappa Mentale non ancora generata</h3>
+                        <p style="color: #666; margin: 20px 0;">
+                            Genera una mappa mentale dettagliata con struttura gerarchica,<br>
+                            sotto-concetti e collegamenti tra i vari rami.
+                        </p>
+                        <button class="btn" onclick="generateDetailedMindmap()">
+                            🤖 Genera Mappa Mentale Completa
+                        </button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="mindmap-container">
+                        <div class="mindmap-tree">
+                            ${mindmap}
+                        </div>
+                    </div>
+                    
+                    <div class="export-buttons">
+                        <button class="btn" onclick="copyMindmap()">
+                            📋 Copia Mappa
+                        </button>
+                        <button class="btn" onclick="downloadMindmap()">
+                            📥 Scarica TXT
+                        </button>
+                        <button class="btn" onclick="generateDetailedMindmap()">
+                            🔄 Rigenera Mappa
+                        </button>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        async function generateDetailedMindmap() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            document.getElementById('contentArea').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>🧠 Generazione Mappa Mentale</h3>
+                    <p>Sto creando la struttura gerarchica completa...</p>
+                </div>
+            `;
+            
+            try {
+                const context = `Materia: ${study.subject}\nLezione: ${study.name}\n\nRiassunto: ${study.data.summary_long}\n\nPunti chiave: ${(study.data.highlights || []).join(', ')}`;
+                
+                const prompt = `Crea una mappa mentale TESTUALE dettagliata e gerarchica per questo argomento:\n\n${context}\n\nUsa questa struttura ASCII:\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n   CONCETTO CENTRALE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n├─ Ramo principale 1\n│  ├─ Sotto-concetto 1.1\n│  ├─ Sotto-concetto 1.2\n│  └─ Sotto-concetto 1.3\n│\n├─ Ramo principale 2\n│  ├─ Sotto-concetto 2.1\n│  │  ├─ Dettaglio 2.1.1\n│  │  └─ Dettaglio 2.1.2\n│  └─ Sotto-concetto 2.2\n│\n├─ Ramo principale 3\n│  ├─ Sotto-concetto 3.1\n│  └─ Sotto-concetto 3.2\n│\n└─ Collegamenti:\n   • Collega concetto 1.1 con 2.1\n   • Collega concetto 2.2 con 3.1\n\nCrea 3-4 rami principali con sotto-concetti dettagliati.`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore nella generazione');
+                
+                const data = await response.json();
+                
+                study.data.mindmapDetailed = data.response;
+                
+                saveStudies();
+                renderMindMap();
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="error-message">
+                        ❌ Errore nella generazione: ${error.message}
+                        <button class="btn" onclick="renderMindMap()" style="margin-top: 15px;">
+                            🔄 Riprova
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function copyMindmap() {
+            const study = getCurrentStudy();
+            const mindmap = study.data.mindmapDetailed;
+            
+            if (!mindmap) return;
+            
+            navigator.clipboard.writeText(mindmap).then(() => {
+                alert('✅ Mappa mentale copiata negli appunti!');
+            }).catch(() => {
+                alert('❌ Errore nella copia');
+            });
+        }
+
+        function downloadMindmap() {
+            const study = getCurrentStudy();
+            const mindmap = study.data.mindmapDetailed;
+            
+            if (!mindmap) return;
+            
+            const blob = new Blob([mindmap], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `MappaMentale_${study.name.replace(/[^a-z0-9]/gi, '_')}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('✅ Mappa mentale scaricata!');
+        }
+
+        // ===== GUIDA DI STUDIO =====
+        
+        function renderStudyGuide() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>📘 Guida di Studio</h3>
+                <p style="color: #666; margin-bottom: 30px;">Domande per saggi, esami orali e scritti</p>
+            `;
+            
+            if (study.data.quiz && study.data.quiz.length > 0) {
+                html += `
+                    <div class="section">
+                        <h3 style="color: var(--primary); margin-top: 30px;">❓ Quiz a Risposta Multipla</h3>
+                        <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
+                            Vai alla sezione Quiz per esercitarti con ${study.data.quiz.length} domande
+                        </p>
+                        <button class="btn" onclick="switchTab('quiz')">
+                            🎯 Vai ai Quiz
+                        </button>
+                    </div>
+                `;
+            }
+            
+            html += `
+                <div class="section">
+                    <h3 style="color: var(--primary); margin-top: 30px;">✏️ Domande per Saggi ed Esami</h3>
+                    <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
+                        Domande aperte che richiedono analisi critica e ragionamento approfondito
+                    </p>
+            `;
+            
+            const essayQuestions = study.data.essayQuestions || [];
+            
+            if (essayQuestions.length === 0) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 30px;">
+                        <p style="color: #999; margin-bottom: 15px;">
+                            Nessuna domanda per saggio ancora generata
+                        </p>
+                        <button class="btn" onclick="generateEssayQuestions()">
+                            🤖 Genera Domande per Saggio
+                        </button>
+                    </div>
+                `;
+            } else {
+                essayQuestions.forEach((question, i) => {
+                    html += `
+                        <div class="question-card">
+                            <span class="question-number">Domanda ${i + 1}</span>
+                            <div class="question-text">${question}</div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                    <button class="btn" onclick="generateEssayQuestions()" style="margin-top: 15px;">
+                        🔄 Genera Altre Domande
+                    </button>
+                `;
+            }
+            
+            html += `</div>`;
+            
+            if (study.data.glossary && study.data.glossary.length > 0) {
+                html += `
+                    <div class="section">
+                        <h3 style="color: var(--primary); margin-top: 30px;">📖 Glossario dei Termini</h3>
+                        <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
+                            ${study.data.glossary.length} termini chiave da conoscere
+                        </p>
+                        <button class="btn" onclick="switchTab('glossary')">
+                            📚 Vai al Glossario
+                        </button>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        async function generateEssayQuestions() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            document.getElementById('contentArea').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>🤖 Generazione Domande per Saggio</h3>
+                    <p>Sto creando domande di analisi critica...</p>
+                </div>
+            `;
+            
+            try {
+                const context = `Materia: ${study.subject}\nLezione: ${study.name}\n\nRiassunto: ${study.data.summary_short}\n\nPunti chiave: ${(study.data.highlights || []).slice(0, 5).join(', ')}`;
+                
+                const prompt = `Genera 5 domande per saggi/esami scritti su questo argomento:\n\n${context}\n\nLe domande devono:\n- Essere aperte e richiedere ragionamento critico\n- Iniziare con "Analizza...", "Discuti...", "Come...", "In che modo...", "Spiega..."\n- Essere adatte per esami universitari o superiori\n- Coprire aspetti diversi dell'argomento\n- Essere formulate in modo chiaro\n\nFormato: una domanda per riga, numerate da 1 a 5.`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore nella generazione');
+                
+                const data = await response.json();
+                
+                const questions = data.response
+                    .split('\n')
+                    .filter(line => line.trim().length > 0)
+                    .map(line => line.replace(/^\d+\.\s*/, '').trim())
+                    .filter(q => q.length > 20);
+                
+                if (!study.data.essayQuestions) {
+                    study.data.essayQuestions = [];
+                }
+                
+                questions.forEach(q => {
+                    if (!study.data.essayQuestions.includes(q)) {
+                        study.data.essayQuestions.push(q);
+                    }
+                });
+                
+                saveStudies();
+                renderStudyGuide();
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="error-message">
+                        ❌ Errore nella generazione: ${error.message}
+                        <button class="btn" onclick="renderStudyGuide()" style="margin-top: 15px;">
+                            🔄 Riprova
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // ===== ANALISI DEL CONCETTO =====
+        
+        function renderConceptAnalysis() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>🔍 Analisi del Concetto</h3>
+                <p style="color: #666; margin-bottom: 30px;">I tre pilastri fondamentali che sostengono questa lezione</p>
+            `;
+            
+            const analysis = study.data.conceptAnalysis;
+            
+            if (!analysis) {
+                html += `
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 3em; margin-bottom: 20px;">🔍</div>
+                        <h3>Analisi non ancora generata</h3>
+                        <p style="color: #666; margin: 20px 0;">
+                            L'analisi del concetto ti aiuta a comprendere i tre pilastri fondamentali<br>
+                            dell'argomento e come si collegano tra loro.
+                        </p>
+                        <button class="btn" onclick="generateConceptAnalysis()">
+                            🤖 Genera Analisi del Concetto
+                        </button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="pillar-card">
+                        <div class="pillar-title">
+                            <div class="pillar-icon">1️⃣</div>
+                            <span>Primo Pilastro: ${analysis.pillar1_title || 'Definizione Base'}</span>
+                        </div>
+                        <div class="pillar-content">
+                            ${analysis.pillar1_content || 'Contenuto non disponibile'}
+                        </div>
+                    </div>
+                    
+                    <div class="pillar-card">
+                        <div class="pillar-title">
+                            <div class="pillar-icon">2️⃣</div>
+                            <span>Secondo Pilastro: ${analysis.pillar2_title || 'Applicazioni Pratiche'}</span>
+                        </div>
+                        <div class="pillar-content">
+                            ${analysis.pillar2_content || 'Contenuto non disponibile'}
+                        </div>
+                    </div>
+                    
+                    <div class="pillar-card">
+                        <div class="pillar-title">
+                            <div class="pillar-icon">3️⃣</div>
+                            <span>Terzo Pilastro: ${analysis.pillar3_title || 'Collegamenti Concettuali'}</span>
+                        </div>
+                        <div class="pillar-content">
+                            ${analysis.pillar3_content || 'Contenuto non disponibile'}
+                        </div>
+                    </div>
+                `;
+                
+                if (analysis.connections) {
+                    html += `
+                        <div class="connection-box">
+                            <h4 style="margin-bottom: 10px; color: var(--accent);">🔗 Come si Collegano i Tre Pilastri</h4>
+                            <p style="line-height: 1.8;">${analysis.connections}</p>
+                        </div>
+                    `;
+                }
+                
+                html += `
+                    <button class="btn" onclick="generateConceptAnalysis()" style="margin-top: 30px;">
+                        🔄 Rigenera Analisi
+                    </button>
+                `;
+            }
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        async function generateConceptAnalysis() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            document.getElementById('contentArea').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>🔍 Analisi del Concetto in Corso</h3>
+                    <p>Sto identificando i tre pilastri fondamentali...</p>
+                </div>
+            `;
+            
+            try {
+                const context = `Materia: ${study.subject}\nLezione: ${study.name}\n\nRiassunto: ${study.data.summary_long}\n\nPunti chiave: ${(study.data.highlights || []).join(', ')}`;
+                
+                const prompt = `Analizza in profondità questo argomento identificando i TRE PILASTRI FONDAMENTALI:\n\n${context}\n\nPer ogni pilastro fornisci:\n1. TITOLO del pilastro (3-5 parole)\n2. CONTENUTO del pilastro (4-6 frasi di spiegazione approfondita)\n\nPoi spiega come i tre pilastri si COLLEGANO tra loro.\n\nFormato richiesto:\nPILASTRO 1: [titolo]\n[contenuto]\n\nPILASTRO 2: [titolo]\n[contenuto]\n\nPILASTRO 3: [titolo]\n[contenuto]\n\nCOLLEGAMENTI:\n[spiegazione dei collegamenti]`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore nella generazione');
+                
+                const data = await response.json();
+                
+                const text = data.response;
+                const pillar1Match = text.match(/PILASTRO 1:\s*([^\n]+)\n([\s\S]*?)(?=PILASTRO 2:|$)/i);
+                const pillar2Match = text.match(/PILASTRO 2:\s*([^\n]+)\n([\s\S]*?)(?=PILASTRO 3:|$)/i);
+                const pillar3Match = text.match(/PILASTRO 3:\s*([^\n]+)\n([\s\S]*?)(?=COLLEGAMENTI:|$)/i);
+                const connectionsMatch = text.match(/COLLEGAMENTI:\s*([\s\S]*?)$/i);
+                
+                study.data.conceptAnalysis = {
+                    pillar1_title: pillar1Match ? pillar1Match[1].trim() : 'Definizione Base',
+                    pillar1_content: pillar1Match ? pillar1Match[2].trim() : '',
+                    pillar2_title: pillar2Match ? pillar2Match[1].trim() : 'Applicazioni Pratiche',
+                    pillar2_content: pillar2Match ? pillar2Match[2].trim() : '',
+                    pillar3_title: pillar3Match ? pillar3Match[1].trim() : 'Collegamenti Concettuali',
+                    pillar3_content: pillar3Match ? pillar3Match[2].trim() : '',
+                    connections: connectionsMatch ? connectionsMatch[1].trim() : ''
+                };
+                
+                saveStudies();
+                renderConceptAnalysis();
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="error-message">
+                        ❌ Errore nella generazione: ${error.message}
+                        <button class="btn" onclick="renderConceptAnalysis()" style="margin-top: 15px;">
+                            🔄 Riprova
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // ===== FORMATO PERSONALIZZATO (SENZA MAPPA MENTALE, VIDEO, POESIA, STORY) =====
+        
+        function renderCustomFormat() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            const history = study.data.customFormats || [];
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>✨ Crea il Tuo Formato</h3>
+                <p style="color: #666; margin-bottom: 30px;">Trasforma il contenuto in qualsiasi formato desideri</p>
+                
+                <div class="section">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">📋 Suggerimenti Rapidi</h4>
+                    <p style="color: #666; font-size: 0.95em; margin-bottom: 20px;">Clicca su un formato per generarlo automaticamente</p>
+                    
+                    <div class="format-grid">
+                        <div class="format-card" onclick="generateCustomFormat('slides')">
+                            <div class="format-icon">📊</div>
+                            <div class="format-title">Presentazione Slides</div>
+                            <div class="format-desc">10 slides con titoli, punti chiave e note</div>
+                        </div>
+                        
+                        <div class="format-card" onclick="generateCustomFormat('powerpoint')">
+                            <div class="format-icon">📊</div>
+                            <div class="format-title">PowerPoint (.pptx)</div>
+                            <div class="format-desc">File PowerPoint scaricabile per presentazioni</div>
+                        </div>
+                        
+                        <div class="format-card" onclick="generateCustomFormat('schema')">
+                            <div class="format-icon">📋</div>
+                            <div class="format-title">Schema di Studio</div>
+                            <div class="format-desc">Schema avanzato con priorità e collegamenti</div>
+                        </div>
+                        
+                        <div class="format-card" onclick="generateCustomFormat('tabella')">
+                            <div class="format-icon">📊</div>
+                            <div class="format-title">Tabella Comparativa</div>
+                            <div class="format-desc">Confronto organizzato in formato tabella</div>
+                        </div>
+                        
+                        <div class="format-card" onclick="generateCustomFormat('dialogo')">
+                            <div class="format-icon">💬</div>
+                            <div class="format-title">Dialogo Q&A</div>
+                            <div class="format-desc">Conversazione Socratica domanda-risposta</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="custom-input-box">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">✍️ Oppure Scrivi la Tua Richiesta</h4>
+                    <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
+                        Esempio: "Crea un quiz interattivo", "Trasforma in infografica testuale", "Genera FAQ"
+                    </p>
+                    <textarea 
+                        class="custom-textarea" 
+                        id="customFormatInput" 
+                        placeholder="Scrivi cosa vuoi creare (es: 'Trasforma in mappa concettuale con collegamenti tra argomenti')..."
+                    ></textarea>
+                    <button class="btn" onclick="generateCustomFormat('custom')" style="margin-top: 15px;">
+                        🚀 Genera Formato Personalizzato
+                    </button>
+                </div>
+                
+                <div id="customFormatResult"></div>
+            `;
+            
+            if (history.length > 0) {
+                html += `
+                    <div class="section" style="margin-top: 40px;">
+                        <h4 style="color: var(--primary); margin-bottom: 15px;">📜 Storico Trasformazioni (${history.length})</h4>
+                        <div id="formatHistory">
+                `;
+                
+                history.slice().reverse().forEach((item, i) => {
+                    const timeAgo = getTimeAgo(item.timestamp);
+                    html += `
+                        <div class="history-item" onclick="showHistoryItem(${history.length - 1 - i})">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong>${item.icon} ${item.title}</strong>
+                                    <div class="history-meta">${timeAgo}</div>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn btn-export" onclick="copyHistoryItem(${history.length - 1 - i}, event)" style="padding: 6px 12px; font-size: 0.85em;">
+                                        📋 Copia
+                                    </button>
+                                    <button class="btn btn-delete" onclick="deleteHistoryItem(${history.length - 1 - i}, event)" style="padding: 6px 12px; font-size: 0.85em;">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        const formatTemplates = {
+            'slides': {
+                icon: '📊',
+                title: 'Presentazione Slides',
+                prompt: `Trasforma in una presentazione di 10 slides con questa struttura:
+
+SLIDE 1: [Titolo accattivante]
+- Sottotitolo
+- Immagine suggerita: [descrizione]
+
+SLIDE 2-9: [Contenuto principale]
+Per ogni slide includi:
+- Titolo della slide
+- 3-5 punti chiave (bullet points)
+- Note per il presentatore
+
+SLIDE 10: Conclusione
+- Riepilogo
+- Call to action
+
+Contenuto: {content}`
+            },
+            'schema': {
+                icon: '📋',
+                title: 'Schema di Studio Avanzato',
+                prompt: `Crea uno schema di studio completo e strutturato:
+
+📚 ARGOMENTO PRINCIPALE
+━━━━━━━━━━━━━━━━━
+
+🎯 OBIETTIVI DI APPRENDIMENTO
+- Cosa devi sapere
+- Cosa devi saper fare
+
+📖 CONCETTI FONDAMENTALI
+[Organizza in ordine logico con priorità]
+★★★ Priorità ALTA
+★★☆ Priorità MEDIA  
+★☆☆ Priorità BASSA
+
+🔗 COLLEGAMENTI
+[Come si collegano i concetti]
+
+💡 STRATEGIE DI MEMORIZZAZIONE
+[Tecniche specifiche]
+
+✅ CHECKLIST PADRONANZA
+[Come verificare di aver capito]
+
+Contenuto: {content}`
+            },
+            'tabella': {
+                icon: '📊',
+                title: 'Tabella Comparativa',
+                prompt: `Crea una tabella comparativa ben strutturata:
+
+Identifica 3-5 elementi da confrontare e almeno 5 criteri di confronto.
+
+Formato:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+|  CRITERIO       | Elemento 1 | Elemento 2 | Elemento 3 |
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+| Definizione     |            |            |            |
+| Caratteristiche |            |            |            |
+| Pro             |            |            |            |
+| Contro          |            |            |            |
+| Applicazioni    |            |            |            |
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 Sintesi comparativa: [breve analisi]
+
+Contenuto: {content}`
+            },
+            'dialogo': {
+                icon: '💬',
+                title: 'Dialogo Socratico',
+                prompt: `Crea un dialogo Socratico (domanda-risposta) per esplorare l'argomento:
+
+Personaggi:
+👨‍🏫 MAESTRO - Guida con domande
+👨‍🎓 STUDENTE - Scopre attraverso il ragionamento
+
+Struttura:
+MAESTRO: [Domanda aperta]
+STUDENTE: [Risposta iniziale]
+MAESTRO: [Domanda di approfondimento]
+STUDENTE: [Riflessione più profonda]
+[continua per 8-10 scambi]
+
+Finale: Lo studente arriva alla comprensione profonda
+
+Contenuto: {content}`
+            }
+        };
+
+        async function generateCustomFormat(formatType) {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            let prompt = '';
+            let formatInfo = null;
+            
+            if (formatType === 'powerpoint') {
+                // Genera PowerPoint direttamente
+                await generatePowerPoint();
+                return;
+            }
+            
+            if (formatType === 'custom') {
+                const customInput = document.getElementById('customFormatInput').value.trim();
+                if (!customInput) {
+                    alert('⚠️ Inserisci una richiesta personalizzata!');
+                    return;
+                }
+                prompt = `${customInput}\n\nContenuto da trasformare:\n${study.data.summary_long}\n\nPunti chiave: ${(study.data.highlights || []).join(', ')}`;
+                formatInfo = { icon: '✨', title: customInput.substring(0, 50) };
+            } else {
+                formatInfo = formatTemplates[formatType];
+                const content = `${study.data.summary_long}\n\nPunti chiave: ${(study.data.highlights || []).join(', ')}`;
+                prompt = formatInfo.prompt.replace('{content}', content);
+            }
+            
+            document.getElementById('customFormatResult').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>✨ Creazione in Corso</h3>
+                    <p>Sto generando il formato "${formatInfo.title}"...</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore nella generazione');
+                
+                const data = await response.json();
+                const result = data.response;
+                
+                if (!study.data.customFormats) {
+                    study.data.customFormats = [];
+                }
+                
+                study.data.customFormats.push({
+                    type: formatType,
+                    icon: formatInfo.icon,
+                    title: formatInfo.title,
+                    content: result,
+                    timestamp: Date.now()
+                });
+                
+                saveStudies();
+                displayFormatResult(result, formatInfo);
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                document.getElementById('customFormatResult').innerHTML = `
+                    <div class="error-message">
+                        ❌ Errore nella generazione: ${error.message}
+                        <button class="btn" onclick="renderCustomFormat()" style="margin-top: 15px;">
+                            🔄 Riprova
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function displayFormatResult(content, formatInfo) {
+            const resultHTML = `
+                <div class="section" style="margin-top: 30px;">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">
+                        ${formatInfo.icon} Risultato: ${formatInfo.title}
+                    </h4>
+                    
+                    <div class="result-box">${content}</div>
+                    
+                    <div class="export-buttons">
+                        <button class="btn" onclick="copyFormatResult()">
+                            📋 Copia negli Appunti
+                        </button>
+                        <button class="btn" onclick="downloadFormatResult('${formatInfo.title.replace(/[^a-z0-9]/gi, '_')}')">
+                            📥 Scarica TXT
+                        </button>
+                        <button class="btn" onclick="renderCustomFormat()">
+                            ✨ Crea Altro Formato
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('customFormatResult').innerHTML = resultHTML;
+            document.getElementById('customFormatResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function copyFormatResult() {
+            const resultBox = document.querySelector('.result-box');
+            if (!resultBox) return;
+            
+            const text = resultBox.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Contenuto copiato negli appunti!');
+            }).catch(() => {
+                alert('❌ Errore nella copia');
+            });
+        }
+
+        function downloadFormatResult(filename) {
+            const resultBox = document.querySelector('.result-box');
+            if (!resultBox) return;
+            
+            const text = resultBox.textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('✅ File scaricato!');
+        }
+
+        function showHistoryItem(index) {
+            const study = getCurrentStudy();
+            const item = study.data.customFormats[index];
+            if (!item) return;
+            
+            displayFormatResult(item.content, { icon: item.icon, title: item.title });
+        }
+
+        function copyHistoryItem(index, event) {
+            event.stopPropagation();
+            const study = getCurrentStudy();
+            const item = study.data.customFormats[index];
+            if (!item) return;
+            
+            navigator.clipboard.writeText(item.content).then(() => {
+                alert('✅ Contenuto copiato!');
+            });
+        }
+
+        function deleteHistoryItem(index, event) {
+            event.stopPropagation();
+            const study = getCurrentStudy();
+            
+            if (confirm('Eliminare questa trasformazione dallo storico?')) {
+                study.data.customFormats.splice(index, 1);
+                saveStudies();
+                renderCustomFormat();
+            }
+        }
+
+        function getTimeAgo(timestamp) {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            
+            if (seconds < 60) return 'Pochi secondi fa';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} minuti fa`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} ore fa`;
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)} giorni fa`;
+            
+            return new Date(timestamp).toLocaleDateString('it-IT');
+        }
+
+        // ===== POWERPOINT EXPORT =====
+        
+        async function generatePowerPoint() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            document.getElementById('customFormatResult').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>📊 Generazione PowerPoint</h3>
+                    <p>Sto creando la presentazione...</p>
+                </div>
+            `;
+            
+            try {
+                const pptx = new PptxGenJS();
+                
+                pptx.layout = 'LAYOUT_16x9';
+                pptx.author = 'MentoreStudio';
+                pptx.title = study.name;
+                pptx.subject = study.subject;
+                
+                // Slide 1 - Titolo
+                let slide = pptx.addSlide();
+                slide.background = { color: '667eea' };
+                slide.addText(study.name, {
+                    x: 1, y: 2.5, w: 8, h: 1,
+                    fontSize: 44, bold: true, color: 'FFFFFF',
+                    align: 'center'
+                });
+                slide.addText(study.subject, {
+                    x: 1, y: 3.5, w: 8, h: 0.5,
+                    fontSize: 24, color: 'FFFFFF',
+                    align: 'center'
+                });
+                
+                // Slide 2 - Introduzione
+                slide = pptx.addSlide();
+                slide.addText('📝 Introduzione', {
+                    x: 0.5, y: 0.5, fontSize: 32, bold: true, color: '667eea'
+                });
+                slide.addText(study.data.summary_short, {
+                    x: 0.5, y: 1.5, w: 9, h: 4,
+                    fontSize: 16, valign: 'top'
+                });
+                
+                // Slides per Punti Salienti
+                (study.data.highlights || []).slice(0, 8).forEach((highlight, i) => {
+                    slide = pptx.addSlide();
+                    slide.addText(`⭐ Punto Chiave ${i+1}`, {
+                        x: 0.5, y: 0.5, fontSize: 28, bold: true, color: '667eea'
+                    });
+                    slide.addText([
+                        { text: highlight, options: { fontSize: 18, bullet: true } }
+                    ], {
+                        x: 0.5, y: 1.5, w: 9, h: 4
+                    });
+                });
+                
+                // Slide Glossario
+                if (study.data.glossary && study.data.glossary.length > 0) {
+                    slide = pptx.addSlide();
+                    slide.addText('📖 Glossario', {
+                        x: 0.5, y: 0.5, fontSize: 32, bold: true, color: '667eea'
+                    });
+                    
+                    const rows = [
+                        [{ text: 'Termine', options: { bold: true, fontSize: 14 } }, 
+                         { text: 'Definizione', options: { bold: true, fontSize: 14 } }]
+                    ];
+                    
+                    (study.data.glossary || []).slice(0, 6).forEach(g => {
+                        rows.push([
+                            { text: g.term, options: { fontSize: 12 } },
+                            { text: g.definition, options: { fontSize: 12 } }
+                        ]);
+                    });
+                    
+                    slide.addTable(rows, {
+                        x: 0.5, y: 1.2, w: 9, h: 4,
+                        border: { pt: 1, color: '667eea' }
+                    });
+                }
+                
+                // Slide Conclusione
+                slide = pptx.addSlide();
+                slide.addText('✅ Conclusione', {
+                    x: 0.5, y: 0.5, fontSize: 32, bold: true, color: '667eea'
+                });
+                slide.addText(study.data.summary_long.substring(0, 400), {
+                    x: 0.5, y: 1.5, w: 9, h: 4,
+                    fontSize: 16
+                });
+                
+                await pptx.writeFile({ fileName: `${study.name.replace(/[^a-z0-9]/gi, '_')}.pptx` });
+                
+                document.getElementById('customFormatResult').innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="font-size: 4em; margin-bottom: 20px;">📊</div>
+                        <h3>PowerPoint Generato con Successo!</h3>
+                        <p style="margin: 20px 0; color: #666;">
+                            Il file "${study.name}.pptx" è stato scaricato
+                        </p>
+                        <button class="btn" onclick="generatePowerPoint()">
+                            🔄 Genera Altro PowerPoint
+                        </button>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Errore PowerPoint:', error);
+                document.getElementById('customFormatResult').innerHTML = `
+                    <div class="error-message">
+                        ❌ Errore nella generazione PowerPoint: ${error.message}
+                        <button class="btn" onclick="renderCustomFormat()" style="margin-top: 15px;">
+                            🔄 Riprova
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // ===== FLASHCARD E QUIZ (versioni complete dal codice precedente) =====
+        
+        function renderFlashcardsAdvanced() {
+            const study = getCurrentStudy();
+            if (!study || !study.data.flashcards) return;
+
+            const allFlashcards = study.data.flashcards;
+            const filteredFlashcards = filterFlashcardsByMode(allFlashcards);
+            
+            if (filteredFlashcards.length === 0) {
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                    <h2>${study.name}</h2>
+                    <h3>🎴 Flashcard</h3>
+                    <div class="card" style="text-align: center;">
+                        <p>Nessuna flashcard trovata per il filtro selezionato.</p>
+                        <button class="btn" onclick="appState.flashcardMode = 'all'; renderFlashcardsAdvanced()">Mostra Tutte</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const currentCard = filteredFlashcards[appState.currentFlashcardFiltered];
+            const currentCardId = `${study.id}_${currentCard.q}`;
+            const stats = flashcardStats[currentCardId] || { difficulty: 'medium', views: 0, correct: 0 };
+
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>🎴 Flashcard (${appState.currentFlashcardFiltered + 1}/${filteredFlashcards.length})</h3>
+                
+                <div style="display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap;">
+                    <button class="btn ${appState.flashcardMode === 'all' ? 'active' : ''}" onclick="changeFlashcardMode('all')">📚 Tutte</button>
+                    <button class="btn ${appState.flashcardMode === 'difficult' ? 'active' : ''}" onclick="changeFlashcardMode('difficult')">🔴 Difficili</button>
+                    <button class="btn ${appState.flashcardMode === 'medium' ? 'active' : ''}" onclick="changeFlashcardMode('medium')">🟠 Medie</button>
+                    <button class="btn ${appState.flashcardMode === 'easy' ? 'active' : ''}" onclick="changeFlashcardMode('easy')">🟢 Facili</button>
+                </div>
+
+                <div class="flashcard ${stats.difficulty}" onclick="flipCard()">
+                    <div class="flashcard-inner" id="flashcardInner">
+                        <div class="flashcard-front">
+                            <div class="flashcard-question">${currentCard.q}</div>
+                            <div style="font-size: 0.8em; opacity: 0.8; margin-top: 15px;">
+                                👆 Clicca per vedere la risposta
+                            </div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-answer">${currentCard.a}</div>
+                            
+                            <div id="flashcardExtras" style="width: 100%;">
+                                ${currentCard.explanation ? `
+                                    <div class="flashcard-extra">
+                                        <div class="flashcard-extra-title">💡 Spiegazione Semplice:</div>
+                                        <div>${currentCard.explanation}</div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${currentCard.example ? `
+                                    <div class="flashcard-extra">
+                                        <div class="flashcard-extra-title">📚 Esempio Pratico:</div>
+                                        <div>${currentCard.example}</div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${currentCard.essay ? `
+                                    <div class="flashcard-extra">
+                                        <div class="flashcard-extra-title">✏️ Domanda per Saggio:</div>
+                                        <div>${currentCard.essay}</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <div style="margin-top: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px;" onclick="event.stopPropagation()">
+                                ${!currentCard.explanation ? `<button class="expand-btn" onclick="generateExplanation('${currentCardId}')">💡 Spiega Semplice</button>` : ''}
+                                ${!currentCard.example ? `<button class="expand-btn" onclick="generateExample('${currentCardId}')">📚 Esempio</button>` : ''}
+                                ${!currentCard.essay ? `<button class="expand-btn" onclick="generateEssay('${currentCardId}')">✏️ Domanda Saggio</button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn" onclick="prevFlashcard()">⬅️ Precedente</button>
+                    <button class="btn" onclick="flipCard()">🔄 Gira</button>
+                    <button class="btn" onclick="nextFlashcard()">Successiva ➡️</button>
+                </div>
+
+                <div class="controls" style="margin-top: 20px;">
+                    <button class="btn" style="background: #4caf50;" onclick="markDifficulty('easy')">🟢 Facile</button>
+                    <button class="btn" style="background: #ffa726;" onclick="markDifficulty('medium')">🟠 Medio</button>
+                    <button class="btn" style="background: #f44336;" onclick="markDifficulty('difficult')">🔴 Difficile</button>
+                </div>
+
+                <div class="note-section">
+                    <strong>📝 Note Personali:</strong>
+                    <textarea class="note-input" id="flashcardNote" rows="3" placeholder="Aggiungi note per questa flashcard...">${appState.notes[currentCardId] || ''}</textarea>
+                    <button class="btn" onclick="saveFlashcardNote('${currentCardId}')" style="margin-top: 10px;">💾 Salva Nota</button>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <strong>📊 Statistiche:</strong> Visualizzata ${stats.views} volte | Difficoltà: ${stats.difficulty === 'easy' ? '🟢 Facile' : stats.difficulty === 'medium' ? '🟠 Medio' : '🔴 Difficile'}
+                </div>
+            `;
+
+            document.getElementById('contentArea').innerHTML = html;
+            updateFlashcardStats(currentCardId);
+        }
+
+        function filterFlashcardsByMode(flashcards) {
+            if (appState.flashcardMode === 'all') return flashcards;
+            
+            const study = getCurrentStudy();
+            return flashcards.filter(card => {
+                const cardId = `${study.id}_${card.q}`;
+                const stats = flashcardStats[cardId] || { difficulty: 'medium' };
+                return stats.difficulty === appState.flashcardMode;
+            });
+        }
+
+        function changeFlashcardMode(mode) {
+            appState.flashcardMode = mode;
+            appState.currentFlashcardFiltered = 0;
+            renderFlashcardsAdvanced();
+        }
+
+        function flipCard() {
+            document.getElementById('flashcardInner').classList.toggle('flipped');
+        }
+
+        function nextFlashcard() {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            appState.currentFlashcardFiltered = (appState.currentFlashcardFiltered + 1) % filtered.length;
+            renderFlashcardsAdvanced();
+        }
+
+        function prevFlashcard() {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            appState.currentFlashcardFiltered = appState.currentFlashcardFiltered === 0 ? filtered.length - 1 : appState.currentFlashcardFiltered - 1;
+            renderFlashcardsAdvanced();
+        }
+
+        function markDifficulty(difficulty) {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            const currentCard = filtered[appState.currentFlashcardFiltered];
+            const cardId = `${study.id}_${currentCard.q}`;
+            
+            if (!flashcardStats[cardId]) flashcardStats[cardId] = { difficulty: 'medium', views: 0, correct: 0 };
+            flashcardStats[cardId].difficulty = difficulty;
+            
+            localStorage.setItem('flashcardStats', JSON.stringify(flashcardStats));
+            renderFlashcardsAdvanced();
+        }
+
+        function updateFlashcardStats(cardId) {
+            if (!flashcardStats[cardId]) flashcardStats[cardId] = { difficulty: 'medium', views: 0, correct: 0 };
+            flashcardStats[cardId].views++;
+            localStorage.setItem('flashcardStats', JSON.stringify(flashcardStats));
+        }
+
+        function saveFlashcardNote(cardId) {
+            const note = document.getElementById('flashcardNote').value;
+            appState.notes[cardId] = note;
+            localStorage.setItem('flashcardNotes', JSON.stringify(appState.notes));
+            alert('✅ Nota salvata!');
+        }
+
+        async function generateExplanation(cardId) {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            const currentCard = filtered[appState.currentFlashcardFiltered];
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Generazione...';
+            
+            try {
+                const prompt = `Spiega in modo molto semplice (come a un bambino di 10 anni) questo concetto:\n\nDomanda: ${currentCard.q}\nRisposta: ${currentCard.a}\n\nFornisci una spiegazione chiara, breve (max 3 frasi) e con esempi quotidiani.`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore generazione');
+                
+                const data = await response.json();
+                currentCard.explanation = data.response;
+                
+                saveStudies();
+                renderFlashcardsAdvanced();
+                
+                setTimeout(() => {
+                    document.getElementById('flashcardInner').classList.add('flipped');
+                }, 100);
+                
+            } catch (error) {
+                alert('❌ Errore: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = '💡 Spiega Semplice';
+            }
+        }
+        
+        async function generateExample(cardId) {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            const currentCard = filtered[appState.currentFlashcardFiltered];
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Generazione...';
+            
+            try {
+                const prompt = `Fornisci un esempio pratico e concreto per questo concetto:\n\nDomanda: ${currentCard.q}\nRisposta: ${currentCard.a}\n\nDai un esempio reale dalla vita quotidiana o dalla materia ${study.subject}. Max 3 frasi.`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore generazione');
+                
+                const data = await response.json();
+                currentCard.example = data.response;
+                
+                saveStudies();
+                renderFlashcardsAdvanced();
+                
+                setTimeout(() => {
+                    document.getElementById('flashcardInner').classList.add('flipped');
+                }, 100);
+                
+            } catch (error) {
+                alert('❌ Errore: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = '📚 Esempio';
+            }
+        }
+        
+        async function generateEssay(cardId) {
+            const study = getCurrentStudy();
+            const filtered = filterFlashcardsByMode(study.data.flashcards);
+            const currentCard = filtered[appState.currentFlashcardFiltered];
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Generazione...';
+            
+            try {
+                const prompt = `Crea una domanda da saggio/tema d'esame su questo argomento:\n\nDomanda: ${currentCard.q}\nRisposta: ${currentCard.a}\n\nLa domanda deve essere aperta, richiedere ragionamento critico e analisi. Max 2 frasi. Inizia con "Come..." o "In che modo..." o "Analizza..." o "Discuti...".`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        conversationHistory: []
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Errore generazione');
+                
+                const data = await response.json();
+                currentCard.essay = data.response;
+                
+                saveStudies();
+                renderFlashcardsAdvanced();
+                
+                setTimeout(() => {
+                    document.getElementById('flashcardInner').classList.add('flipped');
+                }, 100);
+                
+            } catch (error) {
+                alert('❌ Errore: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = '✏️ Domanda Saggio';
+            }
+        }
+
+        function renderQuizAdvanced() {
+            const study = getCurrentStudy();
+            if (!study || !study.data.quiz) return;
+
+            const allQuestions = study.data.quiz;
+            const filteredQuestions = filterQuizByMode(allQuestions);
+
+            if (filteredQuestions.length === 0) {
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                    <h2>${study.name}</h2>
+                    <h3>❓ Quiz</h3>
+                    <div class="card" style="text-align: center;">
+                        <p>Nessuna domanda trovata per il filtro selezionato.</p>
+                        <button class="btn" onclick="appState.quizMode = 'all'; renderQuizAdvanced()">Mostra Tutte</button>
+                    </div>
+                `;
+                return;
+            }
+
+            if (appState.currentQuizFiltered >= filteredQuestions.length) {
+                return renderQuizResults();
+            }
+
+            const currentQuestion = filteredQuestions[appState.currentQuizFiltered];
+
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>❓ Quiz (${appState.currentQuizFiltered + 1}/${filteredQuestions.length})</h3>
+
+                <div style="display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap;">
+                    <button class="btn ${appState.quizMode === 'all' ? 'active' : ''}" onclick="changeQuizMode('all')">📚 Tutte</button>
+                    <button class="btn ${appState.quizMode === 'wrong' ? 'active' : ''}" onclick="changeQuizMode('wrong')">❌ Sbagliate</button>
+                    <button class="btn ${appState.quizMode === 'correct' ? 'active' : ''}" onclick="changeQuizMode('correct')">✅ Corrette</button>
+                    <button class="btn ${appState.quizMode === 'unseen' ? 'active' : ''}" onclick="changeQuizMode('unseen')">👁️ Non Viste</button>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 10px; margin: 20px 0;">
+                    <label><input type="checkbox" id="timerCheckbox" ${appState.quizTimerEnabled ? 'checked' : ''} onchange="toggleQuizTimer()"> ⏱️ Timer (60s per domanda)</label>
+                </div>
+            `;
+
+            if (appState.quizTimerEnabled) {
+                html += `<div class="timer-display ${appState.quizTimeRemaining < 10 ? 'warning' : ''}" id="quizTimer">${appState.quizTimeRemaining}s</div>`;
+            }
+
+            html += `
+                <div class="card">
+                    <h4>${currentQuestion.q}</h4>
+                </div>
+            `;
+
+            currentQuestion.options.forEach((option, i) => {
+                const isAnswered = appState.quizAnswers[appState.currentQuizFiltered] !== undefined;
+                const userAnswer = appState.quizAnswers[appState.currentQuizFiltered];
+                let className = 'quiz-option';
+                
+                if (isAnswered) {
+                    if (i === currentQuestion.correct) className += ' correct';
+                    else if (i === userAnswer) className += ' incorrect';
+                } else if (userAnswer === i) {
+                    className += ' selected';
+                }
+
+                html += `<div class="${className}" onclick="${isAnswered ? '' : `selectQuizAnswer(${i})`}">${option}</div>`;
+            });
+
+            if (appState.quizAnswers[appState.currentQuizFiltered] === undefined) {
+                html += `
+                    <div class="controls">
+                        <button class="btn" onclick="submitQuizAnswer()">✅ Conferma</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="controls">
+                        <button class="btn" onclick="nextQuizQuestion()">Prossima ➡️</button>
+                    </div>
+                `;
+            }
+
+            document.getElementById('contentArea').innerHTML = html;
+
+            if (appState.quizTimerEnabled && !appState.quizTimerId) {
+                startQuizTimer();
+            }
+        }
+
+        function filterQuizByMode(questions) {
+            if (appState.quizMode === 'all') return questions;
+            
+            const study = getCurrentStudy();
+            return questions.filter(q => {
+                const qId = `${study.id}_${q.q}`;
+                const stats = quizStats[qId];
+                
+                if (appState.quizMode === 'unseen') return !stats;
+                if (appState.quizMode === 'correct') return stats && stats.correct;
+                if (appState.quizMode === 'wrong') return stats && !stats.correct;
+                
+                return true;
+            });
+        }
+
+        function changeQuizMode(mode) {
+            appState.quizMode = mode;
+            appState.currentQuizFiltered = 0;
+            appState.quizAnswers = [];
+            appState.quizScore = 0;
+            renderQuizAdvanced();
+        }
+
+        function toggleQuizTimer() {
+            appState.quizTimerEnabled = document.getElementById('timerCheckbox').checked;
+            if (appState.quizTimerEnabled) {
+                appState.quizTimeRemaining = 60;
+                startQuizTimer();
+            } else {
+                if (appState.quizTimerId) {
+                    clearInterval(appState.quizTimerId);
+                    appState.quizTimerId = null;
+                }
+            }
+            renderQuizAdvanced();
+        }
+
+        function startQuizTimer() {
+            appState.quizTimeRemaining = 60;
+            if (appState.quizTimerId) clearInterval(appState.quizTimerId);
+            
+            appState.quizTimerId = setInterval(() => {
+                appState.quizTimeRemaining--;
+                const timerEl = document.getElementById('quizTimer');
+                if (timerEl) {
+                    timerEl.textContent = `${appState.quizTimeRemaining}s`;
+                    if (appState.quizTimeRemaining < 10) {
+                        timerEl.classList.add('warning');
+                    }
+                }
+                
+                if (appState.quizTimeRemaining <= 0) {
+                    clearInterval(appState.quizTimerId);
+                    appState.quizTimerId = null;
+                    appState.quizAnswers[appState.currentQuizFiltered] = -1;
+                    nextQuizQuestion();
+                }
+            }, 1000);
+        }
+
+        function selectQuizAnswer(index) {
+            const currentAnswerIndex = appState.quizAnswers[appState.currentQuizFiltered];
+            if (currentAnswerIndex === undefined) {
+                appState.quizAnswers[appState.currentQuizFiltered] = index;
+                renderQuizAdvanced();
+            }
+        }
+
+        function submitQuizAnswer() {
+            if (appState.quizTimerId) {
+                clearInterval(appState.quizTimerId);
+                appState.quizTimerId = null;
+            }
+
+            const study = getCurrentStudy();
+            const filtered = filterQuizByMode(study.data.quiz);
+            const currentQuestion = filtered[appState.currentQuizFiltered];
+            const userAnswer = appState.quizAnswers[appState.currentQuizFiltered];
+
+            if (userAnswer === undefined) {
+                alert('Seleziona una risposta!');
+                return;
+            }
+
+            const isCorrect = userAnswer === currentQuestion.correct;
+            if (isCorrect) appState.quizScore++;
+
+            const qId = `${study.id}_${currentQuestion.q}`;
+            quizStats[qId] = { correct: isCorrect, timestamp: Date.now() };
+            localStorage.setItem('quizStats', JSON.stringify(quizStats));
+
+            renderQuizAdvanced();
+        }
+
+        function nextQuizQuestion() {
+            const study = getCurrentStudy();
+            const filtered = filterQuizByMode(study.data.quiz);
+            
+            appState.currentQuizFiltered++;
+            
+            if (appState.currentQuizFiltered >= filtered.length) {
+                if (appState.quizTimerId) {
+                    clearInterval(appState.quizTimerId);
+                    appState.quizTimerId = null;
+                }
+                renderQuizResults();
+            } else {
+                if (appState.quizTimerEnabled) {
+                    startQuizTimer();
+                }
+                renderQuizAdvanced();
+            }
+        }
+
+        function renderQuizResults() {
+            const study = getCurrentStudy();
+            const filtered = filterQuizByMode(study.data.quiz);
+            const percentage = Math.round((appState.quizScore / filtered.length) * 100);
+
+            let emoji = '😢';
+            if (percentage >= 90) emoji = '🎉';
+            else if (percentage >= 70) emoji = '😊';
+            else if (percentage >= 50) emoji = '😐';
+
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>${study.name}</h2>
+                <h3>🎯 Risultati Quiz</h3>
+
+                <div class="card" style="text-align: center; font-size: 1.5em;">
+                    <div style="font-size: 4em; margin: 20px 0;">${emoji}</div>
+                    <p><strong>Punteggio: ${appState.quizScore}/${filtered.length}</strong></p>
+                    <p>${percentage}%</p>
+                </div>
+
+                <h3 style="margin-top: 30px;">📝 Riepilogo</h3>
+            `;
+
+            filtered.forEach((q, i) => {
+                const userAnswer = appState.quizAnswers[i];
+                const isCorrect = userAnswer === q.correct;
+                html += `
+                    <div class="review-item ${isCorrect ? 'correct' : 'wrong'}">
+                        <strong>Domanda ${i + 1}:</strong> ${q.q}<br>
+                        <strong>La tua risposta:</strong> ${userAnswer >= 0 ? q.options[userAnswer] : 'Nessuna risposta'}<br>
+                        <strong>Risposta corretta:</strong> ${q.options[q.correct]}<br>
+                        ${isCorrect ? '✅ Corretto!' : '❌ Sbagliato'}
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="controls" style="margin-top: 30px;">
+                    <button class="btn" onclick="resetQuiz()">🔄 Rifai Quiz</button>
+                    <button class="btn" onclick="switchTab('library')">📚 Torna alla Libreria</button>
+                </div>
+            `;
+
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function resetQuiz() {
+            appState.currentQuizFiltered = 0;
+            appState.quizAnswers = [];
+            appState.quizScore = 0;
+            if (appState.quizTimerId) {
+                clearInterval(appState.quizTimerId);
+                appState.quizTimerId = null;
+            }
+            renderQuizAdvanced();
+        }
+
+        // ===== CHAT AI =====
+        
+        function renderChat() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            const chatHistory = appState.chatHistory[study.id] || [];
+            
+            let html = `
+                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
+                <h2>💬 Chat AI - ${study.name}</h2>
+                
+                <div class="chat-context-info">
+                    <strong>ℹ️ Contesto attivo:</strong> ${study.subject} - ${study.name}
+                    <br>
+                    <small>L'AI ha accesso al contenuto della lezione e può rispondere alle tue domande</small>
+                </div>
+                
+                <div class="chat-suggestions">
+                    <div class="chat-suggestion" onclick="sendSuggestedQuestion('Spiegami i concetti principali di questa lezione')">
+                        💡 Concetti principali
+                    </div>
+                    <div class="chat-suggestion" onclick="sendSuggestedQuestion('Crea un piano di studio per questa lezione')">
+                        📅 Piano di studio
+                    </div>
+                    <div class="chat-suggestion" onclick="sendSuggestedQuestion('Quali sono le domande d\\'esame più probabili?')">
+                        🎯 Domande d'esame
+                    </div>
+                    <div class="chat-suggestion" onclick="sendSuggestedQuestion('Dammi esempi pratici di applicazione')">
+                        🔧 Esempi pratici
+                    </div>
+                </div>
+                
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        ${chatHistory.length === 0 ? `
+                            <div style="text-align: center; padding: 40px; color: #999;">
+                                <div style="font-size: 3em; margin-bottom: 10px;">💬</div>
+                                <p>Inizia una conversazione!</p>
+                                <p style="font-size: 0.9em; margin-top: 10px;">Fai domande sulla lezione o usa i suggerimenti sopra</p>
+                            </div>
+                        ` : chatHistory.map((msg, idx) => createChatMessageHTML(msg, `msg_${study.id}_${idx}`)).join('')}
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <textarea 
+                            class="chat-input" 
+                            id="chatInput" 
+                            placeholder="Scrivi la tua domanda..."
+                            rows="1"
+                            onkeypress="handleChatKeyPress(event)"
+                        ></textarea>
+                        <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()">
+                            Invia 📤
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
+                    <button class="btn" onclick="clearChatHistory()" style="padding: 8px 15px; font-size: 0.9em; background: var(--danger);">
+                        🗑️ Cancella Conversazione
+                    </button>
+                    <button class="btn" onclick="exportChatHistory()" style="padding: 8px 15px; font-size: 0.9em;">
+                        📥 Esporta Chat
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('contentArea').innerHTML = html;
+            scrollChatToBottom();
+            
+            const chatInput = document.getElementById('chatInput');
+            chatInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            });
+        }
+
+        function createChatMessageHTML(message, messageId) {
+            const isUser = message.role === 'user';
+            const msgId = messageId || 'msg_' + Date.now() + Math.random();
+            
+            return `
+                <div class="chat-message ${isUser ? 'user' : 'ai'}" data-message-id="${msgId}">
+                    <div class="chat-avatar">${isUser ? '👤' : '🤖'}</div>
+                    <div style="flex: 1;">
+                        <div class="chat-bubble">${escapeHTML(message.content)}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function escapeHTML(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML.replace(/\n/g, '<br>');
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        function sendSuggestedQuestion(question) {
+            document.getElementById('chatInput').value = question;
+            sendChatMessage();
+        }
+
+        async function sendChatMessage() {
+            const study = getCurrentStudy();
+            if (!study || appState.isChatLoading) return;
+            
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const userMessageId = `msg_${study.id}_${appState.chatHistory[study.id].length}`;
+            appState.chatHistory[study.id].push({
+                role: 'user',
+                content: message
+            });
+            
+            input.value = '';
+            input.style.height = 'auto';
+            
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML += createChatMessageHTML({
+                role: 'user',
+                content: message
+            }, userMessageId);
+            
+            messagesContainer.innerHTML += `
+                <div class="chat-message ai" id="typingIndicator">
+                    <div class="chat-avatar">🤖</div>
+                    <div class="chat-bubble">
+                        <div class="typing-indicator">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            scrollChatToBottom();
+            
+            const sendBtn = document.getElementById('chatSendBtn');
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Invio...';
+            appState.isChatLoading = true;
+            
+            try {
+                const summaryShort = (study.data.summary_short || '').substring(0, 300);
+                const highlightsText = (study.data.highlights || []).slice(0, 3).join('. ').substring(0, 200);
+                const contentSnippet = study.fullText ? study.fullText.substring(0, 400) : '';
+                
+                const context = `Materia: ${study.subject}\nLezione: ${study.name}\n\nRiassunto: ${summaryShort}\n\nPunti chiave: ${highlightsText}\n\nEstratto: ${contentSnippet}`;
+                
+                const conversationHistory = appState.chatHistory[study.id]
+                    .slice(0, -1)
+                    .slice(-5)
+                    .map(msg => ({
+                        role: msg.role,
+                        content: msg.content.substring(0, 500)
+                    }));
+                
+                const fullMessage = `[CONTESTO]\n${context}\n\n[DOMANDA]\n${message}`;
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: fullMessage,
+                        conversationHistory: conversationHistory
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Errore server: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const aiResponse = data.response;
+                
+                document.getElementById('typingIndicator').remove();
+                
+                const aiMessageId = `msg_${study.id}_${appState.chatHistory[study.id].length}`;
+                appState.chatHistory[study.id].push({
+                    role: 'assistant',
+                    content: aiResponse
+                });
+                
+                messagesContainer.innerHTML += createChatMessageHTML({
+                    role: 'assistant',
+                    content: aiResponse
+                }, aiMessageId);
+                
+                saveChatHistory();
+                scrollChatToBottom();
+                
+            } catch (error) {
+                console.error('Errore chat:', error);
+                
+                const typingIndicator = document.getElementById('typingIndicator');
+                if (typingIndicator) typingIndicator.remove();
+                
+                messagesContainer.innerHTML += `
+                    <div class="error-message">
+                        ❌ Errore: ${error.message}. Riprova tra poco.
+                    </div>
+                `;
+                
+                appState.chatHistory[study.id].pop();
+                
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Invia 📤';
+                appState.isChatLoading = false;
+                scrollChatToBottom();
+            }
+        }
+
+        function scrollChatToBottom() {
+            setTimeout(() => {
+                const messagesContainer = document.getElementById('chatMessages');
+                if (messagesContainer) {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            }, 100);
+        }
+
+        function clearChatHistory() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            if (confirm('Vuoi cancellare tutta la conversazione?')) {
+                appState.chatHistory[study.id] = [];
+                saveChatHistory();
+                renderChat();
+            }
+        }
+
+        function exportChatHistory() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            const chatHistory = appState.chatHistory[study.id] || [];
+            
+            if (chatHistory.length === 0) {
+                alert('Non ci sono messaggi da esportare');
+                return;
+            }
+            
+            let exportText = `Chat AI - ${study.name}\n`;
+            exportText += `Data: ${new Date().toLocaleDateString('it-IT')}\n`;
+            exportText += `Materia: ${study.subject}\n\n`;
+            exportText += '='.repeat(50) + '\n\n';
+            
+            chatHistory.forEach((msg, i) => {
+                const role = msg.role === 'user' ? '👤 Tu' : '🤖 AI';
+                exportText += `${role}:\n${msg.content}\n\n`;
+            });
+            
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chat_${study.name.replace(/[^a-z0-9]/gi, '_')}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('✅ Chat esportata!');
+        }
+
+        function resetApp() {
+            document.getElementById('uploadSection').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('pdfFile').value = '';
+        }
+
+        if (Object.keys(appState.studies).length > 0) {
+            showMainApp();
+            switchTab('library');
+        }
+
+        // ===== NEW NAVIGATION FUNCTIONS FOR 2X2 DESIGN =====
+        
         function navigateToFunction(functionName) {
-            // Map function names to tab names
             const functionToTabMap = {
                 'summary': 'summary',
                 'highlights': 'highlights',
@@ -1176,401 +3594,26 @@
                 'quiz': 'quiz',
                 'mindmap': 'mindmap',
                 'chat': 'chat',
-                'essays': 'chat', // Essays use chat with specific prompts
-                'oral': 'chat', // Oral practice uses chat
-                'socratic': 'chat', // Socratic dialogue uses chat
-                'presentation': 'custom',
-                'schema': 'custom',
-                'table': 'custom',
-                'custom': 'custom',
-                'thesis': 'custom'
+                'studyguide': 'studyguide',
+                'conceptanalysis': 'conceptanalysis',
+                'customformat': 'customformat'
             };
             
             const tabName = functionToTabMap[functionName];
             
             if (tabName) {
-                // Hide home screen
                 document.getElementById('newHomeScreen').classList.add('hidden');
-                // Show tab navigation
                 document.getElementById('tabNavigation').classList.remove('hidden');
-                // Switch to the corresponding tab
                 switchTab(tabName);
             }
         }
 
         function backToHome() {
-            // Show home screen
             document.getElementById('newHomeScreen').classList.remove('hidden');
-            // Hide tab navigation
             document.getElementById('tabNavigation').classList.add('hidden');
-            // Clear active tab
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         }
 
-        function showMainApp() {
-            document.getElementById('uploadSection').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('resetBtn').style.display = 'inline-block';
-            
-            // Show new home screen by default
-            document.getElementById('newHomeScreen').classList.remove('hidden');
-            document.getElementById('tabNavigation').classList.add('hidden');
-        }
-
-        // ===== REST OF ORIGINAL JAVASCRIPT CODE FOLLOWS =====
-        // (I'll include the key functions but truncate for space - in the real file, ALL original code continues)
-        
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-        }
-
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-mode');
-        }
-
-        function resetApp() {
-            if (confirm('Vuoi tornare alla libreria? (Non perderai i tuoi dati)')) {
-                // Show home screen
-                document.getElementById('newHomeScreen').classList.remove('hidden');
-                // Hide tab navigation
-                document.getElementById('tabNavigation').classList.add('hidden');
-                // Switch to library view
-                switchTab('library');
-            }
-        }
-
-        function saveState() {
-            localStorage.setItem('mentoreStudies', JSON.stringify(appState.studies));
-        }
-
-        function getCurrentStudy() {
-            return appState.studies[appState.currentStudy];
-        }
-
-        // The processPDF and all other original functions continue here...
-        // (Including ALL the original code from line 190 onwards of the uploaded file)
-        
-        // ===== TAB SWITCHING (Modified to work with new navigation) =====
-        function switchTab(tabName) {
-            appState.currentTab = tabName;
-            
-            // Update active tab button
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`[onclick="switchTab('${tabName}')"]`)?.classList.add('active');
-            
-            // Render content based on tab
-            switch(tabName) {
-                case 'library':
-                    renderLibrary();
-                    break;
-                case 'summary':
-                    renderSummary();
-                    break;
-                case 'highlights':
-                    renderHighlights();
-                    break;
-                case 'glossary':
-                    renderGlossary();
-                    break;
-                case 'timeline':
-                    renderTimeline();
-                    break;
-                case 'mindmap':
-                    renderMindMap();
-                    break;
-                case 'flashcards':
-                    renderFlashcards();
-                    break;
-                case 'quiz':
-                    renderQuiz();
-                    break;
-                case 'chat':
-                    renderChat();
-                    break;
-                case 'custom':
-                    renderCustomFormat();
-                    break;
-            }
-        }
-
-        // ===== PLACEHOLDER RENDER FUNCTIONS =====
-        // (These would be filled with the actual implementations from the original file)
-        
-        function renderLibrary() {
-            const contentArea = document.getElementById('contentArea');
-            const studies = Object.values(appState.studies);
-            
-            if (studies.length === 0) {
-                contentArea.innerHTML = `
-                    <div class="section">
-                        <h2>📚 La Tua Libreria</h2>
-                        <p>Nessuna lezione caricata. Carica un PDF per iniziare!</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            contentArea.innerHTML = `
-                <div class="section">
-                    <h2>📚 La Tua Libreria</h2>
-                    <input type="text" class="search-box" placeholder="🔍 Cerca lezioni..." onkeyup="filterStudies(this.value)" />
-                    <div id="studiesList">
-                        ${studies.map(study => `
-                            <div class="study-item" onclick="selectStudy('${study.id}')">
-                                <div class="study-left">
-                                    <strong>${study.name}</strong>
-                                    <div class="study-info">
-                                        ${study.subject} • ${new Date(study.uploadDate).toLocaleDateString('it-IT')}
-                                    </div>
-                                </div>
-                                <div class="study-right">
-                                    <button class="btn btn-export" onclick="event.stopPropagation(); exportStudy('${study.id}')">📥 Esporta</button>
-                                    <button class="btn btn-delete" onclick="event.stopPropagation(); deleteStudy('${study.id}')">🗑️</button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        function selectStudy(studyId) {
-            appState.currentStudy = studyId;
-            // Navigate to summary by default
-            navigateToFunction('summary');
-        }
-
-        function filterStudies(searchTerm) {
-            const studies = Object.values(appState.studies);
-            const filtered = studies.filter(study => 
-                study.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                study.subject.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            
-            const studiesList = document.getElementById('studiesList');
-            studiesList.innerHTML = filtered.map(study => `
-                <div class="study-item" onclick="selectStudy('${study.id}')">
-                    <div class="study-left">
-                        <strong>${study.name}</strong>
-                        <div class="study-info">
-                            ${study.subject} • ${new Date(study.uploadDate).toLocaleDateString('it-IT')}
-                        </div>
-                    </div>
-                    <div class="study-right">
-                        <button class="btn btn-export" onclick="event.stopPropagation(); exportStudy('${study.id}')">📥 Esporta</button>
-                        <button class="btn btn-delete" onclick="event.stopPropagation(); deleteStudy('${study.id}')">🗑️</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function deleteStudy(studyId) {
-            if (confirm('Sei sicuro di voler eliminare questa lezione?')) {
-                delete appState.studies[studyId];
-                delete appState.chatHistory[studyId];
-                delete appState.flashcardStats[studyId];
-                saveState();
-                saveChatHistory();
-                saveFlashcardStats();
-                renderLibrary();
-            }
-        }
-
-        function exportStudy(studyId) {
-            const study = appState.studies[studyId];
-            const dataStr = JSON.stringify(study, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${study.name}_export.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            alert('✅ Lezione esportata!');
-        }
-
-        function renderSummary() {
-            const study = getCurrentStudy();
-            if (!study) {
-                document.getElementById('contentArea').innerHTML = '<p>Seleziona una lezione dalla libreria.</p>';
-                return;
-            }
-            
-            document.getElementById('contentArea').innerHTML = `
-                <div class="section">
-                    <h2>📝 Riassunto: ${study.name}</h2>
-                    <div class="card">
-                        <h3>Riassunto Breve</h3>
-                        <p>${study.data.summary_short || 'Generazione in corso...'}</p>
-                    </div>
-                    <div class="card">
-                        <h3>Riassunto Completo</h3>
-                        <p>${study.data.summary_long || 'Generazione in corso...'}</p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderHighlights() {
-            const study = getCurrentStudy();
-            if (!study) return;
-            
-            document.getElementById('contentArea').innerHTML = `
-                <div class="section">
-                    <h2>⭐ Punti Salienti: ${study.name}</h2>
-                    ${(study.data.highlights || []).map((highlight, i) => `
-                        <div class="card">
-                            <h3>${i + 1}. ${highlight}</h3>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function renderGlossary() {
-            const study = getCurrentStudy();
-            if (!study) return;
-            
-            document.getElementById('contentArea').innerHTML = `
-                <div class="section">
-                    <h2>📖 Glossario: ${study.name}</h2>
-                    ${Object.entries(study.data.glossary || {}).map(([term, def]) => `
-                        <div class="card">
-                            <h3>${term}</h3>
-                            <p>${def}</p>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function renderTimeline() {
-            const study = getCurrentStudy();
-            if (!study) return;
-            
-            document.getElementById('contentArea').innerHTML = `
-                <div class="section">
-                    <h2>📅 Timeline: ${study.name}</h2>
-                    ${(study.data.timeline || []).map(event => `
-                        <div class="card">
-                            <h3>${event.date || event.period}</h3>
-                            <p>${event.event}</p>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function renderMindMap() {
-            const study = getCurrentStudy();
-            if (!study) return;
-            
-            document.getElementById('contentArea').innerHTML = `
-                <div class="section">
-                    <h2>🧠 Mappa Mentale: ${study.name}</h2>
-                    <p>Funzione mappa mentale in sviluppo...</p>
-                </div>
-            `;
-        }
-
-        function renderFlashcards() {
-            const study = getCurrentStudy();
-            if (!study || !study.data.flashcards) return;
-            
-            document.getElementById('contentArea').innerHTML = `
-                <div class="section">
-                    <h2>🎴 Flashcard: ${study.name}</h2>
-                    <p>Funzione flashcard con flip animation...</p>
-                </div>
-            `;
-        }
-
-        function renderQuiz() {
-            const study = getCurrentStudy();
-            if (!study || !study.data.quiz) return;
-            
-            document.getElementById('contentArea').innerHTML = `
-                <div class="section">
-                    <h2>❓ Quiz: ${study.name}</h2>
-                    <p>Funzione quiz interattivo...</p>
-                </div>
-            `;
-        }
-
-        function renderChat() {
-            const study = getCurrentStudy();
-            if (!study) return;
-            
-            document.getElementById('contentArea').innerHTML = `
-                <div class="section">
-                    <h2>💬 Chat AI: ${study.name}</h2>
-                    <div class="chat-container">
-                        <div class="chat-header">
-                            <span>🤖 Assistente AI</span>
-                        </div>
-                        <div class="chat-messages" id="chatMessages"></div>
-                        <div class="chat-input-area">
-                            <textarea class="chat-input" id="chatInput" placeholder="Scrivi la tua domanda..."></textarea>
-                            <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()">Invia 📤</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderCustomFormat() {
-            const study = getCurrentStudy();
-            if (!study) return;
-            
-            document.getElementById('contentArea').innerHTML = `
-                <div class="section">
-                    <h2>✨ Crea Formato Personalizzato: ${study.name}</h2>
-                    <div class="format-options">
-                        <div class="format-card">
-                            <div class="format-icon">📊</div>
-                            <div class="format-title">Presentazione</div>
-                            <div class="format-description">Crea slides PowerPoint</div>
-                        </div>
-                        <div class="format-card">
-                            <div class="format-icon">📋</div>
-                            <div class="format-title">Schema</div>
-                            <div class="format-description">Schema di studio</div>
-                        </div>
-                        <div class="format-card">
-                            <div class="format-icon">📑</div>
-                            <div class="format-title">Tabella</div>
-                            <div class="format-description">Tabella comparativa</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function saveChatHistory() {
-            localStorage.setItem('mentoreChatHistory', JSON.stringify(appState.chatHistory));
-        }
-
-        function saveFlashcardStats() {
-            localStorage.setItem('mentoreFlashcardStats', JSON.stringify(appState.flashcardStats));
-        }
-
-        function sendChatMessage() {
-            // Placeholder for chat functionality
-            alert('Chat functionality - implementazione completa nel codice originale');
-        }
-
-        async function processPDF() {
-            // Placeholder - full implementation would be from original file
-            alert('PDF processing - implementazione completa nel codice originale');
-        }
-
-        // Initialize app on load
-        if (Object.keys(appState.studies).length > 0) {
-            showMainApp();
-        }
     </script>
 </body>
 </html>
