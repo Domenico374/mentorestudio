@@ -3344,6 +3344,21 @@ Contenuto: {content}`
             'personalizza': ['customformat']
         };
         
+        // Mappa dei nomi tab agli ID corretti
+        const tabIdMap = {
+            'summary': 'tabSummary',
+            'highlights': 'tabHighlights',
+            'glossary': 'tabGlossary',
+            'conceptanalysis': 'tabConceptAnalysis',
+            'flashcards': 'tabFlashcards',
+            'mindmap': 'tabMindmap',
+            'timeline': 'tabTimeline',
+            'chat': 'tabChat',
+            'quiz': 'tabQuiz',
+            'studyguide': 'tabStudyGuide',
+            'customformat': 'tabCustomFormat'
+        };
+        
         function selectCategory(category) {
             console.log('Categoria selezionata:', category);
             
@@ -3363,9 +3378,12 @@ Contenuto: {content}`
             
             // Mostra solo i tab della categoria selezionata
             tabs.forEach(tabName => {
-                const tabBtn = document.getElementById('tab' + capitalizeFirst(tabName));
+                const tabId = tabIdMap[tabName];
+                const tabBtn = document.getElementById(tabId);
                 if (tabBtn) {
                     tabBtn.classList.remove('hidden');
+                } else {
+                    console.error('Tab non trovato:', tabId, 'per', tabName);
                 }
             });
             
