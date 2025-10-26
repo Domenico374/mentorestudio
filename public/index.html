@@ -2568,9 +2568,9 @@ Contenuto: {content}`
                             </div>
                             
                             <div style="margin-top: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px;" onclick="event.stopPropagation()">
-                                ${!currentCard.explanation ? `<button class="expand-btn" onclick="generateExplanation('${currentCardId}')">💡 Spiega Semplice</button>` : ''}
-                                ${!currentCard.example ? `<button class="expand-btn" onclick="generateExample('${currentCardId}')">📚 Esempio</button>` : ''}
-                                ${!currentCard.essay ? `<button class="expand-btn" onclick="generateEssay('${currentCardId}')">✏️ Domanda Saggio</button>` : ''}
+                                ${!currentCard.explanation ? `<button class="expand-btn" onclick="generateExplanation('${currentCardId}', event)">💡 Spiega Semplice</button>` : ''}
+                                ${!currentCard.example ? `<button class="expand-btn" onclick="generateExample('${currentCardId}', event)">📚 Esempio</button>` : ''}
+                                ${!currentCard.essay ? `<button class="expand-btn" onclick="generateEssay('${currentCardId}', event)">✏️ Domanda Saggio</button>` : ''}
                             </div>
                         </div>
                     </div>
@@ -2664,7 +2664,7 @@ Contenuto: {content}`
             alert('✅ Nota salvata!');
         }
 
-        async function generateExplanation(cardId) {
+        async function generateExplanation(cardId, event) {
             const study = getCurrentStudy();
             const filtered = filterFlashcardsByMode(study.data.flashcards);
             const currentCard = filtered[appState.currentFlashcardFiltered];
@@ -2704,7 +2704,7 @@ Contenuto: {content}`
             }
         }
         
-        async function generateExample(cardId) {
+        async function generateExample(cardId, event) {
             const study = getCurrentStudy();
             const filtered = filterFlashcardsByMode(study.data.flashcards);
             const currentCard = filtered[appState.currentFlashcardFiltered];
@@ -2744,7 +2744,7 @@ Contenuto: {content}`
             }
         }
         
-        async function generateEssay(cardId) {
+        async function generateEssay(cardId, event) {
             const study = getCurrentStudy();
             const filtered = filterFlashcardsByMode(study.data.flashcards);
             const currentCard = filtered[appState.currentFlashcardFiltered];
