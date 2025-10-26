@@ -1025,18 +1025,6 @@
         function showMainApp() {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            
-            // Mostra le 4 cards invece dei tab
-            document.getElementById('categorySelection').classList.add('active');
-            document.getElementById('tabs').style.display = 'none';
-            document.getElementById('contentArea').style.display = 'none';
-            document.getElementById('backToCategories').classList.add('hidden');
-            
-            // Aggiorna il nome del documento
-            const study = getCurrentStudy();
-            if (study) {
-                document.getElementById('currentStudyName').textContent = study.name;
-            }
         }
 
         function updateProgress(current, total, message) {
@@ -1218,20 +1206,17 @@
                 appState.chatHistory[studyId] = [];
             }
             
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.add('hidden'));
-            document.getElementById('tabSummary').classList.remove('hidden');
-            document.getElementById('tabHighlights').classList.remove('hidden');
-            document.getElementById('tabGlossary').classList.remove('hidden');
-            document.getElementById('tabTimeline').classList.remove('hidden');
-            document.getElementById('tabMindmap').classList.remove('hidden');
-            document.getElementById('tabStudyGuide').classList.remove('hidden');
-            document.getElementById('tabConceptAnalysis').classList.remove('hidden');
-            document.getElementById('tabCustomFormat').classList.remove('hidden');
-            document.getElementById('tabFlashcards').classList.remove('hidden');
-            document.getElementById('tabQuiz').classList.remove('hidden');
-            document.getElementById('tabChat').classList.remove('hidden');
+            // Mostra le 4 cards
+            document.getElementById('categorySelection').classList.add('active');
+            document.getElementById('tabs').style.display = 'none';
+            document.getElementById('contentArea').style.display = 'none';
+            document.getElementById('backToCategories').classList.add('hidden');
             
-            switchTab('summary');
+            // Aggiorna il nome del documento
+            const study = getCurrentStudy();
+            if (study) {
+                document.getElementById('currentStudyName').textContent = study.name;
+            }
         }
 
         function deleteStudy(studyId, e) {
@@ -3410,8 +3395,12 @@ Contenuto: {content}`
         }
         
         function showLibrary() {
-            // Torna alla library
-            showCategories();
+            // Nascondi le 4 cards
+            document.getElementById('categorySelection').classList.remove('active');
+            // Mostra tabs e content area
+            document.getElementById('tabs').style.display = 'flex';
+            document.getElementById('contentArea').style.display = 'block';
+            // Vai alla library
             switchTab('library');
         }
         
