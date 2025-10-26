@@ -2991,7 +2991,17 @@ Contenuto: {content}`
         function renderQuizResults() {
             const study = getCurrentStudy();
             const filtered = filterQuizByMode(study.data.quiz);
-            const percentage = Math.round((appState.quizScore / filtered.length) * 100);
+            
+            // CORREZIONE: Calcola il punteggio dalle risposte salvate
+            let correctCount = 0;
+            filtered.forEach((q, i) => {
+                const userAnswer = appState.quizAnswers[i];
+                if (userAnswer === q.correct) {
+                    correctCount++;
+                }
+            });
+            
+            const percentage = Math.round((correctCount / filtered.length) * 100);
 
             let emoji = '😢';
             if (percentage >= 90) emoji = '🎉';
@@ -3005,7 +3015,7 @@ Contenuto: {content}`
 
                 <div class="card" style="text-align: center; font-size: 1.5em;">
                     <div style="font-size: 4em; margin: 20px 0;">${emoji}</div>
-                    <p><strong>Punteggio: ${appState.quizScore}/${filtered.length}</strong></p>
+                    <p><strong>Punteggio: ${correctCount}/${filtered.length}</strong></p>
                     <p>${percentage}%</p>
                 </div>
 
