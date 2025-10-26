@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MentoreStudio - Il tuo mentore personale per lo studio intelligente">
     <title>📚 MentoreStudio - Studia Intelligente</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-    <style>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #667eea;
@@ -254,34 +254,8 @@
             font-size: 0.95em;
             font-weight: 600;
         }
-        .back-btn { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            cursor: pointer; 
-            color: var(--primary); 
-            margin-bottom: 20px; 
-            font-weight: bold;
-            padding: 10px 15px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 8px;
-            transition: all 0.3s;
-            z-index: 100;
-            position: relative;
-        }
-        .back-btn:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateX(-5px);
-        }
-        body.dark-mode .back-btn { 
-            color: var(--accent); 
-            background: rgba(42, 42, 62, 0.9);
-        }
-        body.dark-mode .back-btn:hover {
-            background: var(--secondary);
-            color: white;
-        }
+        .back-btn { display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--primary); margin-bottom: 20px; font-weight: bold; }
+        body.dark-mode .back-btn { color: var(--accent); }
         .review-item {
             background: #f5f7ff;
             padding: 15px;
@@ -484,6 +458,179 @@
             border-left: 4px solid #c62828;
         }
         body.dark-mode .error-message { background: rgba(198, 40, 40, 0.2); color: #ff5252; }
+
+        /* ========== NUOVE 4 CARDS - INTEGRAZIONE COMPLETA ========== */
+        .category-selection {
+            display: none;
+        }
+        
+        .category-selection.active {
+            display: block;
+        }
+        
+        .category-title-section {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .category-main-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        body.dark-mode .category-main-title {
+            color: var(--accent);
+        }
+        
+        .category-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+        }
+        
+        body.dark-mode .category-subtitle {
+            color: #9ca3af;
+        }
+        
+        .back-navigation {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .back-btn:hover {
+            background: var(--secondary);
+            transform: translateX(-2px);
+        }
+        
+        .back-btn.hidden {
+            display: none;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body.dark-mode .category-card {
+            background: #2a2a3e;
+        }
+        
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.9;
+            z-index: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .category-card:hover::before {
+            opacity: 1;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .category-card.comprendi::before {
+            background: linear-gradient(135deg, #d4f1e8 0%, #bae8d4 100%);
+        }
+        
+        .category-card.memorizza::before {
+            background: linear-gradient(135deg, #e8d4f1 0%, #d4bae8 100%);
+        }
+        
+        .category-card.approfondisci::before {
+            background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
+        }
+        
+        .category-card.personalizza::before {
+            background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+        }
+        
+        .category-card-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .category-card-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .category-card-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .category-card-description {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+            
+            .category-main-title {
+                font-size: 24px;
+            }
+            
+            .category-card {
+                padding: 40px 24px;
+            }
+            
+            .category-card-icon {
+                font-size: 56px;
+            }
+            
+            .category-card-title {
+                font-size: 20px;
+            }
+        }
+        /* ========== FINE NUOVE 4 CARDS ========== */
+
         
         /* STUDY GUIDE & CONCEPT ANALYSIS STYLES */
         .question-card {
@@ -717,6 +864,58 @@
         </div>
 
         <div id="mainApp" class="hidden">
+        <!-- ========== NUOVE 4 CARDS - NAVIGAZIONE ========== -->
+        <div class="category-selection" id="categorySelection">
+            <div class="back-navigation">
+                <button class="back-btn" onclick="showLibrary()">← Torna alla Libreria</button>
+                <button class="back-btn hidden" id="backToCategories" onclick="showCategories()">← Indietro</button>
+            </div>
+            
+            <div class="category-title-section">
+                <h1 class="category-main-title">Scegli come studiare</h1>
+                <p class="category-subtitle" id="currentStudyName">Seleziona una categoria</p>
+            </div>
+
+            <div class="category-grid">
+                <!-- Card 1: Comprendi -->
+                <div class="category-card comprendi" onclick="selectCategory('comprendi')">
+                    <div class="category-card-content">
+                        <span class="category-card-icon">📝</span>
+                        <h2 class="category-card-title">Comprendi</h2>
+                        <p class="category-card-description">Analizza i contenuti della lezione</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Memorizza -->
+                <div class="category-card memorizza" onclick="selectCategory('memorizza')">
+                    <div class="category-card-content">
+                        <span class="category-card-icon">🔖</span>
+                        <h2 class="category-card-title">Memorizza</h2>
+                        <p class="category-card-description">Fissa i concetti nella memoria</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Approfondisci -->
+                <div class="category-card approfondisci" onclick="selectCategory('approfondisci')">
+                    <div class="category-card-content">
+                        <span class="category-card-icon">📊</span>
+                        <h2 class="category-card-title">Approfondisci</h2>
+                        <p class="category-card-description">Esplora e verifica le conoscenze</p>
+                    </div>
+                </div>
+
+                <!-- Card 4: Personalizza -->
+                <div class="category-card personalizza" onclick="selectCategory('personalizza')">
+                    <div class="category-card-content">
+                        <span class="category-card-icon">✨</span>
+                        <h2 class="category-card-title">Personalizza</h2>
+                        <p class="category-card-description">Crea materiali su misura</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ========== FINE NUOVE 4 CARDS ========== -->
+
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('library', event)">📚 Libreria Studi</button>
                 <button class="tab-btn hidden" id="tabSummary" onclick="switchTab('summary', event)">📝 Riassunto</button>
@@ -807,27 +1006,37 @@
             renderLibrary();
             switchTab('library');
         }
-
-        async function extractPDFText(file) {
-            const reader = new FileReader();
-            return new Promise((resolve) => {
-                reader.onload = async (e) => {
-                    const pdf = await pdfjsLib.getDocument(e.target.result).promise;
-                    let text = '';
-                    for (let i = 0; i < Math.min(pdf.numPages, 20); i++) {
-                        const page = await pdf.getPage(i + 1);
-                        const content = await page.getTextContent();
-                        text += content.items.map(x => x.str).join(' ') + '\n';
-                    }
-                    resolve(text);
-                };
-                reader.readAsArrayBuffer(file);
-            });
-        }
-
+       async function extractPDFText(file) {
+    const reader = new FileReader();
+    return new Promise((resolve) => {
+        reader.onload = async (e) => {
+            const pdf = await pdfjsLib.getDocument({ data: e.target.result }).promise;
+            let text = '';
+            for (let i = 0; i < Math.min(pdf.numPages, 20); i++) {
+                const page = await pdf.getPage(i + 1);
+                const content = await page.getTextContent();
+                text += content.items.map(x => x.str).join(' ') + '\n';
+            }
+            resolve(text);
+        };
+        reader.readAsArrayBuffer(file);
+    });
+}
         function showMainApp() {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
+            
+            // Mostra le 4 cards invece dei tab
+            document.getElementById('categorySelection').classList.add('active');
+            document.getElementById('tabs').style.display = 'none';
+            document.getElementById('contentArea').style.display = 'none';
+            document.getElementById('backToCategories').classList.add('hidden');
+            
+            // Aggiorna il nome del documento
+            const study = getCurrentStudy();
+            if (study) {
+                document.getElementById('currentStudyName').textContent = study.name;
+            }
         }
 
         function updateProgress(current, total, message) {
@@ -884,35 +1093,47 @@
         }
 
         function renderLibrary() {
-            let html = '<h2>📚 Le tue lezioni</h2>';
-            html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
-            const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
-            
-            if (studies.length === 0) {
-                html += '<p style="text-align: center; color: #999; margin-top: 20px;">Nessuna lezione caricata. Carica i tuoi PDF per iniziare.</p>';
-            } else {
-                studies.forEach(study => {
-                    html += `
-                        <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
-                            <div class="study-left">
-                                <strong>📄 ${study.name}</strong>
-                                <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
-                            </div>
-                            <div class="study-right">
-                                <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
-                                <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                html += `
-                    <div style="margin-top: 20px;">
-                        <button class="btn" onclick="resetApp()" style="width: 100%;">📄 Carica Altri PDF</button>
+    let html = '<h2>📚 Le tue lezioni</h2>';
+    html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
+    const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
+    
+    if (studies.length === 0) {
+        html += `
+            <div style="text-align: center; padding: 60px 20px;">
+                <div style="font-size: 4em; margin-bottom: 20px;">📚</div>
+                <h3 style="color: var(--primary); margin-bottom: 15px;">Nessuna lezione caricata</h3>
+                <p style="color: #999; margin-bottom: 30px;">
+                    La tua libreria è vuota. Inizia caricando i tuoi PDF!
+                </p>
+                <button class="btn" onclick="resetApp()" style="font-size: 1.1em; padding: 15px 30px;">
+                    📂 Carica Nuovi PDF
+                </button>
+            </div>
+        `;
+    } else {
+        studies.forEach(study => {
+            html += `
+                <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
+                    <div class="study-left">
+                        <strong>📄 ${study.name}</strong>
+                        <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
                     </div>
-                `;
-            }
-            document.getElementById('contentArea').innerHTML = html;
-        }
+                    <div class="study-right">
+                        <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
+                        <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+        html += `
+            <div style="margin-top: 20px;">
+                <button class="btn" onclick="resetApp()" style="width: 100%;">📄 Carica Altri PDF</button>
+            </div>
+        `;
+    }
+    document.getElementById('contentArea').innerHTML = html;
+}
+
 
         function filterLibrary() {
             const searchTerm = document.getElementById('librarySearch').value.toLowerCase();
@@ -3127,6 +3348,79 @@ Contenuto: {content}`
             showMainApp();
             switchTab('library');
         }
+
+        // ========== NUOVE FUNZIONI PER NAVIGAZIONE 4 CARDS ========== 
+        
+        // Mappa delle categorie ai loro tab
+        const categoryTabs = {
+            'comprendi': ['summary', 'highlights', 'glossary', 'conceptanalysis'],
+            'memorizza': ['flashcards', 'mindmap', 'timeline'],
+            'approfondisci': ['chat', 'quiz', 'studyguide'],
+            'personalizza': ['customformat']
+        };
+        
+        function selectCategory(category) {
+            console.log('Categoria selezionata:', category);
+            
+            // Nascondi le 4 cards
+            document.getElementById('categorySelection').classList.remove('active');
+            
+            // Mostra i tab appropriati per questa categoria
+            const tabs = categoryTabs[category] || [];
+            
+            // Nascondi tutti i tab tranne library
+            const allTabBtns = document.querySelectorAll('.tab-btn');
+            allTabBtns.forEach(btn => {
+                if (!btn.textContent.includes('Libreria')) {
+                    btn.classList.add('hidden');
+                }
+            });
+            
+            // Mostra solo i tab della categoria selezionata
+            tabs.forEach(tabName => {
+                const tabBtn = document.getElementById('tab' + capitalizeFirst(tabName));
+                if (tabBtn) {
+                    tabBtn.classList.remove('hidden');
+                }
+            });
+            
+            // Mostra i tabs e content area
+            document.getElementById('tabs').style.display = 'flex';
+            document.getElementById('contentArea').style.display = 'block';
+            document.getElementById('backToCategories').classList.remove('hidden');
+            
+            // Attiva il primo tab disponibile
+            if (tabs.length > 0) {
+                switchTab(tabs[0]);
+            }
+        }
+        
+        function showCategories() {
+            // Torna alle 4 cards
+            document.getElementById('categorySelection').classList.add('active');
+            document.getElementById('tabs').style.display = 'none';
+            document.getElementById('contentArea').style.display = 'none';
+            document.getElementById('backToCategories').classList.add('hidden');
+            
+            // Aggiorna il nome del documento
+            const study = getCurrentStudy();
+            if (study) {
+                document.getElementById('currentStudyName').textContent = study.name;
+            }
+        }
+        
+        function showLibrary() {
+            // Torna alla library
+            showCategories();
+            switchTab('library');
+        }
+        
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+        
+        // ========== FINE NUOVE FUNZIONI ========== 
+
     </script>
 </body>
 </html>
