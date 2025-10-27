@@ -843,61 +843,25 @@
             </div>
         </div>
 
-       <div class="upload-section" id="uploadSection">
-  <h2>🚀 Carica i tuoi File</h2>
-  <p style="margin-bottom: 15px; color: #666;">
-    Puoi caricare PDF, Word, PowerPoint, TXT o Immagini (OCR automatico)
-  </p>
-
-  <div style="max-width: 500px; margin: 30px auto;">
-    <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Materia:</label>
-    <select id="subjectSelect" class="subject-select">
-      <option value="Generale">Generale</option>
-      <option value="Storia">Storia</option>
-      <option value="Matematica">Matematica</option>
-      <option value="Biologia">Biologia</option>
-      <option value="Diritto">Diritto</option>
-    </select>
-
- <div class="upload-section" id="uploadSection">
-  <h2>🚀 Carica i tuoi File</h2>
-  <p style="margin-bottom: 15px; color: #666;">
-    Puoi caricare PDF, Word, PowerPoint, TXT o Immagini (OCR automatico)
-  </p>
-
-  <div style="max-width: 500px; margin: 30px auto;">
-    <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Materia:</label>
-    <select id="subjectSelect" class="subject-select">
-      <option value="Generale">Generale</option>
-      <option value="Storia">Storia</option>
-      <option value="Matematica">Matematica</option>
-      <option value="Biologia">Biologia</option>
-      <option value="Diritto">Diritto</option>
-    </select>
-
-    <!-- 🔽 Nuovo input per file multipli di diversi tipi -->
-    <input
-      type="file"
-      id="sourceFiles"
-      accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.md,.html,.epub,image/*"
-      multiple
-    >
-    <button class="btn" onclick="loadMultipleFiles()" style="width: 100%;">
-      📂 Carica File
-    </button>
-  </div>
-
-  <p style="font-size: 0.9em; margin-top: 20px; color: #666;">
-    Tutto salvato offline • Nessuna chiave API visibile
-  </p>
-</div>
-
-
-  <p style="font-size: 0.9em; margin-top: 20px; color: #666;">
-    Tutto salvato offline • Nessuna chiave API visibile
-  </p>
-</div>
-
+        <div class="upload-section" id="uploadSection">
+            <h2>🚀 Carica i tuoi PDF</h2>
+            <p style="margin-bottom: 15px; color: #666;">Puoi caricare più PDF contemporaneamente</p>
+            
+            <div style="max-width: 500px; margin: 30px auto;">
+                <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Materia:</label>
+                <select id="subjectSelect" class="subject-select">
+                    <option value="Generale">Generale</option>
+                    <option value="Storia">Storia</option>
+                    <option value="Matematica">Matematica</option>
+                    <option value="Biologia">Biologia</option>
+                    <option value="Diritto">Diritto</option>
+                </select>
+                <input type="file" id="pdfFile" accept=".pdf" multiple>
+                <button class="btn" onclick="loadMultiplePDFs()" style="width: 100%;">📂 Carica PDF</button>
+            </div>
+            
+            <p style="font-size: 0.9em; margin-top: 20px; color: #666;">Tutto salvato offline • Nessuna chiave API visibile</p>
+        </div>
 
         <div id="mainApp" class="hidden">
         <!-- ========== NUOVE 4 CARDS - NAVIGAZIONE ========== -->
@@ -1026,127 +990,7 @@
                         subject: document.getElementById('subjectSelect').value,
                         fullText: text.substring(0, 8000),
                         type: 'pdf'
-                    };// =====================
-// NUOVO: import multi-formato (PDF, DOCX, PPTX, TXT/MD, HTML/EPUB + Immagini OCR)
-// =====================
-async function loadMultipleFiles() {
-  const input = document.getElementById('sourceFiles');
-  const files = input?.files || [];
-  if (!files.length) { alert('Seleziona almeno un file'); return; }
-
-  showMainApp();
-  let processedCount = 0;
-
-  for (const file of files) {
-    try {
-      const ext = (file.name.split('.').pop() || '').toLowerCase();
-      let text = '';
-
-      if (ext === 'pdf') {
-        // usa già la tua funzione esistente
-        text = await extractPDFText(file);
-      } else if (file.type.startsWith('image/')) {
-        // OCR client-side
-        text = await ocrClient(file);
-      } else {
-        // DOCX / PPTX / TXT / MD / HTML / EPUB → backend /api/extract
-        text = await extractOtherText(file);
-      }
-
-      if (!text || text.length < 30) {
-        console.warn('Testo troppo breve:', file.name);
-        continue;
-      }
-
-      const studyId = Date.now() + Math.random();
-      updateProgress(processedCount, files.length, `Elaborando: ${file.name}`);
-
-      const subject = document.getElementById('subjectSelect').value;
-      const data = await generateContent(text.substring(0, 8000), subject);
-
-      appState.studies[studyId] = {
-        id: studyId,
-        name: file.name.replace(/\.[^.]+$/, ''),
-        data,
-        date: new Date().toLocaleDateString('it-IT'),
-        subject,
-        fullText: text.substring(0, 12000),
-        type: ext || 'file'
-      };
-
-      if (!appState.chatHistory[studyId]) appState.chatHistory[studyId] = [];
-      processedCount++;
-      updateProgress(processedCount, files.length, `Completato: ${file.name}`);
-    } catch (err) {
-      console.error('Errore con', file.name, err);
-      alert(`Errore con ${file.name}: ${err.message}`);
-    }
-  }
-
-  saveStudies();
-  saveChatHistory();
-  renderLibrary();
-  switchTab('library');
-}
-
-// ---- helper: estrazione lato backend per non-PDF ----
-async function extractOtherText(file) {
-  const buffer = await file.arrayBuffer();
-  const base64 = arrayBufferToBase64(buffer);
-
-  const res = await fetch('/api/extract', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name: file.name,
-      mime: file.type || guessMimeFromExt(file.name),
-      data: base64
-    })
-  });
-
-  if (!res.ok) throw new Error(`Estrazione fallita: ${res.status}`);
-  const json = await res.json();
-  return json.text || '';
-}
-
-// ---- helper: OCR immagini (client-side con Tesseract.js) ----
-async function ocrClient(file) {
-  const { createWorker } = Tesseract;
-  const worker = await createWorker();
-  try {
-    const { data } = await worker.recognize(file, 'ita+eng', {
-      logger: m => { if (m.status === 'recognizing text') console.log(`OCR ${Math.round((m.progress||0)*100)}%`); }
-    });
-    return (data.text || '').trim();
-  } finally {
-    await worker.terminate();
-  }
-}
-
-// ---- util ----
-function arrayBufferToBase64(buffer) {
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
-  return btoa(binary);
-}
-function guessMimeFromExt(name) {
-  const ext = (name.split('.').pop() || '').toLowerCase();
-  const m = {
-    pdf:'application/pdf',
-    doc:'application/msword',
-    docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    ppt:'application/vnd.ms-powerpoint',
-    pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-    txt:'text/plain',
-    md:'text/markdown',
-    html:'text/html', htm:'text/html',
-    epub:'application/epub+zip',
-    jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', gif:'image/gif', webp:'image/webp'
-  };
-  return m[ext] || 'application/octet-stream';
-}
-
+                    };
                     
                     appState.chatHistory[studyId] = [];
                     
