@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -843,8 +843,7 @@
             </div>
         </div>
 
-<!-- 🔹 SEZIONE UPLOAD UNICA E CORRETTA -->
-<div class="upload-section" id="uploadSection">
+       <div class="upload-section" id="uploadSection">
   <h2>🚀 Carica i tuoi File</h2>
   <p style="margin-bottom: 15px; color: #666;">
     Puoi caricare PDF, Word, PowerPoint, TXT o Immagini (OCR automatico)
@@ -860,23 +859,21 @@
       <option value="Diritto">Diritto</option>
     </select>
 
-    <!-- 🔽 Nuovo input per file multipli di diversi tipi -->
-    <input
-      type="file"
-      id="sourceFiles"
-      accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.md,.html,.epub,image/*"
-      multiple
-    >
-    <button class="btn" onclick="loadMultipleFiles()" style="width: 100%;">
-      📂 Carica File
-    </button>
-  </div>
-
-  <p style="font-size: 0.9em; margin-top: 20px; color: #666;">
-    Tutto salvato offline • Nessuna chiave API visibile
+ <div class="upload-section" id="uploadSection">
+  <h2>🚀 Carica i tuoi File</h2>
+  <p style="margin-bottom: 15px; color: #666;">
+    Puoi caricare PDF, Word, PowerPoint, TXT o Immagini (OCR automatico)
   </p>
-</div>
 
+  <div style="max-width: 500px; margin: 30px auto;">
+    <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Materia:</label>
+    <select id="subjectSelect" class="subject-select">
+      <option value="Generale">Generale</option>
+      <option value="Storia">Storia</option>
+      <option value="Matematica">Matematica</option>
+      <option value="Biologia">Biologia</option>
+      <option value="Diritto">Diritto</option>
+    </select>
 
     <!-- 🔽 Nuovo input per file multipli di diversi tipi -->
     <input
