@@ -8,6 +8,9 @@
    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<!-- NUOVE LIBRERIE PER MULTI-FORMATO -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -57,6 +60,25 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
         body.dark-mode .upload-section { background: #2a2a3e; color: #e0e0e0; }
+        /* Badge formati supportati */
+        .supported-formats {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .format-badge {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
         input[type="file"], input[type="text"] {
             padding: 12px;
             margin: 10px 0;
@@ -844,8 +866,16 @@
         </div>
 
         <div class="upload-section" id="uploadSection">
-            <h2>🚀 Carica i tuoi PDF</h2>
-            <p style="margin-bottom: 15px; color: #666;">Puoi caricare più PDF contemporaneamente</p>
+            <h2>🚀 Carica i tuoi documenti</h2>
+            <p style="margin-bottom: 15px; color: #666;">Supporto multi-formato: PDF, DOCX, PPTX, TXT - Carica tutti i file che vuoi!</p>
+            
+            <!-- Badge formati supportati -->
+            <div class="supported-formats">
+                <div class="format-badge">📄 PDF</div>
+                <div class="format-badge">📝 TXT</div>
+                <div class="format-badge">📘 DOCX</div>
+                <div class="format-badge">📊 PPTX</div>
+            </div>
             
             <div style="max-width: 500px; margin: 30px auto;">
                 <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Materia:</label>
@@ -855,8 +885,15 @@
                     <option value="Matematica">Matematica</option>
                     <option value="Biologia">Biologia</option>
                     <option value="Diritto">Diritto</option>
+                    <option value="Informatica">Informatica</option>
+                    <option value="Letteratura">Letteratura</option>
+                    <option value="Fisica">Fisica</option>
+                    <option value="Chimica">Chimica</option>
+                    <option value="Filosofia">Filosofia</option>
+                    <option value="Inglese">Inglese</option>
+                    <option value="Economia">Economia</option>
                 </select>
-                <input type="file" id="pdfFile" accept=".pdf" multiple>
+                <input type="file" id="pdfFile" accept=".pdf,.txt,.docx,.pptx" multiple>
                 <button class="btn" onclick="loadMultiplePDFs()" style="width: 100%;">📂 Carica PDF</button>
             </div>
             
@@ -968,14 +1005,53 @@
 
         async function loadMultiplePDFs() {
             const files = document.getElementById('pdfFile').files;
-            if (files.length === 0) { alert('Seleziona almeno un PDF'); return; }
+            if (files.length === 0) { alert('Seleziona almeno un file'); return; }
 
             showMainApp();
             let processedCount = 0;
 
             for (let file of files) {
                 try {
-                    const text = await extractPDFText(file);
+                    // Determina il tipo di file ed estrai il testo
+                    const fileExtension = file.name.split('.').pop().toLowerCase();
+                    let text = '';
+                    let fileType = '';
+                    let fileIcon = '';
+
+                    console.log(`Elaborazione file: ${file.name} (${fileExtension})`);
+                    
+                    switch(fileExtension) {
+                        case 'pdf':
+                            text = await extractPDFText(file);
+                            fileType = 'PDF';
+                            fileIcon = '📄';
+                            break;
+                        case 'txt':
+                            text = await extractTextFromTXT(file);
+                            fileType = 'TXT';
+                            fileIcon = '📝';
+                            break;
+                        case 'docx':
+                            text = await extractTextFromDOCX(file);
+                            fileType = 'DOCX';
+                            fileIcon = '📘';
+                            break;
+                        case 'pptx':
+                            text = await extractTextFromPPTX(file);
+                            fileType = 'PPTX';
+                            fileIcon = '📊';
+                            break;
+                        default:
+                            throw new Error(`Formato non supportato: .${fileExtension}`);
+                    }
+                    
+                    console.log(`✅ ${file.name}: ${text.length} caratteri estratti`);
+                    
+                    // Validazione lunghezza testo
+                    if (!text || text.trim().length < 100) {
+                        throw new Error(`Il file contiene troppo poco testo (minimo 100 caratteri)`);
+                    }
+                    
                     const studyId = Date.now() + Math.random();
                     
                     updateProgress(processedCount, files.length, `Elaborando: ${file.name}`);
@@ -984,12 +1060,13 @@
                     
                     appState.studies[studyId] = {
                         id: studyId,
-                        name: file.name.replace('.pdf', ''),
+                        name: file.name.replace(/\.[^/.]+$/, ''),
                         data: data,
                         date: new Date().toLocaleDateString('it-IT'),
                         subject: document.getElementById('subjectSelect').value,
                         fullText: text.substring(0, 8000),
-                        type: 'pdf'
+                        type: fileExtension,
+                        fileType: fileIcon + ' ' + fileType
                     };
                     
                     appState.chatHistory[studyId] = [];
@@ -997,7 +1074,8 @@
                     processedCount++;
                     updateProgress(processedCount, files.length, `Completato: ${file.name}`);
                 } catch (e) {
-                    alert(`Errore con ${file.name}: ${e.message}`);
+                    console.error(`❌ Errore ${file.name}:`, e);
+                    alert(`Impossibile elaborare "${file.name}":\n${e.message}`);
                 }
             }
 
@@ -1022,6 +1100,103 @@
         reader.readAsArrayBuffer(file);
     });
 }
+
+        // ========== ESTRAZIONE TESTO DA TXT ==========
+        async function extractTextFromTXT(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const text = e.target.result;
+                    if (!text || text.trim().length < 50) {
+                        reject(new Error('Il file TXT non contiene abbastanza testo'));
+                        return;
+                    }
+                    resolve(text);
+                };
+                reader.onerror = () => reject(new Error('Errore lettura file TXT'));
+                reader.readAsText(file, 'UTF-8');
+            });
+        }
+
+        // ========== ESTRAZIONE TESTO DA DOCX ==========
+        async function extractTextFromDOCX(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const arrayBuffer = e.target.result;
+                        const result = await mammoth.extractRawText({ arrayBuffer });
+                        
+                        if (!result.value || result.value.trim().length < 50) {
+                            reject(new Error('Il documento DOCX non contiene abbastanza testo'));
+                            return;
+                        }
+                        
+                        const cleanText = result.value
+                            .replace(/\r\n/g, '\n')
+                            .replace(/\n{3,}/g, '\n\n')
+                            .trim();
+                        
+                        resolve(cleanText);
+                    } catch (error) {
+                        reject(new Error('Errore lettura DOCX: ' + error.message));
+                    }
+                };
+                reader.onerror = () => reject(new Error('Errore caricamento DOCX'));
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        // ========== ESTRAZIONE TESTO DA PPTX ==========
+        async function extractTextFromPPTX(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const arrayBuffer = e.target.result;
+                        const zip = await JSZip.loadAsync(arrayBuffer);
+                        let allText = '';
+                        
+                        const slideFiles = Object.keys(zip.files)
+                            .filter(name => name.startsWith('ppt/slides/slide') && name.endsWith('.xml'))
+                            .sort((a, b) => {
+                                const numA = parseInt(a.match(/slide(\d+)/)[1]);
+                                const numB = parseInt(b.match(/slide(\d+)/)[1]);
+                                return numA - numB;
+                            });
+                        
+                        for (let i = 0; i < slideFiles.length; i++) {
+                            const slideFile = slideFiles[i];
+                            const content = await zip.files[slideFile].async('string');
+                            
+                            const textMatches = content.match(/<a:t>([^<]+)<\/a:t>/g);
+                            
+                            if (textMatches && textMatches.length > 0) {
+                                const slideText = textMatches
+                                    .map(match => match.replace(/<\/?a:t>/g, ''))
+                                    .join(' ')
+                                    .trim();
+                                
+                                if (slideText) {
+                                    allText += `\n\n━━━ SLIDE ${i + 1} ━━━\n\n${slideText}`;
+                                }
+                            }
+                        }
+                        
+                        if (allText.trim().length < 50) {
+                            reject(new Error('La presentazione non contiene abbastanza testo estraibile'));
+                            return;
+                        }
+                        
+                        resolve(allText);
+                    } catch (error) {
+                        reject(new Error('Errore lettura PPTX: ' + error.message));
+                    }
+                };
+                reader.onerror = () => reject(new Error('Errore caricamento PPTX'));
+                reader.readAsArrayBuffer(file);
+            });
+        }
         function showMainApp() {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
@@ -1091,10 +1266,10 @@
                 <div style="font-size: 4em; margin-bottom: 20px;">📚</div>
                 <h3 style="color: var(--primary); margin-bottom: 15px;">Nessuna lezione caricata</h3>
                 <p style="color: #999; margin-bottom: 30px;">
-                    La tua libreria è vuota. Inizia caricando i tuoi PDF!
+                    La tua libreria è vuota. Inizia caricando i tuoi documenti!
                 </p>
                 <button class="btn" onclick="resetApp()" style="font-size: 1.1em; padding: 15px 30px;">
-                    📂 Carica Nuovi PDF
+                    📂 Carica Nuovi Documenti
                 </button>
             </div>
         `;
@@ -1103,7 +1278,7 @@
             html += `
                 <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
                     <div class="study-left">
-                        <strong>📄 ${study.name}</strong>
+                        <strong>${study.fileType || '📄 PDF'} ${study.name}</strong>
                         <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
                     </div>
                     <div class="study-right">
@@ -1115,7 +1290,7 @@
         });
         html += `
             <div style="margin-top: 20px;">
-                <button class="btn" onclick="resetApp()" style="width: 100%;">📄 Carica Altri PDF</button>
+                <button class="btn" onclick="resetApp()" style="width: 100%;">📄 Carica Altri Documenti</button>
             </div>
         `;
     }
@@ -3437,6 +3612,21 @@ Contenuto: {content}`
         }
         
         // ========== FINE NUOVE FUNZIONI ========== 
+
+        // ========== VERIFICA LIBRERIE CARICATE ==========
+        console.log('🚀 MentoreStudio Multi-Formato Inizializzato!');
+        console.log('📦 Librerie caricate:');
+        console.log('  - PDF.js:', typeof pdfjsLib !== 'undefined' ? '✅' : '❌');
+        console.log('  - Mammoth.js:', typeof mammoth !== 'undefined' ? '✅' : '❌');
+        console.log('  - JSZip:', typeof JSZip !== 'undefined' ? '✅' : '❌');
+        console.log('📄 Formati supportati: PDF, TXT, DOCX, PPTX');
+        
+        if (typeof mammoth === 'undefined') {
+            console.error('❌ ERRORE: Mammoth.js non caricato! I file DOCX non funzioneranno.');
+        }
+        if (typeof JSZip === 'undefined') {
+            console.error('❌ ERRORE: JSZip non caricato! I file PPTX non funzioneranno.');
+        }
 
     </script>
 </body>
