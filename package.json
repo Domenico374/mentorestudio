@@ -5,7 +5,8 @@
   "type": "module",
   "main": "api/generate.js",
   "dependencies": {
-    "openai": "^4.52.0"
+    "openai": "^4.52.0",
+    "textract": "^2.5.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -22,3 +23,4 @@
   "author": "",
   "license": "MIT"
 }
+
