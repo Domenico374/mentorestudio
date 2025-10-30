@@ -11,6 +11,8 @@
 <!-- NUOVE LIBRERIE PER MULTI-FORMATO -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- LIBRERIA OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -866,15 +868,12 @@
         </div>
 
         <div class="upload-section" id="uploadSection">
-            <h2>🚀 Carica i tuoi documenti</h2>
-            <p style="margin-bottom: 15px; color: #666;">Supporto multi-formato: PDF, DOCX, PPTX, TXT - Carica tutti i file che vuoi!</p>
-            
-            <!-- Badge formati supportati -->
             <div class="supported-formats">
                 <div class="format-badge">📄 PDF</div>
                 <div class="format-badge">📝 TXT</div>
                 <div class="format-badge">📘 DOCX</div>
                 <div class="format-badge">📊 PPTX</div>
+                <div class="format-badge">🖼️ OCR (JPG/PNG)</div>
             </div>
             
             <div style="max-width: 500px; margin: 30px auto;">
@@ -893,7 +892,7 @@
                     <option value="Inglese">Inglese</option>
                     <option value="Economia">Economia</option>
                 </select>
-                <input type="file" id="pdfFile" accept=".pdf,.txt,.docx,.pptx" multiple>
+                <input type="file" id="pdfFile" accept=".pdf,.txt,.docx,.pptx,image/*" multiple>
                 <button class="btn" onclick="loadMultiplePDFs()" style="width: 100%;">📂 Carica PDF</button>
             </div>
             
@@ -901,59 +900,59 @@
         </div>
 
         <div id="mainApp" class="hidden">
-        <!-- ========== NUOVE 4 CARDS - NAVIGAZIONE ========== -->
-        <div class="category-selection" id="categorySelection">
-            <div class="back-navigation">
-                <button class="back-btn" onclick="showLibrary()">← Torna alla Libreria</button>
-                <button class="back-btn hidden" id="backToCategories" onclick="showCategories()">← Indietro</button>
+            <!-- ========== NUOVE 4 CARDS - NAVIGAZIONE ========== -->
+            <div class="category-selection" id="categorySelection">
+                <div class="back-navigation">
+                    <button class="back-btn" onclick="showLibrary()">← Torna alla Libreria</button>
+                    <button class="back-btn hidden" id="backToCategories" onclick="showCategories()">← Indietro</button>
+                </div>
+                
+                <div class="category-title-section">
+                    <h1 class="category-main-title">Scegli come studiare</h1>
+                    <p class="category-subtitle" id="currentStudyName">Seleziona una categoria</p>
+                </div>
+
+                <div class="category-grid">
+                    <!-- Card 1: Comprendi -->
+                    <div class="category-card comprendi" onclick="selectCategory('comprendi')">
+                        <div class="category-card-content">
+                            <span class="category-card-icon">📝</span>
+                            <h2 class="category-card-title">Comprendi</h2>
+                            <p class="category-card-description">Analizza i contenuti della lezione</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Memorizza -->
+                    <div class="category-card memorizza" onclick="selectCategory('memorizza')">
+                        <div class="category-card-content">
+                            <span class="category-card-icon">🔖</span>
+                            <h2 class="category-card-title">Memorizza</h2>
+                            <p class="category-card-description">Fissa i concetti nella memoria</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Approfondisci -->
+                    <div class="category-card approfondisci" onclick="selectCategory('approfondisci')">
+                        <div class="category-card-content">
+                            <span class="category-card-icon">📊</span>
+                            <h2 class="category-card-title">Approfondisci</h2>
+                            <p class="category-card-description">Esplora e verifica le conoscenze</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Personalizza -->
+                    <div class="category-card personalizza" onclick="selectCategory('personalizza')">
+                        <div class="category-card-content">
+                            <span class="category-card-icon">✨</span>
+                            <h2 class="category-card-title">Personalizza</h2>
+                            <p class="category-card-description">Crea materiali su misura</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <div class="category-title-section">
-                <h1 class="category-main-title">Scegli come studiare</h1>
-                <p class="category-subtitle" id="currentStudyName">Seleziona una categoria</p>
-            </div>
+            <!-- ========== FINE NUOVE 4 CARDS ========== -->
 
-            <div class="category-grid">
-                <!-- Card 1: Comprendi -->
-                <div class="category-card comprendi" onclick="selectCategory('comprendi')">
-                    <div class="category-card-content">
-                        <span class="category-card-icon">📝</span>
-                        <h2 class="category-card-title">Comprendi</h2>
-                        <p class="category-card-description">Analizza i contenuti della lezione</p>
-                    </div>
-                </div>
-
-                <!-- Card 2: Memorizza -->
-                <div class="category-card memorizza" onclick="selectCategory('memorizza')">
-                    <div class="category-card-content">
-                        <span class="category-card-icon">🔖</span>
-                        <h2 class="category-card-title">Memorizza</h2>
-                        <p class="category-card-description">Fissa i concetti nella memoria</p>
-                    </div>
-                </div>
-
-                <!-- Card 3: Approfondisci -->
-                <div class="category-card approfondisci" onclick="selectCategory('approfondisci')">
-                    <div class="category-card-content">
-                        <span class="category-card-icon">📊</span>
-                        <h2 class="category-card-title">Approfondisci</h2>
-                        <p class="category-card-description">Esplora e verifica le conoscenze</p>
-                    </div>
-                </div>
-
-                <!-- Card 4: Personalizza -->
-                <div class="category-card personalizza" onclick="selectCategory('personalizza')">
-                    <div class="category-card-content">
-                        <span class="category-card-icon">✨</span>
-                        <h2 class="category-card-title">Personalizza</h2>
-                        <p class="category-card-description">Crea materiali su misura</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- ========== FINE NUOVE 4 CARDS ========== -->
-
-            <div class="tabs">
+            <div class="tabs" id="tabs">
                 <button class="tab-btn active" onclick="switchTab('library', event)">📚 Libreria Studi</button>
                 <button class="tab-btn hidden" id="tabSummary" onclick="switchTab('summary', event)">📝 Riassunto</button>
                 <button class="tab-btn hidden" id="tabHighlights" onclick="switchTab('highlights', event)">⭐ Punti Salienti</button>
@@ -1041,10 +1040,15 @@
                             fileType = 'PPTX';
                             fileIcon = '📊';
                             break;
+                        case 'jpg': case 'jpeg': case 'png': case 'gif': case 'bmp':
+                            text = await extractTextFromImage(file);
+                            fileType = 'OCR';
+                            fileIcon = '🖼️';
+                            break;
                         default:
                             throw new Error(`Formato non supportato: .${fileExtension}`);
                     }
-                    
+
                     console.log(`✅ ${file.name}: ${text.length} caratteri estratti`);
                     
                     // Validazione lunghezza testo
@@ -1084,22 +1088,23 @@
             renderLibrary();
             switchTab('library');
         }
-       async function extractPDFText(file) {
-    const reader = new FileReader();
-    return new Promise((resolve) => {
-        reader.onload = async (e) => {
-            const pdf = await pdfjsLib.getDocument({ data: e.target.result }).promise;
-            let text = '';
-            for (let i = 0; i < Math.min(pdf.numPages, 20); i++) {
-                const page = await pdf.getPage(i + 1);
-                const content = await page.getTextContent();
-                text += content.items.map(x => x.str).join(' ') + '\n';
-            }
-            resolve(text);
-        };
-        reader.readAsArrayBuffer(file);
-    });
-}
+
+        async function extractPDFText(file) {
+            const reader = new FileReader();
+            return new Promise((resolve) => {
+                reader.onload = async (e) => {
+                    const pdf = await pdfjsLib.getDocument({ data: e.target.result }).promise;
+                    let text = '';
+                    for (let i = 0; i < Math.min(pdf.numPages, 20); i++) {
+                        const page = await pdf.getPage(i + 1);
+                        const content = await page.getTextContent();
+                        text += content.items.map(x => x.str).join(' ') + '\n';
+                    }
+                    resolve(text);
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
 
         // ========== ESTRAZIONE TESTO DA TXT ==========
         async function extractTextFromTXT(file) {
@@ -1197,6 +1202,42 @@
                 reader.readAsArrayBuffer(file);
             });
         }
+
+        // ========== ESTRAZIONE TESTO DA IMMAGINI (OCR) ==========
+        async function extractTextFromImage(file) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    console.log(`🔍 Avvio OCR per: ${file.name}`);
+                    
+                    const { data: { text } } = await Tesseract.recognize(
+                        file,
+                        'ita+eng',
+                        {
+                            logger: progress => {
+                                if (progress.status === 'recognizing text') {
+                                    const percent = Math.round(progress.progress * 100);
+                                    console.log(`OCR progress: ${percent}%`);
+                                }
+                            }
+                        }
+                    );
+                    
+                    console.log(`✅ OCR completato: ${text.length} caratteri estratti`);
+                    
+                    if (!text || text.trim().length < 50) {
+                        reject(new Error('OCR non ha estratto testo sufficiente'));
+                        return;
+                    }
+                    
+                    resolve(text.trim());
+                    
+                } catch (error) {
+                    console.error('❌ Errore OCR:', error);
+                    reject(new Error(`Errore OCR: ${error.message}`));
+                }
+            });
+        }
+
         function showMainApp() {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
@@ -1256,47 +1297,46 @@
         }
 
         function renderLibrary() {
-    let html = '<h2>📚 Le tue lezioni</h2>';
-    html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
-    const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
-    
-    if (studies.length === 0) {
-        html += `
-            <div style="text-align: center; padding: 60px 20px;">
-                <div style="font-size: 4em; margin-bottom: 20px;">📚</div>
-                <h3 style="color: var(--primary); margin-bottom: 15px;">Nessuna lezione caricata</h3>
-                <p style="color: #999; margin-bottom: 30px;">
-                    La tua libreria è vuota. Inizia caricando i tuoi documenti!
-                </p>
-                <button class="btn" onclick="resetApp()" style="font-size: 1.1em; padding: 15px 30px;">
-                    📂 Carica Nuovi Documenti
-                </button>
-            </div>
-        `;
-    } else {
-        studies.forEach(study => {
-            html += `
-                <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
-                    <div class="study-left">
-                        <strong>${study.fileType || '📄 PDF'} ${study.name}</strong>
-                        <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
+            let html = '<h2>📚 Le tue lezioni</h2>';
+            html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
+            const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
+            
+            if (studies.length === 0) {
+                html += `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <div style="font-size: 4em; margin-bottom: 20px;">📚</div>
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">Nessuna lezione caricata</h3>
+                        <p style="color: #999; margin-bottom: 30px;">
+                            La tua libreria è vuota. Inizia caricando i tuoi documenti!
+                        </p>
+                        <button class="btn" onclick="resetApp()" style="font-size: 1.1em; padding: 15px 30px;">
+                            📂 Carica Nuovi Documenti
+                        </button>
                     </div>
-                    <div class="study-right">
-                        <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
-                        <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
+                `;
+            } else {
+                studies.forEach(study => {
+                    html += `
+                        <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
+                            <div class="study-left">
+                                <strong>${study.fileType || '📄 PDF'} ${study.name}</strong>
+                                <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
+                            </div>
+                            <div class="study-right">
+                                <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
+                                <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `
+                    <div style="margin-top: 20px;">
+                        <button class="btn" onclick="resetApp()" style="width: 100%;">📄 Carica Altri Documenti</button>
                     </div>
-                </div>
-            `;
-        });
-        html += `
-            <div style="margin-top: 20px;">
-                <button class="btn" onclick="resetApp()" style="width: 100%;">📄 Carica Altri Documenti</button>
-            </div>
-        `;
-    }
-    document.getElementById('contentArea').innerHTML = html;
-}
-
+                `;
+            }
+            document.getElementById('contentArea').innerHTML = html;
+        }
 
         function filterLibrary() {
             const searchTerm = document.getElementById('librarySearch').value.toLowerCase();
@@ -1424,7 +1464,7 @@
             document.getElementById('contentArea').innerHTML = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <p style="margin-bottom: 20px;"><strong>Tipo:</strong> 📄 PDF</p>
+                <p style="margin-bottom: 20px;"><strong>Tipo:</strong> ${study.fileType || '📄 PDF'}</p>
                 <div class="section"><h3>📝 Riassunto Breve</h3><div class="card">${study.data.summary_short || 'N/A'}</div></div>
                 <div class="section"><h3>📖 Riassunto Completo</h3><div class="card">${study.data.summary_long || 'N/A'}</div></div>
             `;
@@ -2172,7 +2212,7 @@
             }
         }
 
-        // ===== FORMATO PERSONALIZZATO (SENZA MAPPA MENTALE, VIDEO, POESIA, STORY) =====
+        // ===== FORMATO PERSONALIZZATO =====
         
         function renderCustomFormat() {
             const study = getCurrentStudy();
@@ -2670,7 +2710,7 @@ Contenuto: {content}`
             }
         }
 
-        // ===== FLASHCARD E QUIZ (versioni complete dal codice precedente) =====
+        // ===== FLASHCARD E QUIZ =====
         
         function renderFlashcardsAdvanced() {
             const study = getCurrentStudy();
@@ -3167,7 +3207,7 @@ Contenuto: {content}`
             const study = getCurrentStudy();
             const filtered = filterQuizByMode(study.data.quiz);
             
-            // CORREZIONE: Calcola il punteggio dalle risposte salvate
+            // Calcola il punteggio dalle risposte salvate
             let correctCount = 0;
             filtered.forEach((q, i) => {
                 const userAnswer = appState.quizAnswers[i];
@@ -3514,12 +3554,7 @@ Contenuto: {content}`
             document.getElementById('pdfFile').value = '';
         }
 
-        if (Object.keys(appState.studies).length > 0) {
-            showMainApp();
-            switchTab('library');
-        }
-
-        // ========== NUOVE FUNZIONI PER NAVIGAZIONE 4 CARDS ========== 
+        // ========== NAVIGAZIONE 4 CARDS ========== 
         
         // Mappa delle categorie ai loro tab
         const categoryTabs = {
@@ -3606,12 +3641,12 @@ Contenuto: {content}`
             // Vai alla library
             switchTab('library');
         }
-        
-        function capitalizeFirst(str) {
-            return str.charAt(0).toUpperCase() + str.slice(1);
+
+        // Inizializzazione
+        if (Object.keys(appState.studies).length > 0) {
+            showMainApp();
+            switchTab('library');
         }
-        
-        // ========== FINE NUOVE FUNZIONI ========== 
 
         // ========== VERIFICA LIBRERIE CARICATE ==========
         console.log('🚀 MentoreStudio Multi-Formato Inizializzato!');
@@ -3619,13 +3654,17 @@ Contenuto: {content}`
         console.log('  - PDF.js:', typeof pdfjsLib !== 'undefined' ? '✅' : '❌');
         console.log('  - Mammoth.js:', typeof mammoth !== 'undefined' ? '✅' : '❌');
         console.log('  - JSZip:', typeof JSZip !== 'undefined' ? '✅' : '❌');
-        console.log('📄 Formati supportati: PDF, TXT, DOCX, PPTX');
+        console.log('  - Tesseract.js:', typeof Tesseract !== 'undefined' ? '✅' : '❌');
+        console.log('📄 Formati supportati: PDF, TXT, DOCX, PPTX, JPG/PNG (OCR)');
         
         if (typeof mammoth === 'undefined') {
             console.error('❌ ERRORE: Mammoth.js non caricato! I file DOCX non funzioneranno.');
         }
         if (typeof JSZip === 'undefined') {
             console.error('❌ ERRORE: JSZip non caricato! I file PPTX non funzioneranno.');
+        }
+        if (typeof Tesseract === 'undefined') {
+            console.error('❌ ERRORE: Tesseract.js non caricato! L\\'OCR non funzionerà.');
         }
 
     </script>
