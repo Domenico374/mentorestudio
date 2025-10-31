@@ -62,6 +62,19 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
         body.dark-mode .upload-section { background: #2a2a3e; color: #e0e0e0; }
+        body.dark-mode #uploadProgress { 
+            background: #1a1a2e !important; 
+            color: #e0e0e0 !important;
+        }
+        body.dark-mode #uploadProgress span,
+        body.dark-mode #progressText {
+            color: #e0e0e0 !important;
+        }
+        body.dark-mode #fileInfo {
+            background: #1a1a2e !important;
+            color: #e0e0e0 !important;
+            border-left-color: var(--accent) !important;
+        }
         /* Badge formati supportati */
         .supported-formats {
             display: flex;
@@ -103,6 +116,22 @@
             border-color: var(--accent);
         }
         
+        /* ANIMAZIONE BARRA PROGRESSO */
+        #uploadProgress {
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #progressBar {
+            transition: width 0.5s ease;
+        }
+        #progressText {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
         input[type="file"], input[type="text"] {
             padding: 12px;
             margin: 10px 0;
@@ -134,6 +163,16 @@
         }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .btn.loading {
+            background: linear-gradient(90deg, var(--primary), var(--secondary)) !important;
+            opacity: 0.9;
+            cursor: wait;
+            animation: pulse-btn 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-btn {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 1; }
+        }
         .btn-delete { background: var(--danger); padding: 8px 15px; margin: 0; font-size: 0.9em; }
         .btn-export { background: #2196F3; padding: 8px 15px; margin: 0; font-size: 0.9em; }
         .tabs {
@@ -933,15 +972,15 @@
                 
                 <button class="btn" onclick="loadMultiplePDFs()" style="width: 100%; background: var(--success);" id="uploadBtn" disabled>📂 Carica File</button>
                 
-                <div id="uploadProgress" style="display: none; margin-top: 20px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span>Caricamento in corso...</span>
-                        <span id="progressPercent">0%</span>
+                <div id="uploadProgress" style="display: none; margin-top: 20px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="font-weight: 600; color: #333;">Caricamento in corso...</span>
+                        <span id="progressPercent" style="font-weight: bold; color: var(--primary);">0%</span>
                     </div>
-                    <div style="background: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden;">
-                        <div id="progressBar" style="background: var(--success); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                    <div style="background: #e0e0e0; height: 12px; border-radius: 6px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
+                        <div id="progressBar" style="background: linear-gradient(90deg, var(--primary), var(--secondary)); height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 6px;"></div>
                     </div>
-                    <p id="progressText" style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666;"></p>
+                    <p id="progressText" style="text-align: center; margin-top: 12px; font-size: 0.95em; color: #666; font-weight: 500; min-height: 24px;"></p>
                 </div>
             </div>
             
@@ -1144,15 +1183,28 @@
                 return; 
             }
 
-            showMainApp();
+            // IMPORTANTE: NON nascondere la schermata di upload!
+            // L'utente deve vedere cosa sta succedendo
             
-            // Mostra progresso
+            // Disabilita il pulsante e mostra il progresso
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '⏳ Elaborazione in corso...';
+            uploadBtn.classList.add('loading');
+            
+            // Mostra la barra di progresso
             uploadProgress.style.display = 'block';
+            updateUploadProgress(0, files.length, 'Avvio elaborazione...');
+            
+            // Aspetta un attimo per mostrare la UI
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
             let processedCount = 0;
+            let successCount = 0;
 
             for (let file of files) {
                 try {
-                    updateUploadProgress(processedCount, files.length, `Elaborando: ${file.name}`);
+                    // Mostra quale file stiamo elaborando
+                    updateUploadProgress(processedCount, files.length, `📄 Elaborando: ${file.name}`);
                     
                     const fileExtension = file.name.split('.').pop().toLowerCase();
                     let text = '';
@@ -1160,6 +1212,9 @@
                     let fileIcon = '';
 
                     console.log(`Elaborazione file: ${file.name} (${fileExtension})`);
+                    
+                    // Estrazione testo
+                    updateUploadProgress(processedCount, files.length, `🔍 Lettura ${file.name}...`);
                     
                     switch(fileExtension) {
                         case 'pdf':
@@ -1197,8 +1252,10 @@
                         throw new Error(`Il file contiene troppo poco testo (minimo 100 caratteri)`);
                     }
                     
-                    const studyId = Date.now() + Math.random();
+                    // Generazione contenuti con AI
+                    updateUploadProgress(processedCount, files.length, `🤖 Generazione contenuti AI per ${file.name}...`);
                     
+                    const studyId = Date.now() + Math.random();
                     const data = await generateContent(text, document.getElementById('subjectSelect').value);
                     
                     appState.studies[studyId] = {
@@ -1215,30 +1272,55 @@
                     appState.chatHistory[studyId] = [];
                     
                     processedCount++;
-                    updateUploadProgress(processedCount, files.length, `Completato: ${file.name}`);
+                    successCount++;
+                    updateUploadProgress(processedCount, files.length, `✅ ${file.name} completato!`);
+                    
+                    // Breve pausa per mostrare il successo
+                    await new Promise(resolve => setTimeout(resolve, 400));
                     
                 } catch (e) {
                     console.error(`❌ Errore ${file.name}:`, e);
-                    alert(`Impossibile elaborare "${file.name}":\n${e.message}`);
                     processedCount++;
-                    updateUploadProgress(processedCount, files.length, `Errore: ${file.name}`);
+                    updateUploadProgress(processedCount, files.length, `❌ Errore: ${file.name}`);
+                    
+                    // Mostra errore all'utente
+                    alert(`Impossibile elaborare "${file.name}":\n${e.message}`);
+                    await new Promise(resolve => setTimeout(resolve, 500));
                 }
             }
 
+            // Salvataggio
+            updateUploadProgress(files.length, files.length, '💾 Salvataggio dati...');
             saveStudies();
             saveChatHistory();
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Mostra riepilogo finale
+            updateUploadProgress(files.length, files.length, `✅ Elaborazione completata! ${successCount}/${files.length} file caricati`);
+            uploadBtn.textContent = '✅ Completato!';
+            uploadBtn.style.background = 'var(--success)';
+            
+            // Attendi prima di passare all'app
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Ora passa all'app principale
+            showMainApp();
             renderLibrary();
             switchTab('library');
             
-            // Reset upload
+            // Reset upload dopo aver cambiato schermata
             setTimeout(() => {
                 uploadProgress.style.display = 'none';
+                progressBar.style.width = '0%';
                 fileInput.value = '';
                 selectedFiles = [];
                 fileInfo.style.display = 'none';
                 uploadBtn.disabled = true;
                 uploadBtn.style.background = '#ccc';
-            }, 1000);
+                uploadBtn.textContent = '📂 Carica File';
+                uploadBtn.classList.remove('loading');
+            }, 500);
         }
 
         async function extractPDFText(file) {
