@@ -81,6 +81,28 @@
             align-items: center;
             gap: 5px;
         }
+        
+        /* NUOVI STILI UPLOAD AREA */
+        .upload-area {
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            margin: 20px 0;
+            background: rgba(102, 126, 234, 0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        .upload-area.drag-over {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: var(--accent);
+        }
+        
         input[type="file"], input[type="text"] {
             padding: 12px;
             margin: 10px 0;
@@ -876,7 +898,7 @@
                 <div class="format-badge">🖼️ OCR (JPG/PNG)</div>
             </div>
             
-            <div style="max-width: 500px; margin: 30px auto;">
+            <div style="max-width: 600px; margin: 30px auto;">
                 <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Materia:</label>
                 <select id="subjectSelect" class="subject-select">
                     <option value="Generale">Generale</option>
@@ -892,8 +914,35 @@
                     <option value="Inglese">Inglese</option>
                     <option value="Economia">Economia</option>
                 </select>
-                <input type="file" id="pdfFile" accept=".pdf,.txt,.docx,.pptx,image/*" multiple>
-                <button class="btn" onclick="loadMultiplePDFs()" style="width: 100%;">📂 Carica PDF</button>
+                
+                <!-- NUOVA AREA DI UPLOAD MIGLIORATA -->
+                <div class="upload-area" id="uploadArea">
+                    <div style="font-size: 3em; margin-bottom: 15px;">📁</div>
+                    <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: 500;">Trascina i file qui o clicca per selezionarli</p>
+                    <button class="btn" onclick="document.getElementById('pdfFile').click()" style="background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                        Scegli file
+                    </button>
+                    <input type="file" id="pdfFile" accept=".pdf,.txt,.docx,.pptx,image/*" multiple style="display: none;">
+                    <p style="font-size: 0.9em; color: #666; margin-top: 15px;">Supporta: PDF, TXT, DOCX, PPTX, JPG, PNG</p>
+                </div>
+                
+                <div id="fileInfo" style="margin: 15px 0; padding: 10px; background: #f5f7ff; border-radius: 8px; border-left: 4px solid var(--primary); display: none;">
+                    <strong>File selezionati:</strong>
+                    <div id="selectedFilesList"></div>
+                </div>
+                
+                <button class="btn" onclick="loadMultiplePDFs()" style="width: 100%; background: var(--success);" id="uploadBtn" disabled>📂 Carica File</button>
+                
+                <div id="uploadProgress" style="display: none; margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Caricamento in corso...</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div style="background: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div id="progressBar" style="background: var(--success); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                    </div>
+                    <p id="progressText" style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666;"></p>
+                </div>
             </div>
             
             <p style="font-size: 0.9em; margin-top: 20px; color: #666;">Tutto salvato offline • Nessuna chiave API visibile</p>
@@ -993,6 +1042,7 @@
 
         let flashcardStats = JSON.parse(localStorage.getItem('flashcardStats')) || {};
         let quizStats = JSON.parse(localStorage.getItem('quizStats')) || {};
+        let selectedFiles = [];
 
         if (appState.darkMode) document.body.classList.add('dark-mode');
 
@@ -1002,16 +1052,108 @@
             localStorage.setItem('darkMode', appState.darkMode);
         }
 
+        // ========== GESTIONE UPLOAD MIGLIORATA ==========
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('pdfFile');
+        const fileInfo = document.getElementById('fileInfo');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressBar = document.getElementById('progressBar');
+        const progressPercent = document.getElementById('progressPercent');
+        const progressText = document.getElementById('progressText');
+        const selectedFilesList = document.getElementById('selectedFilesList');
+
+        // Event listeners per drag & drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileSelection();
+            }
+        });
+
+        // Click sull'area di upload
+        uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'BUTTON') {
+                fileInput.click();
+            }
+        });
+
+        // Cambiamento selezione file
+        fileInput.addEventListener('change', handleFileSelection);
+
+        function handleFileSelection() {
+            selectedFiles = Array.from(fileInput.files);
+            
+            if (selectedFiles.length > 0) {
+                // Mostra info file
+                fileInfo.style.display = 'block';
+                selectedFilesList.innerHTML = '';
+                
+                selectedFiles.forEach((file, index) => {
+                    const fileElement = document.createElement('div');
+                    fileElement.style.padding = '5px 0';
+                    fileElement.style.borderBottom = index < selectedFiles.length - 1 ? '1px solid #e0e0e0' : 'none';
+                    fileElement.innerHTML = `
+                        <span style="font-weight: 500;">${file.name}</span>
+                        <span style="color: #666; font-size: 0.9em;"> (${formatFileSize(file.size)})</span>
+                    `;
+                    selectedFilesList.appendChild(fileElement);
+                });
+                
+                // Abilita pulsante caricamento
+                uploadBtn.disabled = false;
+                uploadBtn.style.background = 'var(--success)';
+            } else {
+                fileInfo.style.display = 'none';
+                uploadBtn.disabled = true;
+                uploadBtn.style.background = '#ccc';
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function updateUploadProgress(current, total, message) {
+            const percent = Math.round((current / total) * 100);
+            progressBar.style.width = percent + '%';
+            progressPercent.textContent = percent + '%';
+            progressText.textContent = message;
+        }
+
         async function loadMultiplePDFs() {
-            const files = document.getElementById('pdfFile').files;
-            if (files.length === 0) { alert('Seleziona almeno un file'); return; }
+            const files = selectedFiles;
+            if (files.length === 0) { 
+                alert('Seleziona almeno un file'); 
+                return; 
+            }
 
             showMainApp();
+            
+            // Mostra progresso
+            uploadProgress.style.display = 'block';
             let processedCount = 0;
 
             for (let file of files) {
                 try {
-                    // Determina il tipo di file ed estrai il testo
+                    updateUploadProgress(processedCount, files.length, `Elaborando: ${file.name}`);
+                    
                     const fileExtension = file.name.split('.').pop().toLowerCase();
                     let text = '';
                     let fileType = '';
@@ -1051,14 +1193,11 @@
 
                     console.log(`✅ ${file.name}: ${text.length} caratteri estratti`);
                     
-                    // Validazione lunghezza testo
                     if (!text || text.trim().length < 100) {
                         throw new Error(`Il file contiene troppo poco testo (minimo 100 caratteri)`);
                     }
                     
                     const studyId = Date.now() + Math.random();
-                    
-                    updateProgress(processedCount, files.length, `Elaborando: ${file.name}`);
                     
                     const data = await generateContent(text, document.getElementById('subjectSelect').value);
                     
@@ -1076,10 +1215,13 @@
                     appState.chatHistory[studyId] = [];
                     
                     processedCount++;
-                    updateProgress(processedCount, files.length, `Completato: ${file.name}`);
+                    updateUploadProgress(processedCount, files.length, `Completato: ${file.name}`);
+                    
                 } catch (e) {
                     console.error(`❌ Errore ${file.name}:`, e);
                     alert(`Impossibile elaborare "${file.name}":\n${e.message}`);
+                    processedCount++;
+                    updateUploadProgress(processedCount, files.length, `Errore: ${file.name}`);
                 }
             }
 
@@ -1087,6 +1229,16 @@
             saveChatHistory();
             renderLibrary();
             switchTab('library');
+            
+            // Reset upload
+            setTimeout(() => {
+                uploadProgress.style.display = 'none';
+                fileInput.value = '';
+                selectedFiles = [];
+                fileInfo.style.display = 'none';
+                uploadBtn.disabled = true;
+                uploadBtn.style.background = '#ccc';
+            }, 1000);
         }
 
         async function extractPDFText(file) {
@@ -1106,7 +1258,6 @@
             });
         }
 
-        // ========== ESTRAZIONE TESTO DA TXT ==========
         async function extractTextFromTXT(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1123,7 +1274,6 @@
             });
         }
 
-        // ========== ESTRAZIONE TESTO DA DOCX ==========
         async function extractTextFromDOCX(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1152,7 +1302,6 @@
             });
         }
 
-        // ========== ESTRAZIONE TESTO DA PPTX ==========
         async function extractTextFromPPTX(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1203,7 +1352,6 @@
             });
         }
 
-        // ========== ESTRAZIONE TESTO DA IMMAGINI (OCR) ==========
         async function extractTextFromImage(file) {
             return new Promise(async (resolve, reject) => {
                 try {
@@ -1241,19 +1389,6 @@
         function showMainApp() {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-        }
-
-        function updateProgress(current, total, message) {
-            document.getElementById('contentArea').innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>${message}</p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${(current/total)*100}%"></div>
-                    </div>
-                    <p>${current}/${total}</p>
-                </div>
-            `;
         }
 
         async function generateContent(text, subject) {
@@ -1357,7 +1492,7 @@
             
             element.innerHTML = `
                 <h1>${study.name}</h1>
-                <p><strong>Tipo:</strong> 📄 PDF | <strong>Materia:</strong> ${study.subject} | <strong>Data:</strong> ${study.date}</p>
+                <p><strong>Tipo:</strong> ${study.fileType || '📄 PDF'} | <strong>Materia:</strong> ${study.subject} | <strong>Data:</strong> ${study.date}</p>
                 
                 <h2>📝 Riassunto Breve</h2>
                 <p>${study.data.summary_short}</p>
@@ -1791,8 +1926,6 @@
             }
         }
 
-        // ===== MAPPA MENTALE POTENZIATA =====
-        
         function renderMindMap() {
             const study = getCurrentStudy();
             if (!study) return;
@@ -1923,8 +2056,6 @@
             alert('✅ Mappa mentale scaricata!');
         }
 
-        // ===== GUIDA DI STUDIO =====
-        
         function renderStudyGuide() {
             const study = getCurrentStudy();
             if (!study) return;
@@ -2069,8 +2200,6 @@
             }
         }
 
-        // ===== ANALISI DEL CONCETTO =====
-        
         function renderConceptAnalysis() {
             const study = getCurrentStudy();
             if (!study) return;
@@ -2212,8 +2341,6 @@
             }
         }
 
-        // ===== FORMATO PERSONALIZZATO =====
-        
         function renderCustomFormat() {
             const study = getCurrentStudy();
             if (!study) return;
@@ -2422,7 +2549,6 @@ Contenuto: {content}`
             let formatInfo = null;
             
             if (formatType === 'powerpoint') {
-                // Genera PowerPoint direttamente
                 await generatePowerPoint();
                 return;
             }
@@ -2588,8 +2714,6 @@ Contenuto: {content}`
             return new Date(timestamp).toLocaleDateString('it-IT');
         }
 
-        // ===== POWERPOINT EXPORT =====
-        
         async function generatePowerPoint() {
             const study = getCurrentStudy();
             if (!study) return;
@@ -2610,7 +2734,6 @@ Contenuto: {content}`
                 pptx.title = study.name;
                 pptx.subject = study.subject;
                 
-                // Slide 1 - Titolo
                 let slide = pptx.addSlide();
                 slide.background = { color: '667eea' };
                 slide.addText(study.name, {
@@ -2624,7 +2747,6 @@ Contenuto: {content}`
                     align: 'center'
                 });
                 
-                // Slide 2 - Introduzione
                 slide = pptx.addSlide();
                 slide.addText('📝 Introduzione', {
                     x: 0.5, y: 0.5, fontSize: 32, bold: true, color: '667eea'
@@ -2634,7 +2756,6 @@ Contenuto: {content}`
                     fontSize: 16, valign: 'top'
                 });
                 
-                // Slides per Punti Salienti
                 (study.data.highlights || []).slice(0, 8).forEach((highlight, i) => {
                     slide = pptx.addSlide();
                     slide.addText(`⭐ Punto Chiave ${i+1}`, {
@@ -2647,7 +2768,6 @@ Contenuto: {content}`
                     });
                 });
                 
-                // Slide Glossario
                 if (study.data.glossary && study.data.glossary.length > 0) {
                     slide = pptx.addSlide();
                     slide.addText('📖 Glossario', {
@@ -2672,7 +2792,6 @@ Contenuto: {content}`
                     });
                 }
                 
-                // Slide Conclusione
                 slide = pptx.addSlide();
                 slide.addText('✅ Conclusione', {
                     x: 0.5, y: 0.5, fontSize: 32, bold: true, color: '667eea'
@@ -2710,8 +2829,6 @@ Contenuto: {content}`
             }
         }
 
-        // ===== FLASHCARD E QUIZ =====
-        
         function renderFlashcardsAdvanced() {
             const study = getCurrentStudy();
             if (!study || !study.data.flashcards) return;
@@ -3207,7 +3324,6 @@ Contenuto: {content}`
             const study = getCurrentStudy();
             const filtered = filterQuizByMode(study.data.quiz);
             
-            // Calcola il punteggio dalle risposte salvate
             let correctCount = 0;
             filtered.forEach((q, i) => {
                 const userAnswer = appState.quizAnswers[i];
@@ -3271,8 +3387,6 @@ Contenuto: {content}`
             renderQuizAdvanced();
         }
 
-        // ===== CHAT AI =====
-        
         function renderChat() {
             const study = getCurrentStudy();
             if (!study) return;
@@ -3552,11 +3666,12 @@ Contenuto: {content}`
             document.getElementById('uploadSection').classList.remove('hidden');
             document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('pdfFile').value = '';
+            selectedFiles = [];
+            fileInfo.style.display = 'none';
+            uploadBtn.disabled = true;
+            uploadBtn.style.background = '#ccc';
         }
 
-        // ========== NAVIGAZIONE 4 CARDS ========== 
-        
-        // Mappa delle categorie ai loro tab
         const categoryTabs = {
             'comprendi': ['summary', 'highlights', 'glossary', 'conceptanalysis'],
             'memorizza': ['flashcards', 'mindmap', 'timeline'],
@@ -3564,7 +3679,6 @@ Contenuto: {content}`
             'personalizza': ['customformat']
         };
         
-        // Mappa dei nomi tab agli ID corretti
         const tabIdMap = {
             'summary': 'tabSummary',
             'highlights': 'tabHighlights',
@@ -3582,13 +3696,10 @@ Contenuto: {content}`
         function selectCategory(category) {
             console.log('Categoria selezionata:', category);
             
-            // Nascondi le 4 cards
             document.getElementById('categorySelection').classList.remove('active');
             
-            // Mostra i tab appropriati per questa categoria
             const tabs = categoryTabs[category] || [];
             
-            // Nascondi tutti i tab tranne library
             const allTabBtns = document.querySelectorAll('.tab-btn');
             allTabBtns.forEach(btn => {
                 if (!btn.textContent.includes('Libreria')) {
@@ -3596,7 +3707,6 @@ Contenuto: {content}`
                 }
             });
             
-            // Mostra solo i tab della categoria selezionata
             tabs.forEach(tabName => {
                 const tabId = tabIdMap[tabName];
                 const tabBtn = document.getElementById(tabId);
@@ -3607,25 +3717,21 @@ Contenuto: {content}`
                 }
             });
             
-            // Mostra i tabs e content area
             document.getElementById('tabs').style.display = 'flex';
             document.getElementById('contentArea').style.display = 'block';
             document.getElementById('backToCategories').classList.remove('hidden');
             
-            // Attiva il primo tab disponibile
             if (tabs.length > 0) {
                 switchTab(tabs[0]);
             }
         }
         
         function showCategories() {
-            // Torna alle 4 cards
             document.getElementById('categorySelection').classList.add('active');
             document.getElementById('tabs').style.display = 'none';
             document.getElementById('contentArea').style.display = 'none';
             document.getElementById('backToCategories').classList.add('hidden');
             
-            // Aggiorna il nome del documento
             const study = getCurrentStudy();
             if (study) {
                 document.getElementById('currentStudyName').textContent = study.name;
@@ -3633,22 +3739,17 @@ Contenuto: {content}`
         }
         
         function showLibrary() {
-            // Nascondi le 4 cards
             document.getElementById('categorySelection').classList.remove('active');
-            // Mostra tabs e content area
             document.getElementById('tabs').style.display = 'flex';
             document.getElementById('contentArea').style.display = 'block';
-            // Vai alla library
             switchTab('library');
         }
 
-        // Inizializzazione
         if (Object.keys(appState.studies).length > 0) {
             showMainApp();
             switchTab('library');
         }
 
-        // ========== VERIFICA LIBRERIE CARICATE ==========
         console.log('🚀 MentoreStudio Multi-Formato Inizializzato!');
         console.log('📦 Librerie caricate:');
         console.log('  - PDF.js:', typeof pdfjsLib !== 'undefined' ? '✅' : '❌');
@@ -3664,7 +3765,7 @@ Contenuto: {content}`
             console.error('❌ ERRORE: JSZip non caricato! I file PPTX non funzioneranno.');
         }
         if (typeof Tesseract === 'undefined') {
-            console.error('❌ ERRORE: Tesseract.js non caricato! L\\'OCR non funzionerà.');
+            console.error('❌ ERRORE: Tesseract.js non caricato! L\'OCR non funzionerà.');
         }
 
     </script>
