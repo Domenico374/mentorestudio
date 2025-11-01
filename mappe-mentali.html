@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Generatore Mappe Mentali - MentoreStudio</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --success: #4caf50;
+            --danger: #f44336;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        button.secondary {
+            background: #6c757d;
+        }
+        
+        button.success {
+            background: var(--success);
+        }
+        
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .template-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .template-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .template-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .template-title {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        #diagramContainer {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 30px;
+            min-height: 600px;
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .mermaid {
+            max-width: 100%;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 60px;
+        }
+        
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .style-btn {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .style-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .style-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .tips {
+            background: #e8f4f8;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        
+        .tips h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .tips ul {
+            margin-left: 20px;
+            color: #555;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Generatore di Mappe Mentali</h1>
+        <p class="subtitle">Crea mappe mentali visuali e interattive per qualsiasi argomento</p>
+        
+        <div class="input-section">
+            <h2 style="color: var(--primary); margin-bottom: 20px;">📝 Crea la tua Mappa Mentale</h2>
+            
+            <div class="input-group">
+                <label for="topicInput">Argomento Centrale</label>
+                <input type="text" id="topicInput" placeholder="Es: Centralino Virtuale in Cloud, Marketing Digitale, Biologia Cellulare...">
+            </div>
+            
+            <div class="input-group">
+                <label for="detailsInput">Dettagli e Rami (opzionale)</label>
+                <textarea id="detailsInput" placeholder="Inserisci i concetti principali, sottoconcetti e dettagli che vuoi includere nella mappa. Separa i concetti con virgole o vai a capo per ogni idea..."></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="styleSelect">Tipo di Visualizzazione</label>
+                <select id="styleSelect">
+                    <option value="mindmap">🧠 Mappa Mentale (Radiale)</option>
+                    <option value="flowchart">📊 Diagramma di Flusso (Gerarchico)</option>
+                    <option value="graph">🔗 Grafo con Collegamenti (Network)</option>
+                </select>
+            </div>
+            
+            <div class="button-group">
+                <button onclick="generateMindmap()" id="generateBtn">
+                    <span>🤖</span>
+                    <span>Genera Mappa con AI</span>
+                </button>
+                <button onclick="clearAll()" class="secondary">
+                    <span>🗑️</span>
+                    <span>Pulisci Tutto</span>
+                </button>
+            </div>
+            
+            <div class="template-section" style="margin-top: 30px;">
+                <h3 style="color: var(--primary); margin-bottom: 15px;">🎯 Template Rapidi</h3>
+                <div class="template-grid">
+                    <div class="template-card" onclick="loadTemplate('business')">
+                        <div class="template-icon">💼</div>
+                        <div class="template-title">Business Plan</div>
+                    </div>
+                    <div class="template-card" onclick="loadTemplate('project')">
+                        <div class="template-icon">📋</div>
+                        <div class="template-title">Gestione Progetto</div>
+                    </div>
+                    <div class="template-card" onclick="loadTemplate('study')">
+                        <div class="template-icon">📚</div>
+                        <div class="template-title">Piano di Studio</div>
+                    </div>
+                    <div class="template-card" onclick="loadTemplate('brainstorm')">
+                        <div class="template-icon">💡</div>
+                        <div class="template-title">Brainstorming</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="resultSection" style="display: none;">
+            <div class="controls">
+                <button class="style-btn active" onclick="changeView('mindmap')">🧠 Vista Mappa</button>
+                <button class="style-btn" onclick="changeView('flowchart')">📊 Vista Flusso</button>
+                <button class="style-btn" onclick="changeView('graph')">🔗 Vista Grafo</button>
+            </div>
+            
+            <div id="diagramContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🧠</div>
+                    <p>La tua mappa mentale apparirà qui</p>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button onclick="downloadImage()" class="success">
+                    <span>📥</span>
+                    <span>Scarica Immagine</span>
+                </button>
+                <button onclick="copyCode()">
+                    <span>📋</span>
+                    <span>Copia Codice</span>
+                </button>
+                <button onclick="editMindmap()">
+                    <span>✏️</span>
+                    <span>Modifica Mappa</span>
+                </button>
+                <button onclick="saveMindmap()">
+                    <span>💾</span>
+                    <span>Salva nel Browser</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="tips">
+            <h3>💡 Suggerimenti</h3>
+            <ul>
+                <li>Inserisci un argomento centrale chiaro e specifico</li>
+                <li>Aggiungi dettagli separati da virgole o su righe diverse</li>
+                <li>Usa i template per iniziare velocemente</li>
+                <li>Puoi modificare la mappa dopo la generazione</li>
+                <li>Le mappe possono essere esportate come immagini</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Inizializzazione Mermaid
+        mermaid.initialize({ 
+            startOnLoad: false,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+                rankSpacing: 50
+            },
+            mindmap: {
+                useMaxWidth: true,
+                padding: 20
+            }
+        });
+
+        // Variabili globali
+        let currentMindmapCode = '';
+        let currentFlowchartCode = '';
+        let currentGraphCode = '';
+        let currentView = 'mindmap';
+
+        // Template predefiniti
+        const templates = {
+            business: {
+                topic: "Business Plan",
+                details: "Analisi di mercato, Target clienti, Proposta di valore, Modello di revenue, Strategia di marketing, Piano operativo, Team e organizzazione, Proiezioni finanziarie, Rischi e opportunità"
+            },
+            project: {
+                topic: "Gestione Progetto",
+                details: "Obiettivi del progetto, Scope e deliverables, Timeline e milestones, Budget e risorse, Team e responsabilità, Risk management, Comunicazione stakeholder, Metriche di successo"
+            },
+            study: {
+                topic: "Piano di Studio",
+                details: "Obiettivi di apprendimento, Materie principali, Risorse didattiche, Calendario esami, Tecniche di memorizzazione, Sessioni di ripasso, Esercitazioni pratiche, Valutazione progressi"
+            },
+            brainstorm: {
+                topic: "Sessione Brainstorming",
+                details: "Problema da risolvere, Idee principali, Soluzioni proposte, Pro e contro, Fattibilità, Risorse necessarie, Next steps, Responsabili azioni"
+            }
+        };
+
+        // Carica un template
+        function loadTemplate(templateName) {
+            const template = templates[templateName];
+            if (template) {
+                document.getElementById('topicInput').value = template.topic;
+                document.getElementById('detailsInput').value = template.details;
+            }
+        }
+
+        // Genera la mappa mentale
+        async function generateMindmap() {
+            const topic = document.getElementById('topicInput').value.trim();
+            const details = document.getElementById('detailsInput').value.trim();
+            const style = document.getElementById('styleSelect').value;
+            
+            if (!topic) {
+                alert('⚠️ Inserisci almeno un argomento centrale!');
+                return;
+            }
+            
+            // Mostra loading
+            const container = document.getElementById('diagramContainer');
+            container.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <h3>🤖 Generazione in corso...</h3>
+                    <p>Sto creando la mappa mentale per "${topic}"</p>
+                </div>
+            `;
+            
+            document.getElementById('resultSection').style.display = 'block';
+            
+            try {
+                // Simula chiamata API (qui puoi integrare con il tuo backend)
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Genera i codici per le diverse visualizzazioni
+                generateCodes(topic, details);
+                
+                // Mostra la vista richiesta
+                changeView(style);
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❌</div>
+                        <p>Errore nella generazione. Riprova.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Genera i codici Mermaid per le diverse visualizzazioni
+        function generateCodes(topic, details) {
+            const branches = details ? details.split(/[,\n]+/).map(d => d.trim()).filter(d => d) : [];
+            
+            // Genera codice Mindmap
+            currentMindmapCode = `mindmap
+  root((${topic}))`;
+            
+            if (branches.length > 0) {
+                // Raggruppa i rami in categorie
+                const branchGroups = [];
+                const itemsPerGroup = Math.ceil(branches.length / 4);
+                
+                for (let i = 0; i < branches.length; i += itemsPerGroup) {
+                    branchGroups.push(branches.slice(i, i + itemsPerGroup));
+                }
+                
+                branchGroups.forEach((group, index) => {
+                    currentMindmapCode += `\n    Categoria ${index + 1}`;
+                    group.forEach(item => {
+                        currentMindmapCode += `\n      ${item}`;
+                    });
+                });
+            } else {
+                // Se non ci sono dettagli, crea una struttura di default
+                currentMindmapCode += `
+    Aspetti Principali
+      Definizione
+      Caratteristiche
+      Vantaggi
+    Implementazione
+      Pianificazione
+      Esecuzione
+      Monitoraggio
+    Risultati
+      Metriche
+      Valutazione
+      Miglioramenti`;
+            }
+            
+            // Genera codice Flowchart
+            currentFlowchartCode = `flowchart TB
+    A[${topic}]`;
+            
+            if (branches.length > 0) {
+                branches.forEach((branch, index) => {
+                    const nodeId = String.fromCharCode(66 + index); // B, C, D, etc.
+                    currentFlowchartCode += `\n    A --> ${nodeId}[${branch}]`;
+                });
+            } else {
+                currentFlowchartCode += `
+    A --> B[Aspetti Principali]
+    A --> C[Implementazione]
+    A --> D[Risultati]
+    B --> B1[Definizione]
+    B --> B2[Caratteristiche]
+    B --> B3[Vantaggi]
+    C --> C1[Pianificazione]
+    C --> C2[Esecuzione]
+    C --> C3[Monitoraggio]
+    D --> D1[Metriche]
+    D --> D2[Valutazione]
+    D --> D3[Miglioramenti]`;
+            }
+            
+            currentFlowchartCode += `\n    
+    style A fill:#f9f,stroke:#333,stroke-width:4px`;
+            
+            // Genera codice Graph
+            currentGraphCode = `graph LR
+    A((${topic}))`;
+            
+            if (branches.length > 0) {
+                branches.forEach((branch, index) => {
+                    const nodeId = String.fromCharCode(66 + index);
+                    currentGraphCode += `\n    A --- ${nodeId}[${branch}]`;
+                });
+                
+                // Aggiungi alcuni collegamenti incrociati
+                if (branches.length > 3) {
+                    currentGraphCode += `\n    B -.-> D`;
+                    currentGraphCode += `\n    C -.-> E`;
+                }
+            } else {
+                currentGraphCode += `
+    A --- B[Aspetti Principali]
+    A --- C[Implementazione]
+    A --- D[Risultati]
+    B --- E[Analisi]
+    C --- F[Sviluppo]
+    D --- G[Valutazione]
+    E -.-> F
+    F -.-> G
+    G -.-> B`;
+            }
+        }
+
+        // Cambia visualizzazione
+        function changeView(view) {
+            currentView = view;
+            
+            // Aggiorna pulsanti
+            document.querySelectorAll('.style-btn').forEach(btn => btn.classList.remove('active'));
+            event.target?.classList.add('active');
+            
+            // Renderizza il diagramma appropriato
+            let code = '';
+            switch(view) {
+                case 'mindmap':
+                    code = currentMindmapCode;
+                    break;
+                case 'flowchart':
+                    code = currentFlowchartCode;
+                    break;
+                case 'graph':
+                    code = currentGraphCode;
+                    break;
+            }
+            
+            const container = document.getElementById('diagramContainer');
+            container.innerHTML = `<div class="mermaid">${code}</div>`;
+            mermaid.run();
+        }
+
+        // Scarica come immagine
+        async function downloadImage() {
+            const svg = document.querySelector('#diagramContainer svg');
+            if (!svg) {
+                alert('❌ Nessuna mappa da scaricare');
+                return;
+            }
+            
+            // Clona SVG e aggiungi sfondo
+            const svgClone = svg.cloneNode(true);
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('width', '100%');
+            rect.setAttribute('height', '100%');
+            rect.setAttribute('fill', 'white');
+            svgClone.insertBefore(rect, svgClone.firstChild);
+            
+            // Converti in blob
+            const svgData = new XMLSerializer().serializeToString(svgClone);
+            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const svgUrl = URL.createObjectURL(svgBlob);
+            
+            // Crea immagine e canvas
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = img.width * 2;
+                canvas.height = img.height * 2;
+                ctx.scale(2, 2);
+                
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    const topic = document.getElementById('topicInput').value || 'mappa_mentale';
+                    a.download = `${topic.replace(/[^a-z0-9]/gi, '_')}.png`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    URL.revokeObjectURL(svgUrl);
+                });
+            };
+            img.src = svgUrl;
+        }
+
+        // Copia codice
+        function copyCode() {
+            let code = '';
+            switch(currentView) {
+                case 'mindmap':
+                    code = currentMindmapCode;
+                    break;
+                case 'flowchart':
+                    code = currentFlowchartCode;
+                    break;
+                case 'graph':
+                    code = currentGraphCode;
+                    break;
+            }
+            
+            navigator.clipboard.writeText(code).then(() => {
+                alert('✅ Codice Mermaid copiato!');
+            }).catch(() => {
+                alert('❌ Errore nella copia');
+            });
+        }
+
+        // Modifica mappa
+        function editMindmap() {
+            const newCode = prompt('Modifica il codice Mermaid:', 
+                currentView === 'mindmap' ? currentMindmapCode : 
+                currentView === 'flowchart' ? currentFlowchartCode : currentGraphCode);
+            
+            if (newCode) {
+                switch(currentView) {
+                    case 'mindmap':
+                        currentMindmapCode = newCode;
+                        break;
+                    case 'flowchart':
+                        currentFlowchartCode = newCode;
+                        break;
+                    case 'graph':
+                        currentGraphCode = newCode;
+                        break;
+                }
+                changeView(currentView);
+            }
+        }
+
+        // Salva nel browser
+        function saveMindmap() {
+            const topic = document.getElementById('topicInput').value || 'Senza titolo';
+            const data = {
+                topic: topic,
+                details: document.getElementById('detailsInput').value,
+                mindmapCode: currentMindmapCode,
+                flowchartCode: currentFlowchartCode,
+                graphCode: currentGraphCode,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Salva in localStorage
+            const savedMaps = JSON.parse(localStorage.getItem('savedMindmaps') || '[]');
+            savedMaps.push(data);
+            localStorage.setItem('savedMindmaps', JSON.stringify(savedMaps));
+            
+            alert(`✅ Mappa "${topic}" salvata con successo!`);
+        }
+
+        // Pulisci tutto
+        function clearAll() {
+            if (confirm('Vuoi cancellare tutto e ricominciare?')) {
+                document.getElementById('topicInput').value = '';
+                document.getElementById('detailsInput').value = '';
+                document.getElementById('resultSection').style.display = 'none';
+                currentMindmapCode = '';
+                currentFlowchartCode = '';
+                currentGraphCode = '';
+            }
+        }
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            // Controlla se ci sono parametri URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const topic = urlParams.get('topic');
+            if (topic) {
+                document.getElementById('topicInput').value = decodeURIComponent(topic);
+                generateMindmap();
+            }
+        });
+    </script>
+</body>
+</html>
