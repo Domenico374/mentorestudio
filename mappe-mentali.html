@@ -58,6 +58,14 @@
             border: 2px solid #e0e0e0;
         }
         
+        .import-section {
+            background: #f0f8ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px dashed var(--primary);
+        }
+        
         .input-group {
             margin-bottom: 20px;
         }
@@ -247,15 +255,48 @@
             border-radius: 5px;
         }
         
-        .tips h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
+        .file-preview {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
         }
         
-        .tips ul {
-            margin-left: 20px;
-            color: #555;
-            line-height: 1.8;
+        .file-content {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        
+        .material-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+        
+        .material-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .material-item:hover {
+            background: #f0f8ff;
+        }
+        
+        .material-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
@@ -263,6 +304,34 @@
     <div class="container">
         <h1>🧠 Generatore di Mappe Mentali</h1>
         <p class="subtitle">Crea mappe mentali visuali e interattive per qualsiasi argomento</p>
+        
+        <!-- Sezione Importa da File -->
+        <div class="import-section">
+            <h2 style="color: var(--primary); margin-bottom: 15px;">📁 Importa da File Esistente</h2>
+            
+            <div class="button-group">
+                <button onclick="importFromMaterial()">
+                    <span>📚</span>
+                    <span>Importa dal Materiale</span>
+                </button>
+                <button onclick="openFilePicker()">
+                    <span>📄</span>
+                    <span>Carica File (PDF/DOCX/PPTX)</span>
+                </button>
+                <button onclick="openImageOCR()">
+                    <span>🖼️</span>
+                    <span>OCR da Immagine</span>
+                </button>
+            </div>
+            
+            <div id="filePreview" class="file-preview">
+                <h4>Anteprima Contenuto:</h4>
+                <div id="fileContent" class="file-content"></div>
+                <button onclick="generateFromFile()" class="success" style="margin-top: 10px;">
+                    🧠 Genera Mappa da questo Contenuto
+                </button>
+            </div>
+        </div>
         
         <div class="input-section">
             <h2 style="color: var(--primary); margin-bottom: 20px;">📝 Crea la tua Mappa Mentale</h2>
@@ -294,6 +363,10 @@
                 <button onclick="clearAll()" class="secondary">
                     <span>🗑️</span>
                     <span>Pulisci Tutto</span>
+                </button>
+                <button onclick="goBackToMaterial()" class="secondary">
+                    <span>←</span>
+                    <span>Torna al Materiale</span>
                 </button>
             </div>
             
@@ -349,7 +422,7 @@
                 </button>
                 <button onclick="saveMindmap()">
                     <span>💾</span>
-                    <span>Salva nel Browser</span>
+                    <span>Salva in MentoreStudio</span>
                 </button>
             </div>
         </div>
@@ -357,11 +430,11 @@
         <div class="tips">
             <h3>💡 Suggerimenti</h3>
             <ul>
-                <li>Inserisci un argomento centrale chiaro e specifico</li>
-                <li>Aggiungi dettagli separati da virgole o su righe diverse</li>
+                <li>Importa contenuti da file PDF, DOCX, PPTX o immagini con OCR</li>
                 <li>Usa i template per iniziare velocemente</li>
                 <li>Puoi modificare la mappa dopo la generazione</li>
-                <li>Le mappe possono essere esportate come immagini</li>
+                <li>Le mappe vengono salvate nel sistema MentoreStudio</li>
+                <li>Esporta come immagine PNG per condividere</li>
             </ul>
         </div>
     </div>
@@ -409,6 +482,153 @@
             }
         };
 
+        // ========== FUNZIONI IMPORT FILE ==========
+
+        // Importa dal materiale esistente di MentoreStudio
+        async function importFromMaterial() {
+            try {
+                const materials = await getSavedMaterials();
+                
+                if (materials.length === 0) {
+                    alert('📚 Nessun materiale trovato in MentoreStudio!');
+                    return;
+                }
+                
+                // Mostra lista materiali
+                const materialList = materials.map((m, index) => `
+                    <div class="material-item" onclick="selectMaterial(${index})">
+                        <strong>${m.title}</strong><br>
+                        <small>Tipo: ${m.type} - ${new Date(m.createdAt).toLocaleDateString()}</small>
+                    </div>
+                `).join('');
+                
+                const selected = confirm(`Trovati ${materials.length} materiali. Vuoi selezionarne uno?`);
+                if (selected) {
+                    const index = prompt(`Inserisci il numero (1-${materials.length}):`);
+                    if (index !== null) {
+                        const materialIndex = parseInt(index) - 1;
+                        if (materialIndex >= 0 && materialIndex < materials.length) {
+                            selectMaterial(materialIndex);
+                        }
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Errore importazione:', error);
+                alert('❌ Errore nel caricamento del materiale');
+            }
+        }
+
+        function selectMaterial(index) {
+            getSavedMaterials().then(materials => {
+                if (materials[index]) {
+                    const material = materials[index];
+                    document.getElementById('topicInput').value = material.title;
+                    document.getElementById('detailsInput').value = material.content || '';
+                    alert(`✅ Importato: ${material.title}`);
+                }
+            });
+        }
+
+        // Carica file locale (PDF/DOCX/PPTX)
+        function openFilePicker() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.pdf,.docx,.pptx,.txt,.md';
+            
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    await processUploadedFile(file);
+                }
+            };
+            
+            input.click();
+        }
+
+        // Elabora file caricato
+        async function processUploadedFile(file) {
+            try {
+                document.getElementById('filePreview').style.display = 'block';
+                document.getElementById('fileContent').innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Elaborazione di "${file.name}"...</p>
+                    </div>
+                `;
+                
+                const content = await simulateFileProcessing(file);
+                
+                document.getElementById('fileContent').innerHTML = `
+                    <p><strong>File:</strong> ${file.name}</p>
+                    <p><strong>Dimensione:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+                    <div style="max-height: 150px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                        <pre style="white-space: pre-wrap; font-size: 11px;">${content.substring(0, 800)}${content.length > 800 ? '...' : ''}</pre>
+                    </div>
+                `;
+                
+                document.getElementById('topicInput').value = file.name.replace(/\.[^/.]+$/, "");
+                document.getElementById('detailsInput').value = content.substring(0, 2000);
+                
+            } catch (error) {
+                console.error('Errore elaborazione file:', error);
+                document.getElementById('fileContent').innerHTML = '<p style="color: red;">❌ Errore nell\'elaborazione del file</p>';
+            }
+        }
+
+        // Simula OCR da immagine
+        function openImageOCR() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    await processImageOCR(file);
+                }
+            };
+            
+            input.click();
+        }
+
+        // Elabora OCR immagine
+        async function processImageOCR(file) {
+            try {
+                document.getElementById('filePreview').style.display = 'block';
+                document.getElementById('fileContent').innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>OCR di "${file.name}" in corso...</p>
+                    </div>
+                `;
+                
+                const ocrResult = await simulateOCR(file);
+                
+                document.getElementById('fileContent').innerHTML = `
+                    <p><strong>Immagine:</strong> ${file.name}</p>
+                    <img src="${URL.createObjectURL(file)}" style="max-width: 200px; max-height: 150px; border: 1px solid #ddd; border-radius: 5px;">
+                    <div style="max-height: 150px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                        <pre style="white-space: pre-wrap; font-size: 11px;">${ocrResult}</pre>
+                    </div>
+                `;
+                
+                document.getElementById('topicInput').value = `OCR - ${file.name.replace(/\.[^/.]+$/, "")}`;
+                document.getElementById('detailsInput').value = ocrResult;
+                
+            } catch (error) {
+                console.error('Errore OCR:', error);
+                document.getElementById('fileContent').innerHTML = '<p style="color: red;">❌ Errore nell\'OCR</p>';
+            }
+        }
+
+        // Genera mappa dal contenuto del file
+        function generateFromFile() {
+            generateMindmap();
+        }
+
+        // ========== FUNZIONI CORE ==========
+
         // Carica un template
         function loadTemplate(templateName) {
             const template = templates[templateName];
@@ -429,7 +649,6 @@
                 return;
             }
             
-            // Mostra loading
             const container = document.getElementById('diagramContainer');
             container.innerHTML = `
                 <div class="loading">
@@ -442,13 +661,8 @@
             document.getElementById('resultSection').style.display = 'block';
             
             try {
-                // Simula chiamata API (qui puoi integrare con il tuo backend)
                 await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                // Genera i codici per le diverse visualizzazioni
                 generateCodes(topic, details);
-                
-                // Mostra la vista richiesta
                 changeView(style);
                 
             } catch (error) {
@@ -462,16 +676,21 @@
             }
         }
 
-        // Genera i codici Mermaid per le diverse visualizzazioni
+        // Genera i codici Mermaid
         function generateCodes(topic, details) {
-            const branches = details ? details.split(/[,\n]+/).map(d => d.trim()).filter(d => d) : [];
+            let branches = [];
+            
+            if (details && details.length > 500) {
+                branches = extractMainConcepts(details);
+            } else {
+                branches = details ? details.split(/[,\n]+/).map(d => d.trim()).filter(d => d) : [];
+            }
             
             // Genera codice Mindmap
             currentMindmapCode = `mindmap
   root((${topic}))`;
             
             if (branches.length > 0) {
-                // Raggruppa i rami in categorie
                 const branchGroups = [];
                 const itemsPerGroup = Math.ceil(branches.length / 4);
                 
@@ -486,7 +705,6 @@
                     });
                 });
             } else {
-                // Se non ci sono dettagli, crea una struttura di default
                 currentMindmapCode += `
     Aspetti Principali
       Definizione
@@ -508,7 +726,7 @@
             
             if (branches.length > 0) {
                 branches.forEach((branch, index) => {
-                    const nodeId = String.fromCharCode(66 + index); // B, C, D, etc.
+                    const nodeId = String.fromCharCode(66 + index);
                     currentFlowchartCode += `\n    A --> ${nodeId}[${branch}]`;
                 });
             } else {
@@ -527,8 +745,7 @@
     D --> D3[Miglioramenti]`;
             }
             
-            currentFlowchartCode += `\n    
-    style A fill:#f9f,stroke:#333,stroke-width:4px`;
+            currentFlowchartCode += `\n    style A fill:#f9f,stroke:#333,stroke-width:4px`;
             
             // Genera codice Graph
             currentGraphCode = `graph LR
@@ -540,7 +757,6 @@
                     currentGraphCode += `\n    A --- ${nodeId}[${branch}]`;
                 });
                 
-                // Aggiungi alcuni collegamenti incrociati
                 if (branches.length > 3) {
                     currentGraphCode += `\n    B -.-> D`;
                     currentGraphCode += `\n    C -.-> E`;
@@ -559,26 +775,33 @@
             }
         }
 
+        // Estrai concetti principali da testo lungo
+        function extractMainConcepts(text) {
+            const paragraphs = text.split('\n').filter(p => p.trim().length > 0);
+            const concepts = [];
+            
+            paragraphs.slice(0, 8).forEach(paragraph => {
+                const words = paragraph.split(' ').slice(0, 8);
+                if (words.length > 3) {
+                    concepts.push(words.join(' ') + '...');
+                }
+            });
+            
+            return concepts.length > 0 ? concepts : ['Concetto 1', 'Concetto 2', 'Concetto 3'];
+        }
+
         // Cambia visualizzazione
         function changeView(view) {
             currentView = view;
             
-            // Aggiorna pulsanti
             document.querySelectorAll('.style-btn').forEach(btn => btn.classList.remove('active'));
             event.target?.classList.add('active');
             
-            // Renderizza il diagramma appropriato
             let code = '';
             switch(view) {
-                case 'mindmap':
-                    code = currentMindmapCode;
-                    break;
-                case 'flowchart':
-                    code = currentFlowchartCode;
-                    break;
-                case 'graph':
-                    code = currentGraphCode;
-                    break;
+                case 'mindmap': code = currentMindmapCode; break;
+                case 'flowchart': code = currentFlowchartCode; break;
+                case 'graph': code = currentGraphCode; break;
             }
             
             const container = document.getElementById('diagramContainer');
@@ -594,7 +817,6 @@
                 return;
             }
             
-            // Clona SVG e aggiungi sfondo
             const svgClone = svg.cloneNode(true);
             const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
             rect.setAttribute('width', '100%');
@@ -602,12 +824,10 @@
             rect.setAttribute('fill', 'white');
             svgClone.insertBefore(rect, svgClone.firstChild);
             
-            // Converti in blob
             const svgData = new XMLSerializer().serializeToString(svgClone);
             const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
             const svgUrl = URL.createObjectURL(svgBlob);
             
-            // Crea immagine e canvas
             const img = new Image();
             img.onload = function() {
                 const canvas = document.createElement('canvas');
@@ -639,15 +859,9 @@
         function copyCode() {
             let code = '';
             switch(currentView) {
-                case 'mindmap':
-                    code = currentMindmapCode;
-                    break;
-                case 'flowchart':
-                    code = currentFlowchartCode;
-                    break;
-                case 'graph':
-                    code = currentGraphCode;
-                    break;
+                case 'mindmap': code = currentMindmapCode; break;
+                case 'flowchart': code = currentFlowchartCode; break;
+                case 'graph': code = currentGraphCode; break;
             }
             
             navigator.clipboard.writeText(code).then(() => {
@@ -665,21 +879,15 @@
             
             if (newCode) {
                 switch(currentView) {
-                    case 'mindmap':
-                        currentMindmapCode = newCode;
-                        break;
-                    case 'flowchart':
-                        currentFlowchartCode = newCode;
-                        break;
-                    case 'graph':
-                        currentGraphCode = newCode;
-                        break;
+                    case 'mindmap': currentMindmapCode = newCode; break;
+                    case 'flowchart': currentFlowchartCode = newCode; break;
+                    case 'graph': currentGraphCode = newCode; break;
                 }
                 changeView(currentView);
             }
         }
 
-        // Salva nel browser
+        // Salva nel sistema MentoreStudio
         function saveMindmap() {
             const topic = document.getElementById('topicInput').value || 'Senza titolo';
             const data = {
@@ -688,15 +896,21 @@
                 mindmapCode: currentMindmapCode,
                 flowchartCode: currentFlowchartCode,
                 graphCode: currentGraphCode,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                type: 'mindmap'
             };
             
-            // Salva in localStorage
-            const savedMaps = JSON.parse(localStorage.getItem('savedMindmaps') || '[]');
-            savedMaps.push(data);
-            localStorage.setItem('savedMindmaps', JSON.stringify(savedMaps));
-            
-            alert(`✅ Mappa "${topic}" salvata con successo!`);
+            // Usa il sistema di salvataggio centralizzato
+            if (window.MentoreStorage) {
+                const savedId = MentoreStorage.saveMindmap(data);
+                alert(`✅ Mappa "${topic}" salvata in MentoreStudio!`);
+            } else {
+                // Fallback
+                const savedMaps = JSON.parse(localStorage.getItem('mentore_studio_mindmaps') || '[]');
+                savedMaps.push(data);
+                localStorage.setItem('mentore_studio_mindmaps', JSON.stringify(savedMaps));
+                alert(`✅ Mappa "${topic}" salvata con successo!`);
+            }
         }
 
         // Pulisci tutto
@@ -705,19 +919,75 @@
                 document.getElementById('topicInput').value = '';
                 document.getElementById('detailsInput').value = '';
                 document.getElementById('resultSection').style.display = 'none';
+                document.getElementById('filePreview').style.display = 'none';
                 currentMindmapCode = '';
                 currentFlowchartCode = '';
                 currentGraphCode = '';
             }
         }
 
+        // Torna al materiale
+        function goBackToMaterial() {
+            window.location.href = 'materiale.html';
+        }
+
+        // ========== FUNZIONI UTILITY ==========
+
+        // Simula il recupero del materiale
+        async function getSavedMaterials() {
+            // Cerca in diversi possibili storage
+            const materials = 
+                JSON.parse(localStorage.getItem('mentore_studio_materials') || '[]') ||
+                JSON.parse(localStorage.getItem('savedMaterials') || '[]') ||
+                [];
+            
+            return materials.map(material => ({
+                id: material.id,
+                title: material.title || material.topic || material.fileName || 'Senza titolo',
+                type: material.type || 'document',
+                content: material.content || material.details || material.text || '',
+                createdAt: material.createdAt || material.timestamp || new Date().toISOString()
+            }));
+        }
+
+        // Simula elaborazione file
+        async function simulateFileProcessing(file) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const fakeContent = {
+                        pdf: `Estratto da PDF: ${file.name}\n\nCapitolo 1: Introduzione\nIl sistema di centralini virtuali rappresenta una rivoluzione...\n\nCapitolo 2: Architettura\nL'architettura cloud-based permette...`,
+                        docx: `Documento: ${file.name}\n\nTitolo: Analisi di Mercato\nIntroduzione: Il mercato dei centralini virtuali...\n\nMetodologia: Abbiamo analizzato...`,
+                        pptx: `Presentazione: ${file.name}\n\nSlide 1: Titolo\nSlide 2: Agenda\nSlide 3: Problematica\nSlide 4: Soluzione`,
+                        txt: `Contenuto file di testo: ${file.name}\n\nQuesto è un esempio di contenuto estratto da un file di testo.`,
+                        md: `# ${file.name}\n## Documento Markdown\nContenuto estratto dal file...`
+                    };
+                    
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    resolve(fakeContent[ext] || `Contenuto del file: ${file.name}`);
+                }, 2000);
+            });
+        }
+
+        // Simula OCR
+        async function simulateOCR(file) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(`Testo estratto via OCR da ${file.name}:\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.`);
+                }, 3000);
+            });
+        }
+
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', function() {
-            // Controlla se ci sono parametri URL
             const urlParams = new URLSearchParams(window.location.search);
             const topic = urlParams.get('topic');
+            const details = urlParams.get('details');
+            
             if (topic) {
                 document.getElementById('topicInput').value = decodeURIComponent(topic);
+                if (details) {
+                    document.getElementById('detailsInput').value = decodeURIComponent(details);
+                }
                 generateMindmap();
             }
         });
