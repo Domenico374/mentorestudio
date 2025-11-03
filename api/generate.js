@@ -4,7 +4,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Funzione principale per generare contenuti didattici
+// Funzione principale per generare tutti i contenuti didattici
 async function generateContent(text) {
   const system_prompt = `
 Sei un esperto creatore di materiali didattici. Analizza il testo fornito e restituisci ESCLUSIVAMENTE un oggetto JSON con la seguente struttura:
@@ -14,7 +14,7 @@ Sei un esperto creatore di materiali didattici. Analizza il testo fornito e rest
   "summary_long": "Un riassunto dettagliato di 5-7 righe",
   "highlights": ["punto 1", "punto 2", "punto 3", "punto 4", "punto 5"],
   "glossary": [ {"term": "termine", "definition": "definizione"} ],
-  "mind_map": ["concetto 1", "concetto 2", ..., "concetto 8"],
+  "mindmapDetailed": "Una mappa mentale in sintassi Mermaid, con 1 nodo radice e 8 concetti chiave gerarchici. Esempio:\n\nmindmap\n  root\n    concetto 1\n      sotto-concetto A\n    concetto 2\n    concetto 3",
   "timeline": [ {"date": "data", "event": "evento"} ],
   "flashcards": [ {"q": "Domanda?", "a": "Risposta"} ],
   "quiz": [ {"q": "Domanda?", "options": ["A", "B", "C", "D"], "correct": 0} ]
@@ -23,10 +23,11 @@ Sei un esperto creatore di materiali didattici. Analizza il testo fornito e rest
 REQUISITI:
 - highlights: esattamente 5
 - glossary: 8–10 termini
-- mind_map: 8 concetti
+- mindmapDetailed: sintassi Mermaid con 8 concetti
 - flashcards: 20–25
 - quiz: 15–20 domande
 - Rispetta il formato JSON rigorosamente
+- Non aggiungere spiegazioni o testo fuori dal JSON
 `;
 
   try {
