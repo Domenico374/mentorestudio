@@ -16,11 +16,6 @@
 - **To-Do automatici** - Estrazione di compiti e attività
 - **Tag intelligenti** - Categorizzazione automatica dei contenuti
 
-### 📝 Trascrizione audio/video
-- Trascrizione automatica di file audio (MP3, M4A, WAV, OGG, FLAC)
-- Supporto video (MP4, WEBM, MOV)
-- Conversione speech-to-text accurata
-
 ### 📋 Generazione verbali
 - Creazione automatica di verbali strutturati
 - Export in formato Markdown
