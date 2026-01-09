@@ -16,15 +16,15 @@
 <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --accent: #f093fb;
-            --success: #4caf50;
-            --danger: #f44336;
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #3b82f6;
+            --success: #059669;
+            --danger: #dc2626;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #fafafa;
             min-height: 100vh;
             padding: 20px;
         }
@@ -32,13 +32,13 @@
         .container { max-width: 1200px; margin: 0 auto; }
         .header {
             background: white;
-            border-radius: 15px;
+            border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
         }
         body.dark-mode .header { background: #2a2a3e; color: #e0e0e0; }
         h1 { font-size: 1.8em; color: var(--primary); }
@@ -55,11 +55,11 @@
         }
         .upload-section {
             background: white;
-            border-radius: 15px;
+            border-radius: 12px;
             padding: 40px;
             text-align: center;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
         }
         body.dark-mode .upload-section { background: #2a2a3e; color: #e0e0e0; }
         body.dark-mode #uploadProgress { 
@@ -182,7 +182,7 @@
             margin-bottom: 20px;
             background: white;
             padding: 15px;
-            border-radius: 15px;
+            border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         body.dark-mode .tabs { background: #2a2a3e; }
@@ -199,9 +199,9 @@
         .tab-btn.active { background: var(--primary); color: white; }
         .content-area {
             background: white;
-            border-radius: 15px;
+            border-radius: 12px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
             min-height: 500px;
         }
         body.dark-mode .content-area { background: #2a2a3e; color: #e0e0e0; }
@@ -445,7 +445,7 @@
         .chat-bubble {
             max-width: 70%;
             padding: 12px 16px;
-            border-radius: 15px;
+            border-radius: 12px;
             line-height: 1.5;
             word-wrap: break-word;
         }
@@ -732,7 +732,7 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             padding: 5px 12px;
-            border-radius: 15px;
+            border-radius: 12px;
             font-weight: bold;
             font-size: 0.85em;
             display: inline-block;
