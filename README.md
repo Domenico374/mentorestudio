@@ -1,4 +1,4 @@
-# 📚 MentoreStudio - Studia Intelligente
+# StudioPro – Studia intelligente
 
 **Il tuo mentore personale per lo studio intelligente**
 
@@ -25,7 +25,7 @@
 ## 🚀 Come iniziare
 
 ### Utilizzo online
-Visita [mentorestudio.vercel.app](https://mentorestudio.vercel.app)
+Visita [studiopro.vercel.app](https://studiopro.vercel.app)
 
 ### Installazione locale
 ```bash
