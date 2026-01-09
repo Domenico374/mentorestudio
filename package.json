@@ -1,5 +1,7 @@
 {
-  "name": "mentorestudio",
+  "name": "studiopro",
+  "description": "AI learning platform per lo studio intelligente"
+}
   "version": "1.0.0",
   "description": "Il tuo mentore personale per lo studio intelligente",
   "type": "module",
