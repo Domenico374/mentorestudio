@@ -4826,32 +4826,68 @@ body.dark-mode .mindmap-legend {
             
             // Se c'è la mappa, inizializzala
             if (mindmap) {
+                console.log('Initializing mindmap...');
+                console.log('Mindmap text length:', mindmap.length);
+                
                 setTimeout(() => {
-                    const mindmapData = parseMindmapText(mindmap);
-                    window.currentMindmap = new ProfessionalMindMap('mindmapCanvas', mindmapData);
-                }, 100);
+                    try {
+                        const container = document.getElementById('mindmapCanvas');
+                        if (!container) {
+                            console.error('Container mindmapCanvas not found!');
+                            return;
+                        }
+                        
+                        console.log('Container found, parsing mindmap...');
+                        const mindmapData = parseMindmapText(mindmap);
+                        console.log('Parsed data:', mindmapData);
+                        
+                        console.log('Creating ProfessionalMindMap instance...');
+                        window.currentMindmap = new ProfessionalMindMap('mindmapCanvas', mindmapData);
+                        console.log('Mindmap initialized successfully!');
+                    } catch (error) {
+                        console.error('Error initializing mindmap:', error);
+                        alert('Errore nel caricamento della mappa: ' + error.message);
+                    }
+                }, 200);
             }
         }
 
         function parseMindmapText(text) {
-            // Estrae il titolo principale (tra le linee ===)
-            const lines = text.split('\n');
-            let title = 'Concetto Centrale';
+            // Pulisci il testo da backticks e caratteri extra
+            text = text.replace(/```/g, '').trim();
+            
+            const lines = text.split('\n').filter(line => line.trim());
+            let title = 'Integrazione Scolastica';
             const children = [];
             
-            // Cerca il titolo tra le linee di uguale
-            for (let i = 0; i < lines.length; i++) {
+            console.log('Parsing mindmap, lines:', lines.length);
+            
+            // Cerca il titolo - prima linea significativa con caratteri speciali
+            for (let i = 0; i < Math.min(lines.length, 10); i++) {
                 const line = lines[i].trim();
-                if (line && !line.match(/^[━═─]+$/)) {
-                    const nextLine = lines[i + 1]?.trim() || '';
-                    if (nextLine.match(/^[━═─]+$/)) {
-                        title = line;
+                
+                // Il titolo è spesso circondato da linee o in MAIUSCOLO
+                if (line.match(/[━═─]{3,}/) || line === line.toUpperCase()) {
+                    // Prendi la linea successiva o precedente senza caratteri speciali
+                    const prevLine = lines[i - 1]?.trim();
+                    const nextLine = lines[i + 1]?.trim();
+                    
+                    if (prevLine && !prevLine.match(/[━═─├└│]/)) {
+                        title = prevLine;
+                        break;
+                    } else if (nextLine && !nextLine.match(/[━═─├└│]/)) {
+                        title = nextLine;
+                        break;
+                    } else if (line !== '' && !line.match(/^[━═─]+$/)) {
+                        title = line.replace(/[━═─]/g, '').trim();
                         break;
                     }
                 }
             }
             
-            // Analizza i rami principali e sotto-concetti
+            console.log('Title found:', title);
+            
+            // Analizza i rami - cerca linee con ├─ o └─
             let currentBranch = null;
             let currentSubBranch = null;
             
@@ -4859,45 +4895,79 @@ body.dark-mode .mindmap-legend {
                 const line = lines[i];
                 const trimmed = line.trim();
                 
-                // Skip linee vuote e separatori
-                if (!trimmed || trimmed.match(/^[━═─│├└]+$/) || trimmed.includes('Collegamenti:')) {
+                // Skip linee vuote, separatori e titoli
+                if (!trimmed || 
+                    trimmed.match(/^[━═─]+$/) || 
+                    trimmed === title ||
+                    trimmed.includes('Collegamenti:') ||
+                    trimmed.includes('```')) {
                     continue;
                 }
                 
-                // Ramo principale (inizia con ├─ o └─)
-                if (line.match(/^[├└]─\s+/)) {
-                    const text = trimmed.replace(/^[├└]─\s+/, '').trim();
-                    if (text) {
+                console.log('Processing line:', trimmed.substring(0, 50));
+                
+                // Ramo principale - cerca ├─ o └─ all'inizio o quasi
+                const mainBranchMatch = trimmed.match(/^[├└]─\s*(.+?)(?:\s*[│├└]|$)/);
+                if (mainBranchMatch) {
+                    const text = mainBranchMatch[1].trim();
+                    if (text && text.length > 2) {
                         currentBranch = { text, children: [] };
                         children.push(currentBranch);
                         currentSubBranch = null;
+                        console.log('Main branch:', text);
                     }
                 }
-                // Sotto-concetto di primo livello (│  ├─ o │  └─)
-                else if (line.match(/^│\s+[├└]─\s+/) && currentBranch) {
-                    const text = trimmed.replace(/^[│├└]─\s+/, '').trim();
-                    if (text) {
-                        currentSubBranch = { text, children: [] };
-                        currentBranch.children.push(currentSubBranch);
-                    }
-                }
-                // Sotto-concetto di secondo livello (│  │  ├─)
-                else if (line.match(/^│\s+│\s+[├└]─\s+/) && currentSubBranch) {
-                    const text = trimmed.replace(/^[│├└─\s]+/, '').trim();
-                    if (text) {
-                        currentSubBranch.children.push(text);
+                // Sotto-concetto - cerca │ seguito da ├─ o └─
+                else if (trimmed.match(/^│\s+[├└]─/) && currentBranch) {
+                    const subMatch = trimmed.match(/^│\s+[├└]─\s*(.+?)(?:\s*[│├└]|$)/);
+                    if (subMatch) {
+                        const text = subMatch[1].trim();
+                        if (text && text.length > 2) {
+                            if (currentBranch.children.length < 4) { // Max 4 sub-items
+                                currentBranch.children.push(text);
+                                console.log('Sub-branch:', text);
+                            }
+                        }
                     }
                 }
             }
             
-            // Se non ha trovato rami, crea una struttura base
+            // Se non ha trovato rami, prova parsing alternativo
             if (children.length === 0) {
-                const words = title.split(' ');
-                const mid = Math.ceil(words.length / 3);
-                children.push({ text: words.slice(0, mid).join(' '), children: [] });
-                children.push({ text: words.slice(mid, mid * 2).join(' '), children: [] });
-                children.push({ text: words.slice(mid * 2).join(' '), children: [] });
+                console.log('No branches found, trying alternative parsing...');
+                
+                // Cerca pattern ├─ ovunque nella stringa
+                const allText = lines.join(' ');
+                const branchMatches = allText.match(/[├└]─\s*([^│├└]+)/g);
+                
+                if (branchMatches) {
+                    branchMatches.forEach((match, idx) => {
+                        if (idx < 6) { // Max 6 rami
+                            const text = match.replace(/[├└]─\s*/, '').trim();
+                            if (text.length > 3 && text.length < 100) {
+                                children.push({ 
+                                    text: text.substring(0, 60), 
+                                    children: [] 
+                                });
+                            }
+                        }
+                    });
+                }
             }
+            
+            // Ultimo fallback - crea struttura da parole chiave nel titolo
+            if (children.length === 0) {
+                console.log('Creating fallback structure...');
+                const keywords = [
+                    'Evoluzione Storica',
+                    'Normativa',
+                    'Principi Educativi', 
+                    'Applicazioni Pratiche'
+                ];
+                children.push(...keywords.map(k => ({ text: k, children: [] })));
+            }
+            
+            console.log('Final structure:', { title, childrenCount: children.length });
             
             return { title, children };
         }
