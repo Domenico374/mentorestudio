@@ -1,153 +1,2432 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="MentoreStudio – Il tuo mentore personale per lo studio intelligente"/>
-
-  <title>MentoreStudio</title>
-
-  <!-- Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Style PRO -->
-  <link rel="stylesheet" href="styles-pro.css">
-
-  <!-- Librerie -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MentoreStudio - Il tuo mentore personale per lo studio intelligente">
+    <title>📚 MentoreStudio - Studia Intelligente</title>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<!-- NUOVE LIBRERIE PER MULTI-FORMATO -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- LIBRERIA OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            /* Palette Professionale Business */
+            --primary: #0f172a;
+            --primary-light: #1e293b;
+            --accent: #3b82f6;
+            --accent-light: #60a5fa;
+            --accent-bg: #eff6ff;
+            
+            --success: #059669;
+            --success-bg: #d1fae5;
+            --danger: #dc2626;
+            --danger-bg: #fee2e2;
+            --warning: #d97706;
+            --warning-bg: #fef3c7;
+            
+            /* Neutrali Professionali */
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            
+            /* Spacing Professionale */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 0.75rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            
+            /* Border radius discreti */
+            --radius-sm: 0.25rem;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+            
+            /* Shadows professionali sottili */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+            --shadow-md: 0 2px 4px 0 rgb(0 0 0 / 0.04);
+            --shadow-lg: 0 4px 6px -1px rgb(0 0 0 / 0.06);
+            --shadow-xl: 0 10px 15px -3px rgb(0 0 0 / 0.08);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #fafafa;
+            color: var(--gray-900);
+            line-height: 1.5;
+            min-height: 100vh;
+            font-size: 15px;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        body.dark-mode { 
+            background: #0a0a0a;
+            color: #e5e5e5;
+        }
+        
+        /* === HEADER PROFESSIONALE === */
+        .saas-header {
+            background: white;
+            border-bottom: 1px solid #e5e5e5;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        body.dark-mode .saas-header {
+            background: #0f0f0f;
+            border-bottom-color: #262626;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+        
+        body.dark-mode .logo {
+            color: white;
+        }
+        
+        .logo-icon {
+            font-size: 1.5rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .toggle-btn {
+            padding: 0.5rem 0.875rem;
+            border: 1px solid #e5e5e5;
+            border-radius: var(--radius-md);
+            background: white;
+            color: var(--gray-700);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.8125rem;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        
+        .toggle-btn:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+        
+        body.dark-mode .toggle-btn {
+            background: #1a1a1a;
+            border-color: #262626;
+            color: #a3a3a3;
+        }
+        
+        body.dark-mode .toggle-btn:hover {
+            background: #262626;
+            border-color: #404040;
+        }
+        
+        /* === CONTAINER === */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        
+        /* === UPLOAD SECTION === */
+        .upload-section {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: var(--radius-lg);
+            padding: 3rem 2rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+        
+        body.dark-mode .upload-section {
+            background: #0f0f0f;
+            border-color: #262626;
+        }
+        
+        .upload-section h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+        
+        body.dark-mode .upload-section h2 {
+            color: white;
+        }
+        
+        .upload-section p {
+            color: var(--gray-600);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.9375rem;
+        }
+        
+        body.dark-mode .upload-section p {
+            color: #737373;
+        }
+        
+        .supported-formats {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .format-badge {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            border: 1px solid var(--gray-200);
+        }
+        
+        body.dark-mode .format-badge {
+            background: #1a1a1a;
+            color: #a3a3a3;
+            border-color: #262626;
+        }
+        
+        .upload-area {
+            border: 2px dashed #d4d4d4;
+            border-radius: var(--radius-lg);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            background: #fafafa;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .upload-area:hover {
+            background: white;
+            border-color: var(--accent);
+        }
+        
+        .upload-area.drag-over {
+            background: var(--accent-bg);
+            border-color: var(--accent);
+            border-style: solid;
+        }
+        
+        body.dark-mode .upload-area {
+            background: #0a0a0a;
+            border-color: #404040;
+        }
+        
+        body.dark-mode .upload-area:hover {
+            background: #1a1a1a;
+            border-color: var(--accent);
+        }
+        
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.6;
+        }
+        
+        /* === FORM ELEMENTS === */
+        input[type="text"],
+        input[type="file"],
+        .subject-select {
+            padding: 0.625rem 0.875rem;
+            border: 1px solid #d4d4d4;
+            border-radius: var(--radius-md);
+            width: 100%;
+            max-width: 28rem;
+            font-size: 0.9375rem;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+        
+        input[type="text"]:focus,
+        .subject-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        body.dark-mode input[type="text"],
+        body.dark-mode .subject-select {
+            background: #0a0a0a;
+            border-color: #404040;
+            color: white;
+        }
+        
+        body.dark-mode input[type="text"]:focus,
+        body.dark-mode .subject-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        
+        /* === BUTTONS PROFESSIONALI === */
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+        
+        .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background: #d4d4d4;
+            color: #737373;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        body.dark-mode .btn:disabled {
+            background: #262626;
+            color: #525252;
+        }
+        
+        .btn.loading {
+            background: var(--primary);
+            opacity: 0.7;
+            cursor: wait;
+            animation: pulse-btn 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-btn {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid #e5e5e5;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+        
+        body.dark-mode .btn-secondary {
+            background: #1a1a1a;
+            color: #a3a3a3;
+            border-color: #262626;
+        }
+        
+        body.dark-mode .btn-secondary:hover {
+            background: #262626;
+        }
+        
+        .btn-delete {
+            background: var(--danger);
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-delete:hover {
+            background: #b91c1c;
+        }
+        
+        .btn-export {
+            background: var(--accent);
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-export:hover {
+            background: var(--accent-light);
+        }
+        
+        /* === PROGRESS BAR === */
+        #uploadProgress {
+            margin: 1.5rem 0;
+            animation: slideDown 0.2s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        #progressBar {
+            width: 100%;
+            height: 0.375rem;
+            background: #e5e5e5;
+            border-radius: 999px;
+            overflow: hidden;
+            margin: 0.75rem 0;
+        }
+        
+        body.dark-mode #progressBar {
+            background: #262626;
+        }
+        
+        #progressBar > div {
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.4s ease;
+            border-radius: 999px;
+        }
+        
+        #progressText {
+            text-align: center;
+            font-weight: 500;
+            color: var(--gray-600);
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        body.dark-mode #progressText {
+            color: #737373;
+        }
+        
+        #fileInfo {
+            background: #f5f5f5;
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin: 1rem 0;
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+        
+        body.dark-mode #fileInfo {
+            background: #1a1a1a;
+            border-left-color: var(--accent);
+            color: #a3a3a3;
+        }
+        
+        body.dark-mode #uploadProgress {
+            color: #e5e5e5;
+        }
+        
+        /* === TABS PROFESSIONALI === */
+        .tabs {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e5e5e5;
+        }
+        
+        body.dark-mode .tabs {
+            background: #0f0f0f;
+            border-color: #262626;
+        }
+        
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius-md);
+            background: transparent;
+            color: var(--gray-600);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+        
+        .tab-btn:hover {
+            background: var(--gray-100);
+            color: var(--gray-900);
+        }
+        
+        body.dark-mode .tab-btn {
+            color: #737373;
+        }
+        
+        body.dark-mode .tab-btn:hover {
+            background: #1a1a1a;
+            color: white;
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        body.dark-mode .tab-btn.active {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .tab-btn.active:hover {
+            background: var(--primary-light);
+        }
+        
+        body.dark-mode .tab-btn.active:hover {
+            background: #f5f5f5;
+        }
+        
+        /* === CONTENT AREA === */
+        .content-area {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e5e5e5;
+            min-height: 28rem;
+        }
+        
+        body.dark-mode .content-area {
+            background: #0f0f0f;
+            border-color: #262626;
+        }
+        
+        .content-area h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.01em;
+        }
+        
+        body.dark-mode .content-area h3 {
+            color: white;
+        }
+        
+        .content-area p {
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+        
+        body.dark-mode .content-area p {
+            color: #737373;
+        }
+        
+        /* === CATEGORY SELECTION === */
+        #categorySelection {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .category-card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: var(--radius-lg);
+            padding: 2rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+        
+        .category-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+        
+        body.dark-mode .category-card {
+            background: #0f0f0f;
+            border-color: #262626;
+        }
+        
+        body.dark-mode .category-card:hover {
+            border-color: var(--accent);
+        }
+        
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .category-card h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+        
+        body.dark-mode .category-card h4 {
+            color: white;
+        }
+        
+        .category-card p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin: 0;
+        }
+        
+        body.dark-mode .category-card p {
+            color: #737373;
+        }
+        
+        /* === LIBRARY === */
+        .study-card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+        
+        .study-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
+        }
+        
+        body.dark-mode .study-card {
+            background: #0f0f0f;
+            border-color: #262626;
+        }
+        
+        body.dark-mode .study-card:hover {
+            border-color: var(--accent);
+        }
+        
+        .study-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.5rem;
+        }
+        
+        .study-card h4 {
+            font-size: 1.0625rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+        
+        body.dark-mode .study-card h4 {
+            color: white;
+        }
+        
+        .study-card-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+            margin-bottom: 0.5rem;
+        }
+        
+        body.dark-mode .study-card-meta {
+            color: #737373;
+        }
+        
+        .study-card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* === CHAT === */
+        #chatMessages {
+            height: 24rem;
+            overflow-y: auto;
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        body.dark-mode #chatMessages {
+            background: #0a0a0a;
+            border-color: #262626;
+        }
+        
+        .chat-message {
+            margin-bottom: 1rem;
+            padding: 0.875rem 1rem;
+            border-radius: var(--radius-md);
+            max-width: 80%;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+        }
+        
+        .chat-message.user {
+            background: var(--primary);
+            color: white;
+            margin-left: auto;
+        }
+        
+        .chat-message.assistant {
+            background: white;
+            border: 1px solid #e5e5e5;
+            color: var(--gray-900);
+        }
+        
+        body.dark-mode .chat-message.assistant {
+            background: #1a1a1a;
+            border-color: #262626;
+            color: #e5e5e5;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        #chatInput {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d4d4d4;
+            border-radius: var(--radius-md);
+            font-size: 0.9375rem;
+            font-family: inherit;
+        }
+        
+        body.dark-mode #chatInput {
+            background: #0a0a0a;
+            border-color: #404040;
+            color: white;
+        }
+        
+        /* === FLASHCARDS === */
+        .flashcard {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: var(--radius-lg);
+            padding: 3rem 2rem;
+            min-height: 18rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .flashcard:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent);
+        }
+        
+        body.dark-mode .flashcard {
+            background: #0f0f0f;
+            border-color: #262626;
+        }
+        
+        .flashcard.flipped {
+            background: var(--accent-bg);
+            border-color: var(--accent);
+        }
+        
+        body.dark-mode .flashcard.flipped {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--accent);
+        }
+        
+        /* === QUIZ === */
+        .quiz-option {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: var(--radius-md);
+            padding: 0.875rem 1rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-size: 0.9375rem;
+        }
+        
+        .quiz-option:hover {
+            border-color: var(--accent);
+            background: var(--accent-bg);
+        }
+        
+        body.dark-mode .quiz-option {
+            background: #0f0f0f;
+            border-color: #404040;
+        }
+        
+        body.dark-mode .quiz-option:hover {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .quiz-option.correct {
+            background: var(--success-bg);
+            border-color: var(--success);
+        }
+        
+        body.dark-mode .quiz-option.correct {
+            background: rgba(5, 150, 105, 0.15);
+            border-color: var(--success);
+        }
+        
+        .quiz-option.incorrect {
+            background: var(--danger-bg);
+            border-color: var(--danger);
+        }
+        
+        body.dark-mode .quiz-option.incorrect {
+            background: rgba(220, 38, 38, 0.15);
+            border-color: var(--danger);
+        }
+        
+        /* === ALERTS === */
+        .alert {
+            padding: 0.875rem 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            font-size: 0.9375rem;
+            border: 1px solid;
+        }
+        
+        .alert-info {
+            background: var(--accent-bg);
+            border-color: #bfdbfe;
+            color: #1e40af;
+        }
+        
+        .alert-success {
+            background: var(--success-bg);
+            border-color: #6ee7b7;
+            color: #065f46;
+        }
+        
+        .alert-warning {
+            background: var(--warning-bg);
+            border-color: #fcd34d;
+            color: #92400e;
+        }
+        
+        .alert-danger {
+            background: var(--danger-bg);
+            border-color: #fca5a5;
+            color: #991b1b;
+        }
+        
+        body.dark-mode .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+        }
+        
+        body.dark-mode .alert-success {
+            background: rgba(5, 150, 105, 0.1);
+            border-color: rgba(5, 150, 105, 0.3);
+            color: #6ee7b7;
+        }
+        
+        body.dark-mode .alert-warning {
+            background: rgba(217, 119, 6, 0.1);
+            border-color: rgba(217, 119, 6, 0.3);
+            color: #fcd34d;
+        }
+        
+        body.dark-mode .alert-danger {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: rgba(220, 38, 38, 0.3);
+            color: #fca5a5;
+        }
+        
+        /* === LOADING SPINNER === */
+        .spinner {
+            border: 2px solid #e5e5e5;
+            border-top: 2px solid var(--accent);
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            animation: spin 0.8s linear infinite;
+            margin: 2rem auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* === UTILITY CLASSES === */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mt-4 { margin-top: 1.5rem; }
+        .mb-4 { margin-bottom: 1.5rem; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-4 { gap: 1.5rem; }
+        
+        /* === SCROLLBAR PERSONALIZZATA === */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #d4d4d4;
+            border-radius: 999px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a3a3a3;
+        }
+        
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: #404040;
+        }
+        
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: #525252;
+        }
+        
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: row;
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .upload-section,
+            .content-area {
+                padding: 1.5rem;
+            }
+            
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .study-card-header {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .chat-message {
+                max-width: 90%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+            
+            .logo {
+                font-size: 1rem;
+            }
+            
+            .upload-section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .category-icon {
+                font-size: 2rem;
+            }
+        }
+</style>
 </head>
-
 <body>
-
-<!-- HEADER -->
-<header class="app-header">
-  <div class="container header-inner">
-    <div class="brand">
-      <img src="../images/MentoreStudio_logo.png" alt="MentoreStudio">
-      <div>
-        <div>MentoreStudio</div>
-        <div style="font-size:12px;color:var(--muted);font-weight:700">
-          Study companion
+    <!-- HEADER SAAS -->
+    <header class="saas-header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">📚</span>
+                <span>MentoreStudio</span>
+            </a>
+            <div class="header-actions">
+                <button class="toggle-btn" id="darkModeToggle" onclick="toggleDarkMode()">
+                    <span id="themeIcon">🌙</span>
+                    <span>Tema</span>
+                </button>
+            </div>
         </div>
-      </div>
+    </header>
+
+    <div class="container">
+        <!-- UPLOAD SECTION -->
+        <div id="uploadSection" class="upload-section">
+            <h2>Inizia il Tuo Studio</h2>
+            <p>Carica i tuoi materiali e trasformali in strumenti di studio intelligenti</p>
+            
+            <div class="supported-formats">
+                <span class="format-badge">📄 PDF</span>
+                <span class="format-badge">📝 TXT</span>
+                <span class="format-badge">📘 DOCX</span>
+                <span class="format-badge">📊 PPTX</span>
+                <span class="format-badge">🖼️ JPG/PNG</span>
+            </div>
+            
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('pdfFile').click()">
+                <div class="upload-icon">📁</div>
+                <h3 style="margin-bottom: 0.5rem;">Carica i tuoi file</h3>
+                <p style="margin: 0;">Clicca o trascina qui i tuoi documenti</p>
+            </div>
+            
+            <input type="file" id="pdfFile" multiple accept=".pdf,.txt,.docx,.pptx,.jpg,.jpeg,.png" style="display: none">
+            
+            <div id="fileInfo" style="display: none; margin-top: 1rem;"></div>
+            <div id="uploadProgress" style="display: none;">
+                <div id="progressBar">
+                    <div style="width: 0%"></div>
+                </div>
+                <p id="progressText">Caricamento in corso...</p>
+            </div>
+            
+            <div style="margin-top: 1.5rem;">
+                <input type="text" id="studyName" placeholder="Nome dello studio (es. Fisica Quantistica)" style="display: block; margin: 0 auto 1rem;">
+                <select class="subject-select" id="studySubject" style="display: block; margin: 0 auto 1rem;">
+                    <option value="">📚 Seleziona materia</option>
+                    <option value="matematica">➗ Matematica</option>
+                    <option value="fisica">⚛️ Fisica</option>
+                    <option value="chimica">🧪 Chimica</option>
+                    <option value="biologia">🧬 Biologia</option>
+                    <option value="storia">📜 Storia</option>
+                    <option value="filosofia">🤔 Filosofia</option>
+                    <option value="letteratura">📖 Letteratura</option>
+                    <option value="lingue">🌍 Lingue</option>
+                    <option value="informatica">💻 Informatica</option>
+                    <option value="economia">💼 Economia</option>
+                    <option value="diritto">⚖️ Diritto</option>
+                    <option value="altro">📎 Altro</option>
+                </select>
+                <button class="btn" id="uploadBtn" onclick="processFiles()" disabled>
+                    Inizia Studio 🚀
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN APP -->
+        <div id="mainApp" class="hidden">
+            <!-- CATEGORY SELECTION -->
+            <div id="categorySelection" class="content-area active">
+                <h2 class="text-center" style="font-size: 2rem; margin-bottom: 0.5rem;">
+                    Studio: <span id="currentStudyName"></span>
+                </h2>
+                <p class="text-center">Scegli come vuoi studiare oggi</p>
+                
+                <div class="category-grid">
+                    <div class="category-card" onclick="selectCategory('comprendi')">
+                        <div class="category-icon">🎯</div>
+                        <h4>Comprendi</h4>
+                        <p>Analizza e comprendi i concetti chiave</p>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('memorizza')">
+                        <div class="category-icon">🧠</div>
+                        <h4>Memorizza</h4>
+                        <p>Crea strumenti per memorizzare meglio</p>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('approfondisci')">
+                        <div class="category-icon">🔍</div>
+                        <h4>Approfondisci</h4>
+                        <p>Esercitati e metti alla prova le tue conoscenze</p>
+                    </div>
+                    <div class="category-card" onclick="selectCategory('personalizza')">
+                        <div class="category-icon">⚙️</div>
+                        <h4>Personalizza</h4>
+                        <p>Crea contenuti su misura per te</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABS -->
+            <div class="tabs" id="tabs" style="display: none;">
+                <button class="tab-btn" id="backToCategories" onclick="showCategories()" style="margin-right: auto;">
+                    ← Categorie
+                </button>
+                <button class="tab-btn" id="tabLibrary" onclick="showLibrary()">
+                    📚 Libreria
+                </button>
+                <button class="tab-btn" id="tabSummary" onclick="switchTab('summary')">📝 Riassunto</button>
+                <button class="tab-btn" id="tabHighlights" onclick="switchTab('highlights')">✨ Highlights</button>
+                <button class="tab-btn" id="tabGlossary" onclick="switchTab('glossary')">📖 Glossario</button>
+                <button class="tab-btn" id="tabConceptAnalysis" onclick="switchTab('conceptanalysis')">🎯 Concetti</button>
+                <button class="tab-btn" id="tabFlashcards" onclick="switchTab('flashcards')">🎴 Flashcard</button>
+                <button class="tab-btn" id="tabMindmap" onclick="switchTab('mindmap')">🧩 Mappa</button>
+                <button class="tab-btn" id="tabTimeline" onclick="switchTab('timeline')">⏱️ Timeline</button>
+                <button class="tab-btn" id="tabChat" onclick="switchTab('chat')">💬 Chat</button>
+                <button class="tab-btn" id="tabQuiz" onclick="switchTab('quiz')">❓ Quiz</button>
+                <button class="tab-btn" id="tabStudyGuide" onclick="switchTab('studyguide')">📋 Guida</button>
+                <button class="tab-btn" id="tabCustomFormat" onclick="switchTab('customformat')">🎨 Custom</button>
+            </div>
+
+            <!-- CONTENT AREA -->
+            <div class="content-area" id="contentArea" style="display: none;">
+                <div id="summaryContent" class="tab-content hidden">
+                    <h3>📝 Riassunto Intelligente</h3>
+                    <p>Un riassunto conciso e chiaro del tuo materiale</p>
+                    <button class="btn" onclick="generateSummary()">Genera Riassunto</button>
+                    <div id="summaryOutput"></div>
+                </div>
+
+                <div id="highlightsContent" class="tab-content hidden">
+                    <h3>✨ Punti Chiave</h3>
+                    <p>I concetti più importanti estratti automaticamente</p>
+                    <button class="btn" onclick="generateHighlights()">Estrai Highlights</button>
+                    <div id="highlightsOutput"></div>
+                </div>
+
+                <div id="glossaryContent" class="tab-content hidden">
+                    <h3>📖 Glossario</h3>
+                    <p>Definizioni dei termini tecnici presenti nel materiale</p>
+                    <button class="btn" onclick="generateGlossary()">Crea Glossario</button>
+                    <div id="glossaryOutput"></div>
+                </div>
+
+                <div id="conceptanalysisContent" class="tab-content hidden">
+                    <h3>🎯 Analisi Concetti</h3>
+                    <p>Analisi approfondita dei concetti principali</p>
+                    <button class="btn" onclick="generateConceptAnalysis()">Analizza Concetti</button>
+                    <div id="conceptanalysisOutput"></div>
+                </div>
+
+                <div id="flashcardsContent" class="tab-content hidden">
+                    <h3>🎴 Flashcard</h3>
+                    <p>Carte per memorizzare i concetti con la tecnica della ripetizione spaziata</p>
+                    <button class="btn" onclick="generateFlashcards()">Genera Flashcard</button>
+                    <div id="flashcardsContainer"></div>
+                </div>
+
+                <div id="mindmapContent" class="tab-content hidden">
+                    <h3>🧩 Mappa Mentale</h3>
+                    <p>Visualizza le relazioni tra i concetti</p>
+                    <button class="btn" onclick="generateMindmap()">Genera Mappa</button>
+                    <div id="mindmapOutput"></div>
+                </div>
+
+                <div id="timelineContent" class="tab-content hidden">
+                    <h3>⏱️ Timeline</h3>
+                    <p>Cronologia degli eventi e concetti nel tempo</p>
+                    <button class="btn" onclick="generateTimeline()">Genera Timeline</button>
+                    <div id="timelineOutput"></div>
+                </div>
+
+                <div id="chatContent" class="tab-content hidden">
+                    <h3>💬 Chat AI</h3>
+                    <p>Fai domande sul materiale caricato</p>
+                    <div id="chatMessages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chatInput" placeholder="Fai una domanda...">
+                        <button class="btn" id="sendChatBtn" onclick="sendChatMessage()">Invia 📤</button>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button class="btn-delete" onclick="clearChatHistory()">Cancella Cronologia</button>
+                        <button class="btn-export" onclick="exportChatHistory()">Esporta Chat</button>
+                    </div>
+                </div>
+
+                <div id="quizContent" class="tab-content hidden">
+                    <h3>❓ Quiz Interattivo</h3>
+                    <p>Testa le tue conoscenze con domande a scelta multipla</p>
+                    <button class="btn" onclick="generateQuiz()">Genera Quiz</button>
+                    <div id="quizContainer"></div>
+                </div>
+
+                <div id="studyguideContent" class="tab-content hidden">
+                    <h3>📋 Guida di Studio</h3>
+                    <p>Una guida completa per organizzare il tuo studio</p>
+                    <button class="btn" onclick="generateStudyGuide()">Genera Guida</button>
+                    <div id="studyguideOutput"></div>
+                </div>
+
+                <div id="customformatContent" class="tab-content hidden">
+                    <h3>🎨 Formato Personalizzato</h3>
+                    <p>Crea un output personalizzato secondo le tue esigenze</p>
+                    <input type="text" id="customFormatInput" placeholder="Esempio: Crea uno schema riassuntivo...">
+                    <button class="btn" onclick="generateCustomFormat()">Genera</button>
+                    <div id="customformatOutput"></div>
+                </div>
+
+                <div id="libraryContent" class="tab-content hidden">
+                    <h3>📚 La Tua Libreria</h3>
+                    <p>Tutti i tuoi studi salvati</p>
+                    <div id="studiesList"></div>
+                    <button class="btn btn-secondary mt-4" onclick="resetApp()">+ Nuovo Studio</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="header-actions">
-      <button class="btn btn-ghost" onclick="toggleDarkMode()" title="Tema">🌙</button>
-    </div>
-  </div>
-</header>
+    <script>
+        // CONFIGURAZIONE PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-<!-- MAIN -->
-<main class="section">
-  <div class="container">
+        // APP STATE
+        const appState = {
+            currentStudy: null,
+            studies: {},
+            chatHistory: {},
+            isChatLoading: false
+        };
 
-    <!-- UPLOAD -->
-    <section id="uploadSection" class="card" style="padding:24px">
-      <h1 class="page-title">Libreria Studi</h1>
-      <p class="page-subtitle">Carica una lezione e scegli come studiarla</p>
+        // FILES
+        let selectedFiles = [];
+        const uploadArea = document.getElementById('uploadArea');
+        const pdfFileInput = document.getElementById('pdfFile');
+        const fileInfo = document.getElementById('fileInfo');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressBar = uploadProgress?.querySelector('div > div');
+        const progressText = document.getElementById('progressText');
 
-      <div class="pillbar">
-        <span class="pill is-active">📄 PDF</span>
-        <span class="pill">📝 TXT</span>
-        <span class="pill">📘 DOCX</span>
-        <span class="pill">📊 PPTX</span>
-        <span class="pill">🖼️ OCR</span>
-      </div>
+        // DRAG & DROP
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
 
-      <div class="dropzone" id="uploadArea">
-        <strong>Trascina i file qui o clicca per selezionarli</strong>
-        <small>PDF, TXT, DOCX, PPTX, JPG, PNG</small>
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
 
-        <div style="height:16px"></div>
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const files = Array.from(e.dataTransfer.files);
+            handleFileSelection(files);
+        });
 
-        <button class="btn btn-primary" onclick="document.getElementById('pdfFile').click()">
-          📁 Scegli file
-        </button>
+        pdfFileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            handleFileSelection(files);
+        });
 
-        <input id="pdfFile" type="file" multiple
-               accept=".pdf,.txt,.docx,.pptx,image/*"
-               style="display:none">
-      </div>
+        function handleFileSelection(files) {
+            selectedFiles = files;
+            displayFileInfo(files);
+            uploadBtn.disabled = false;
+            uploadBtn.style.background = 'var(--primary)';
+        }
 
-      <div id="fileInfo" class="card" style="margin-top:16px; padding:14px; display:none"></div>
+        function displayFileInfo(files) {
+            if (files.length === 0) return;
+            
+            const totalSize = files.reduce((acc, f) => acc + f.size, 0);
+            const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+            
+            let fileList = files.map(f => {
+                const sizeMB = (f.size / (1024 * 1024)).toFixed(2);
+                const ext = f.name.split('.').pop().toUpperCase();
+                return `<div>📄 ${f.name} (${sizeMB} MB) - ${ext}</div>`;
+            }).join('');
+            
+            fileInfo.innerHTML = `
+                <strong>📦 File selezionati: ${files.length}</strong><br>
+                ${fileList}
+                <strong>Dimensione totale: ${totalSizeMB} MB</strong>
+            `;
+            fileInfo.style.display = 'block';
+        }
 
-      <button id="uploadBtn"
-              class="btn btn-primary"
-              style="width:100%; margin-top:16px"
-              disabled
-              onclick="loadMultiplePDFs()">
-        📥 Carica file
-      </button>
+        async function processFiles() {
+            if (selectedFiles.length === 0) {
+                alert('⚠️ Seleziona almeno un file!');
+                return;
+            }
 
-      <p class="page-subtitle" style="margin-top:12px">
-        Tutto salvato in locale • Nessuna chiave API visibile
-      </p>
-    </section>
+            const studyName = document.getElementById('studyName').value.trim();
+            const studySubject = document.getElementById('studySubject').value;
 
-    <!-- APP -->
-    <section id="mainApp" class="hidden">
+            if (!studyName) {
+                alert('⚠️ Inserisci un nome per lo studio!');
+                return;
+            }
 
-      <!-- CATEGORIE -->
-      <div id="categorySelection" class="section hidden">
-        <h2 class="page-title" style="text-align:center">Scegli come studiare</h2>
+            uploadBtn.disabled = true;
+            uploadBtn.classList.add('loading');
+            uploadBtn.textContent = 'Elaborazione... ⏳';
+            uploadProgress.style.display = 'block';
+            progressBar.style.width = '0%';
+            progressText.textContent = 'Inizio elaborazione...';
 
-        <div class="study-grid">
-          <div class="study-card" onclick="selectCategory('comprendi')">
-            <h3>Comprendi</h3>
-            <p>Analizza i contenuti della lezione</p>
-          </div>
+            try {
+                let combinedText = '';
+                let processedCount = 0;
 
-          <div class="study-card" onclick="selectCategory('memorizza')">
-            <h3>Memorizza</h3>
-            <p>Fissa i concetti nella memoria</p>
-          </div>
+                for (const file of selectedFiles) {
+                    processedCount++;
+                    const progress = (processedCount / selectedFiles.length) * 100;
+                    progressBar.style.width = progress + '%';
+                    progressText.textContent = `Elaborazione file ${processedCount}/${selectedFiles.length}: ${file.name}`;
 
-          <div class="study-card" onclick="selectCategory('approfondisci')">
-            <h3>Approfondisci</h3>
-            <p>Esplora e verifica le conoscenze</p>
-          </div>
+                    const fileExt = file.name.split('.').pop().toLowerCase();
 
-          <div class="study-card" onclick="selectCategory('personalizza')">
-            <h3>Personalizza</h3>
-            <p>Crea materiali su misura</p>
-          </div>
-        </div>
-      </div>
+                    if (fileExt === 'pdf') {
+                        const text = await extractTextFromPDF(file);
+                        combinedText += `\n\n=== ${file.name} ===\n${text}`;
+                    } else if (fileExt === 'txt') {
+                        const text = await file.text();
+                        combinedText += `\n\n=== ${file.name} ===\n${text}`;
+                    } else if (fileExt === 'docx') {
+                        const text = await extractTextFromDOCX(file);
+                        combinedText += `\n\n=== ${file.name} ===\n${text}`;
+                    } else if (fileExt === 'pptx') {
+                        const text = await extractTextFromPPTX(file);
+                        combinedText += `\n\n=== ${file.name} ===\n${text}`;
+                    } else if (['jpg', 'jpeg', 'png'].includes(fileExt)) {
+                        progressText.textContent = `OCR in corso su ${file.name}... (può richiedere tempo)`;
+                        const text = await extractTextFromImage(file);
+                        combinedText += `\n\n=== ${file.name} (OCR) ===\n${text}`;
+                    }
+                }
 
-      <!-- TABS -->
-      <div id="tabs" class="pillbar hidden">
-        <button class="pill is-active" onclick="switchTab('library',event)">📚 Libreria</button>
-        <button class="pill" onclick="switchTab('summary',event)">📝 Riassunto</button>
-        <button class="pill" onclick="switchTab('highlights',event)">⭐ Punti salienti</button>
-        <button class="pill" onclick="switchTab('glossary',event)">📖 Glossario</button>
-        <button class="pill" onclick="switchTab('mindmap',event)">🧠 Mappa</button>
-        <button class="pill" onclick="switchTab('flashcards',event)">🎴 Flashcard</button>
-        <button class="pill" onclick="switchTab('quiz',event)">❓ Quiz</button>
-        <button class="pill" onclick="switchTab('chat',event)">💬 Chat AI</button>
-      </div>
+                progressBar.style.width = '100%';
+                progressText.textContent = '✅ Tutti i file elaborati!';
 
-      <!-- CONTENT -->
-      <div id="contentArea" class="card" style="padding:24px; margin-top:16px"></div>
+                const studyId = `study_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                appState.studies[studyId] = {
+                    id: studyId,
+                    name: studyName,
+                    subject: studySubject || 'Generale',
+                    content: combinedText,
+                    createdAt: new Date().toISOString(),
+                    files: selectedFiles.map(f => ({ name: f.name, size: f.size }))
+                };
 
-    </section>
+                appState.currentStudy = studyId;
+                appState.chatHistory[studyId] = [];
 
-  </div>
-</main>
+                saveToLocalStorage();
 
-<!-- JS: IL TUO, INVARIATO -->
-<script>
-/* 👉 qui rimane TUTTO il tuo JavaScript attuale
-   (appState, upload, render, AI, ecc.)
-   non lo tocchiamo in questa fase */
-</script>
+                setTimeout(() => {
+                    showMainApp();
+                    showCategories();
+                }, 500);
 
+            } catch (error) {
+                console.error('Errore durante l\'elaborazione:', error);
+                alert('❌ Errore durante l\'elaborazione: ' + error.message);
+                uploadBtn.disabled = false;
+                uploadBtn.classList.remove('loading');
+                uploadBtn.textContent = 'Inizia Studio 🚀';
+            }
+        }
+
+        async function extractTextFromPDF(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            let fullText = '';
+
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                fullText += pageText + '\n';
+            }
+
+            return fullText;
+        }
+
+        async function extractTextFromDOCX(file) {
+            if (typeof mammoth === 'undefined') {
+                throw new Error('Mammoth.js non caricato! Impossibile leggere file DOCX.');
+            }
+
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer });
+            return result.value;
+        }
+
+        async function extractTextFromPPTX(file) {
+            if (typeof JSZip === 'undefined') {
+                throw new Error('JSZip non caricato! Impossibile leggere file PPTX.');
+            }
+
+            const arrayBuffer = await file.arrayBuffer();
+            const zip = await JSZip.loadAsync(arrayBuffer);
+            let slideTexts = [];
+
+            const slideFiles = Object.keys(zip.files).filter(name => 
+                name.startsWith('ppt/slides/slide') && name.endsWith('.xml')
+            );
+
+            for (const slideFile of slideFiles) {
+                const content = await zip.file(slideFile).async('string');
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(content, 'text/xml');
+                const textNodes = xmlDoc.getElementsByTagName('a:t');
+                const texts = Array.from(textNodes).map(node => node.textContent);
+                slideTexts.push(texts.join(' '));
+            }
+
+            return slideTexts.join('\n\n');
+        }
+
+        async function extractTextFromImage(file) {
+            if (typeof Tesseract === 'undefined') {
+                throw new Error('Tesseract.js non caricato! Impossibile eseguire OCR.');
+            }
+
+            const { data: { text } } = await Tesseract.recognize(
+                file,
+                'ita+eng',
+                {
+                    logger: m => {
+                        if (m.status === 'recognizing text') {
+                            progressText.textContent = `OCR: ${Math.round(m.progress * 100)}%`;
+                        }
+                    }
+                }
+            );
+
+            return text;
+        }
+
+        function showMainApp() {
+            document.getElementById('uploadSection').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('mentorStudioApp', JSON.stringify(appState));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('mentorStudioApp');
+            if (saved) {
+                const data = JSON.parse(saved);
+                appState.studies = data.studies || {};
+                appState.chatHistory = data.chatHistory || {};
+                appState.currentStudy = data.currentStudy;
+            }
+        }
+
+        loadFromLocalStorage();
+
+        function getCurrentStudy() {
+            return appState.studies[appState.currentStudy];
+        }
+
+        function switchTab(tabName) {
+            const allTabs = document.querySelectorAll('.tab-btn');
+            allTabs.forEach(btn => btn.classList.remove('active'));
+
+            const tabBtn = document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+            if (tabBtn) {
+                tabBtn.classList.add('active');
+            } else {
+                const libraryBtn = document.getElementById('tabLibrary');
+                if (libraryBtn && tabName === 'library') {
+                    libraryBtn.classList.add('active');
+                }
+            }
+
+            const allContent = document.querySelectorAll('.tab-content');
+            allContent.forEach(content => content.classList.add('hidden'));
+
+            const activeContent = document.getElementById(tabName + 'Content');
+            if (activeContent) {
+                activeContent.classList.remove('hidden');
+            }
+
+            if (tabName === 'library') {
+                renderLibrary();
+            } else if (tabName === 'chat') {
+                renderChat();
+            }
+        }
+
+        function renderLibrary() {
+            const studiesList = document.getElementById('studiesList');
+            const studies = Object.values(appState.studies);
+
+            if (studies.length === 0) {
+                studiesList.innerHTML = '<p class="text-center">Nessuno studio salvato</p>';
+                return;
+            }
+
+            studiesList.innerHTML = studies.map(study => `
+                <div class="study-card">
+                    <div class="study-card-header">
+                        <div>
+                            <h4>${study.name}</h4>
+                            <div class="study-card-meta">
+                                <span>📚 ${study.subject}</span>
+                                <span>📅 ${new Date(study.createdAt).toLocaleDateString('it-IT')}</span>
+                                <span>📄 ${study.files.length} file</span>
+                            </div>
+                        </div>
+                        <div class="study-card-actions">
+                            <button class="btn" onclick="loadStudy('${study.id}')">Apri</button>
+                            <button class="btn-delete" onclick="deleteStudy('${study.id}')">Elimina</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadStudy(studyId) {
+            appState.currentStudy = studyId;
+            saveToLocalStorage();
+            showCategories();
+        }
+
+        function deleteStudy(studyId) {
+            if (confirm('Sei sicuro di voler eliminare questo studio?')) {
+                delete appState.studies[studyId];
+                delete appState.chatHistory[studyId];
+                
+                if (appState.currentStudy === studyId) {
+                    appState.currentStudy = null;
+                }
+                
+                saveToLocalStorage();
+                renderLibrary();
+            }
+        }
+
+        async function callAI(systemPrompt, userPrompt, maxTokens = 4000) {
+            const study = getCurrentStudy();
+            if (!study) {
+                throw new Error('Nessuno studio caricato');
+            }
+
+            const fullPrompt = `${systemPrompt}\n\nMATERIALE DI STUDIO:\n${study.content.substring(0, 30000)}\n\nRICHIESTA:\n${userPrompt}`;
+
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                    model: 'claude-sonnet-4-20250514',
+                    max_tokens: maxTokens,
+                    messages: [{
+                        role: 'user',
+                        content: fullPrompt
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Errore API: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.content[0].text;
+        }
+
+        async function generateSummary() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.textContent = 'Generazione in corso...';
+
+            try {
+                const result = await callAI(
+                    'Sei un esperto nell\'analisi e sintesi di materiale didattico.',
+                    'Crea un riassunto completo e ben strutturato del materiale fornito. Usa paragrafi, elenchi puntati dove appropriato e mantieni i concetti chiave.'
+                );
+
+                document.getElementById('summaryOutput').innerHTML = `
+                    <div class="alert alert-success">✅ Riassunto generato con successo!</div>
+                    <div style="white-space: pre-wrap; line-height: 1.8;">${result}</div>
+                    <button class="btn btn-export mt-4" onclick="exportToDocx('summary', '${getCurrentStudy().name} - Riassunto', document.getElementById('summaryOutput').querySelector('div[style]').textContent)">
+                        Esporta DOCX 📄
+                    </button>
+                `;
+            } catch (error) {
+                document.getElementById('summaryOutput').innerHTML = `
+                    <div class="alert alert-danger">❌ Errore: ${error.message}</div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = 'Genera Riassunto';
+            }
+        }
+
+        async function generateHighlights() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.textContent = 'Estrazione in corso...';
+
+            try {
+                const result = await callAI(
+                    'Sei un esperto nell\'identificazione dei concetti chiave.',
+                    'Estrai i 10-15 punti chiave più importanti dal materiale. Presentali come lista numerata con brevi spiegazioni.'
+                );
+
+                document.getElementById('highlightsOutput').innerHTML = `
+                    <div class="alert alert-success">✅ Highlights estratti!</div>
+                    <div style="white-space: pre-wrap; line-height: 1.8;">${result}</div>
+                `;
+            } catch (error) {
+                document.getElementById('highlightsOutput').innerHTML = `
+                    <div class="alert alert-danger">❌ Errore: ${error.message}</div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = 'Estrai Highlights';
+            }
+        }
+
+        async function generateGlossary() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.textContent = 'Creazione in corso...';
+
+            try {
+                const result = await callAI(
+                    'Sei un esperto nella creazione di glossari tecnici.',
+                    'Crea un glossario alfabetico dei termini tecnici e concetti importanti presenti nel materiale. Formato: TERMINE: definizione chiara e concisa.'
+                );
+
+                document.getElementById('glossaryOutput').innerHTML = `
+                    <div class="alert alert-success">✅ Glossario creato!</div>
+                    <div style="white-space: pre-wrap; line-height: 1.8;">${result}</div>
+                `;
+            } catch (error) {
+                document.getElementById('glossaryOutput').innerHTML = `
+                    <div class="alert alert-danger">❌ Errore: ${error.message}</div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = 'Crea Glossario';
+            }
+        }
+
+        async function generateConceptAnalysis() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.textContent = 'Analisi in corso...';
+
+            try {
+                const result = await callAI(
+                    'Sei un esperto nell\'analisi pedagogica dei concetti.',
+                    'Analizza i concetti principali del materiale. Per ogni concetto: 1) Spiegazione chiara 2) Esempi pratici 3) Collegamenti con altri concetti 4) Applicazioni reali.'
+                );
+
+                document.getElementById('conceptanalysisOutput').innerHTML = `
+                    <div class="alert alert-success">✅ Analisi completata!</div>
+                    <div style="white-space: pre-wrap; line-height: 1.8;">${result}</div>
+                `;
+            } catch (error) {
+                document.getElementById('conceptanalysisOutput').innerHTML = `
+                    <div class="alert alert-danger">❌ Errore: ${error.message}</div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = 'Analizza Concetti';
+            }
+        }
+
+        let flashcardData = [];
+        let currentFlashcardIndex = 0;
+
+        async function generateFlashcards() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.textContent = 'Generazione in corso...';
+
+            try {
+                const result = await callAI(
+                    'Sei un esperto nella creazione di flashcard per lo studio.',
+                    'Crea 15-20 flashcard dal materiale. Formato rigido: FRONTE: domanda o concetto | RETRO: risposta o spiegazione. Una flashcard per riga, separatore "|".'
+                );
+
+                const lines = result.split('\n').filter(line => line.includes('|'));
+                flashcardData = lines.map(line => {
+                    const [front, back] = line.split('|').map(s => s.trim());
+                    return { front, back };
+                });
+
+                if (flashcardData.length === 0) {
+                    throw new Error('Nessuna flashcard valida generata');
+                }
+
+                currentFlashcardIndex = 0;
+                renderFlashcard();
+
+            } catch (error) {
+                document.getElementById('flashcardsContainer').innerHTML = `
+                    <div class="alert alert-danger">❌ Errore: ${error.message}</div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = 'Genera Flashcard';
+            }
+        }
+
+        function renderFlashcard() {
+            if (flashcardData.length === 0) return;
+
+            const card = flashcardData[currentFlashcardIndex];
+            const container = document.getElementById('flashcardsContainer');
+
+            container.innerHTML = `
+                <div class="alert alert-info">
+                    Flashcard ${currentFlashcardIndex + 1} di ${flashcardData.length}
+                </div>
+                <div class="flashcard" id="currentFlashcard" onclick="flipFlashcard()">
+                    <div class="flashcard-front">
+                        <h3 style="margin-bottom: 1rem;">FRONTE</h3>
+                        <p style="font-size: 1.25rem;">${card.front}</p>
+                        <p style="margin-top: 2rem; color: var(--gray-600);">Clicca per vedere la risposta</p>
+                    </div>
+                </div>
+                <div class="flex gap-2 justify-center mt-4">
+                    <button class="btn btn-secondary" onclick="previousFlashcard()" ${currentFlashcardIndex === 0 ? 'disabled' : ''}>
+                        ← Precedente
+                    </button>
+                    <button class="btn" onclick="nextFlashcard()" ${currentFlashcardIndex === flashcardData.length - 1 ? 'disabled' : ''}>
+                        Successiva →
+                    </button>
+                </div>
+            `;
+        }
+
+        function flipFlashcard() {
+            const flashcard = document.getElementById('currentFlashcard');
+            const card = flashcardData[currentFlashcardIndex];
+
+            if (flashcard.classList.contains('flipped')) {
+                flashcard.innerHTML = `
+                    <div class="flashcard-front">
+                        <h3 style="margin-bottom: 1rem;">FRONTE</h3>
+                        <p style="font-size: 1.25rem;">${card.front}</p>
+                        <p style="margin-top: 2rem; color: var(--gray-600);">Clicca per vedere la risposta</p>
+                    </div>
+                `;
+                flashcard.classList.remove('flipped');
+            } else {
+                flashcard.innerHTML = `
+                    <div class="flashcard-back">
+                        <h3 style="margin-bottom: 1rem;">RETRO</h3>
+                        <p style="font-size: 1.25rem;">${card.back}</p>
+                        <p style="margin-top: 2rem; color: var(--gray-600);">Clicca per tornare al fronte</p>
+                    </div>
+                `;
+                flashcard.classList.add('flipped');
+            }
+        }
+
+        function previousFlashcard() {
+            if (currentFlashcardIndex > 0) {
+                currentFlashcardIndex--;
+                renderFlashcard();
+            }
+        }
+
+        function nextFlashcard() {
+            if (currentFlashcardIndex < flashcardData.length - 1) {
+                currentFlashcardIndex++;
+                renderFlashcard();
+            }
+        }
+
+        async function generateMindmap() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.textContent = 'Generazione in corso...';
+
+            try {
+                const result = await callAI(
+                    'Sei un esperto nella creazione di mappe mentali.',
+                    'Crea una mappa mentale testuale del materiale. Usa indentazione e simboli (→, ├─, └─) per mostrare gerarchie e collegamenti.'
+                );
+
+                document.getElementById('mindmapOutput').innerHTML = `
+                    <div class="alert alert-success">✅ Mappa mentale generata!</div>
+                    <pre style="white-space: pre-wrap; font-family: monospace; line-height: 1.8; background: var(--gray-50); padding: 1.5rem; border-radius: var(--radius-md);">${result}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('mindmapOutput').innerHTML = `
+                    <div class="alert alert-danger">❌ Errore: ${error.message}</div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = 'Genera Mappa';
+            }
+        }
+
+        async function generateTimeline() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.textContent = 'Generazione in corso...';
+
+            try {
+                const result = await callAI(
+                    'Sei un esperto nella creazione di timeline didattiche.',
+                    'Crea una timeline cronologica degli eventi o concetti presenti nel materiale. Formato: DATA/PERIODO: Evento - Descrizione breve.'
+                );
+
+                document.getElementById('timelineOutput').innerHTML = `
+                    <div class="alert alert-success">✅ Timeline generata!</div>
+                    <div style="white-space: pre-wrap; line-height: 1.8;">${result}</div>
+                `;
+            } catch (error) {
+                document.getElementById('timelineOutput').innerHTML = `
+                    <div class="alert alert-danger">❌ Errore: ${error.message}</div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = 'Genera Timeline';
+            }
+        }
+
+        let quizData = [];
+        let currentQuizIndex = 0;
+        let quizAnswers = [];
+
+        async function generateQuiz() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.textContent = 'Generazione in corso...';
+
+            try {
+                const result = await callAI(
+                    'Sei un esperto nella creazione di quiz didattici.',
+                    'Crea 10 domande a scelta multipla sul materiale. Formato rigido per ogni domanda:\nDOMANDA: testo domanda\nA) opzione\nB) opzione\nC) opzione\nD) opzione\nCORRETTA: lettera\n\nUna domanda per blocco, separare blocchi con riga vuota.'
+                );
+
+                const blocks = result.split('\n\n').filter(b => b.includes('DOMANDA:'));
+                quizData = blocks.map(block => {
+                    const lines = block.split('\n');
+                    const question = lines.find(l => l.startsWith('DOMANDA:'))?.replace('DOMANDA:', '').trim();
+                    const options = lines.filter(l => /^[A-D]\)/.test(l)).map(l => l.trim());
+                    const correctLine = lines.find(l => l.startsWith('CORRETTA:'));
+                    const correct = correctLine ? correctLine.replace('CORRETTA:', '').trim().toUpperCase() : 'A';
+                    
+                    return { question, options, correct };
+                }).filter(q => q.question && q.options.length === 4);
+
+                if (quizData.length === 0) {
+                    throw new Error('Nessuna domanda valida generata');
+                }
+
+                currentQuizIndex = 0;
+                quizAnswers = new Array(quizData.length).fill(null);
+                renderQuiz();
+
+            } catch (error) {
+                document.getElementById('quizContainer').innerHTML = `
+                    <div class="alert alert-danger">❌ Errore: ${error.message}</div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = 'Genera Quiz';
+            }
+        }
+
+        function renderQuiz() {
+            if (quizData.length === 0) return;
+
+            const quiz = quizData[currentQuizIndex];
+            const container = document.getElementById('quizContainer');
+
+            container.innerHTML = `
+                <div class="alert alert-info">
+                    Domanda ${currentQuizIndex + 1} di ${quizData.length}
+                </div>
+                <h4 style="margin-bottom: 1.5rem; font-size: 1.25rem;">${quiz.question}</h4>
+                <div id="quizOptions">
+                    ${quiz.options.map((opt, i) => {
+                        const letter = String.fromCharCode(65 + i);
+                        const isSelected = quizAnswers[currentQuizIndex] === letter;
+                        return `
+                            <div class="quiz-option ${isSelected ? 'active' : ''}" onclick="selectQuizAnswer('${letter}')">
+                                ${opt}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                <div class="flex gap-2 justify-center mt-4">
+                    <button class="btn btn-secondary" onclick="previousQuiz()" ${currentQuizIndex === 0 ? 'disabled' : ''}>
+                        ← Precedente
+                    </button>
+                    ${currentQuizIndex < quizData.length - 1 ? `
+                        <button class="btn" onclick="nextQuiz()">
+                            Successiva →
+                        </button>
+                    ` : `
+                        <button class="btn" onclick="finishQuiz()">
+                            Termina Quiz ✓
+                        </button>
+                    `}
+                </div>
+            `;
+        }
+
+        function selectQuizAnswer(letter) {
+            quizAnswers[currentQuizIndex] = letter;
+            renderQuiz();
+        }
+
+        function previousQuiz() {
+            if (currentQuizIndex > 0) {
+                currentQuizIndex--;
+                renderQuiz();
+            }
+        }
+
+        function nextQuiz() {
+            if (currentQuizIndex < quizData.length - 1) {
+                currentQuizIndex++;
+                renderQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            let correctCount = 0;
+            const results = quizData.map((quiz, i) => {
+                const userAnswer = quizAnswers[i];
+                const isCorrect = userAnswer === quiz.correct;
+                if (isCorrect) correctCount++;
+                return {
+                    question: quiz.question,
+                    userAnswer,
+                    correctAnswer: quiz.correct,
+                    isCorrect
+                };
+            });
+
+            const percentage = Math.round((correctCount / quizData.length) * 100);
+            const container = document.getElementById('quizContainer');
+
+            container.innerHTML = `
+                <div class="alert ${percentage >= 60 ? 'alert-success' : 'alert-warning'}">
+                    <h3>Risultati Quiz</h3>
+                    <p style="font-size: 1.5rem; margin: 1rem 0;">
+                        ${correctCount} / ${quizData.length} corrette (${percentage}%)
+                    </p>
+                </div>
+                <div style="margin-top: 1.5rem;">
+                    ${results.map((r, i) => `
+                        <div class="quiz-option ${r.isCorrect ? 'correct' : 'incorrect'}" style="cursor: default; margin-bottom: 1rem;">
+                            <strong>Domanda ${i + 1}:</strong> ${r.question}<br>
+                            <strong>Tua risposta:</strong> ${r.userAnswer || 'Nessuna'}<br>
+                            <strong>Risposta corretta:</strong> ${r.correctAnswer}
+                            ${r.isCorrect ? ' ✓' : ' ✗'}
+                        </div>
+                    `).join('')}
+                </div>
+                <button class="btn mt-4" onclick="generateQuiz()">Nuovo Quiz</button>
+            `;
+        }
+
+        async function generateStudyGuide() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.textContent = 'Generazione in corso...';
+
+            try {
+                const result = await callAI(
+                    'Sei un esperto nella creazione di guide di studio.',
+                    'Crea una guida di studio completa con: 1) Obiettivi di apprendimento 2) Concetti chiave 3) Strategie di memorizzazione 4) Domande di autovalutazione 5) Risorse consigliate.',
+                    5000
+                );
+
+                document.getElementById('studyguideOutput').innerHTML = `
+                    <div class="alert alert-success">✅ Guida di studio creata!</div>
+                    <div style="white-space: pre-wrap; line-height: 1.8;">${result}</div>
+                    <button class="btn btn-export mt-4" onclick="exportToDocx('studyguide', '${getCurrentStudy().name} - Guida Studio', document.getElementById('studyguideOutput').querySelector('div[style]').textContent)">
+                        Esporta DOCX 📄
+                    </button>
+                `;
+            } catch (error) {
+                document.getElementById('studyguideOutput').innerHTML = `
+                    <div class="alert alert-danger">❌ Errore: ${error.message}</div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = 'Genera Guida';
+            }
+        }
+
+        async function generateCustomFormat() {
+            const customInput = document.getElementById('customFormatInput').value.trim();
+            
+            if (!customInput) {
+                alert('⚠️ Inserisci una richiesta personalizzata!');
+                return;
+            }
+
+            const btn = event.target;
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.textContent = 'Generazione in corso...';
+
+            try {
+                const result = await callAI(
+                    'Sei un assistente flessibile per la creazione di materiale didattico personalizzato.',
+                    customInput,
+                    5000
+                );
+
+                document.getElementById('customformatOutput').innerHTML = `
+                    <div class="alert alert-success">✅ Contenuto personalizzato generato!</div>
+                    <div style="white-space: pre-wrap; line-height: 1.8;">${result}</div>
+                    <button class="btn btn-export mt-4" onclick="exportToDocx('custom', '${getCurrentStudy().name} - Custom', document.getElementById('customformatOutput').querySelector('div[style]').textContent)">
+                        Esporta DOCX 📄
+                    </button>
+                `;
+            } catch (error) {
+                document.getElementById('customformatOutput').innerHTML = `
+                    <div class="alert alert-danger">❌ Errore: ${error.message}</div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.textContent = 'Genera';
+            }
+        }
+
+        function exportToDocx(type, title, content) {
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${title}</title>
+                </head>
+                <body>
+                    <h1>${title}</h1>
+                    <div>${content.replace(/\n/g, '<br>')}</div>
+                </body>
+                </html>
+            `;
+
+            const opt = {
+                margin: 1,
+                filename: `${title.replace(/[^a-z0-9]/gi, '_')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(htmlContent).save();
+            alert('✅ Documento esportato!');
+        }
+
+        function renderChat() {
+            const study = getCurrentStudy();
+            if (!study) return;
+
+            const chatMessages = document.getElementById('chatMessages');
+            const chatHistory = appState.chatHistory[study.id] || [];
+
+            if (chatHistory.length === 0) {
+                chatMessages.innerHTML = `
+                    <div class="alert alert-info">
+                        💬 Inizia una conversazione! Fai domande sul materiale che hai caricato.
+                    </div>
+                `;
+                return;
+            }
+
+            chatMessages.innerHTML = chatHistory.map(msg => {
+                const isUser = msg.role === 'user';
+                return `
+                    <div class="chat-message ${msg.role}">
+                        <strong>${isUser ? '👤 Tu' : '🤖 AI'}:</strong><br>
+                        ${msg.content}
+                    </div>
+                `;
+            }).join('');
+
+            scrollChatToBottom();
+        }
+
+        function saveChatHistory() {
+            saveToLocalStorage();
+        }
+
+        function createChatMessageHTML(message, messageId) {
+            const isUser = message.role === 'user';
+            return `
+                <div class="chat-message ${message.role}" id="${messageId}">
+                    <strong>${isUser ? '👤 Tu' : '🤖 AI'}:</strong><br>
+                    ${message.content}
+                </div>
+            `;
+        }
+
+        async function sendChatMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendChatBtn');
+            const messagesContainer = document.getElementById('chatMessages');
+            const userMessage = chatInput.value.trim();
+
+            if (!userMessage) return;
+            if (appState.isChatLoading) return;
+
+            const study = getCurrentStudy();
+            if (!study) {
+                alert('❌ Nessuno studio caricato!');
+                return;
+            }
+
+            chatInput.value = '';
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Invio... ⏳';
+            appState.isChatLoading = true;
+
+            const userMessageId = `msg_${study.id}_${appState.chatHistory[study.id].length}`;
+            appState.chatHistory[study.id].push({
+                role: 'user',
+                content: userMessage
+            });
+
+            messagesContainer.innerHTML += createChatMessageHTML({
+                role: 'user',
+                content: userMessage
+            }, userMessageId);
+
+            messagesContainer.innerHTML += `
+                <div class="chat-message assistant" id="typingIndicator">
+                    <strong>🤖 AI:</strong><br>
+                    <em>Sta scrivendo...</em>
+                </div>
+            `;
+
+            scrollChatToBottom();
+
+            try {
+                const chatHistory = appState.chatHistory[study.id];
+                const previousMessages = chatHistory.slice(0, -1).map(msg => 
+                    `${msg.role === 'user' ? 'UTENTE' : 'ASSISTENTE'}: ${msg.content}`
+                ).join('\n\n');
+
+                const systemPrompt = `Sei un assistente AI esperto che aiuta gli studenti a comprendere il materiale di studio. Rispondi in modo chiaro, preciso e pedagogico.
+
+MATERIALE DI STUDIO:
+${study.content.substring(0, 25000)}
+
+${previousMessages ? `CONVERSAZIONE PRECEDENTE:\n${previousMessages}\n\n` : ''}`;
+
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'anthropic-version': '2023-06-01'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 2000,
+                        system: systemPrompt,
+                        messages: [{
+                            role: 'user',
+                            content: userMessage
+                        }]
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Errore server: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const aiResponse = data.content[0].text;
+                
+                document.getElementById('typingIndicator').remove();
+                
+                const aiMessageId = `msg_${study.id}_${appState.chatHistory[study.id].length}`;
+                appState.chatHistory[study.id].push({
+                    role: 'assistant',
+                    content: aiResponse
+                });
+                
+                messagesContainer.innerHTML += createChatMessageHTML({
+                    role: 'assistant',
+                    content: aiResponse
+                }, aiMessageId);
+                
+                saveChatHistory();
+                scrollChatToBottom();
+                
+            } catch (error) {
+                console.error('Errore chat:', error);
+                
+                const typingIndicator = document.getElementById('typingIndicator');
+                if (typingIndicator) typingIndicator.remove();
+                
+                messagesContainer.innerHTML += `
+                    <div class="alert alert-danger">
+                        ❌ Errore: ${error.message}. Riprova tra poco.
+                    </div>
+                `;
+                
+                appState.chatHistory[study.id].pop();
+                
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Invia 📤';
+                appState.isChatLoading = false;
+                scrollChatToBottom();
+            }
+        }
+
+        document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendChatMessage();
+            }
+        });
+
+        function scrollChatToBottom() {
+            setTimeout(() => {
+                const messagesContainer = document.getElementById('chatMessages');
+                if (messagesContainer) {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            }, 100);
+        }
+
+        function clearChatHistory() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            if (confirm('Vuoi cancellare tutta la conversazione?')) {
+                appState.chatHistory[study.id] = [];
+                saveChatHistory();
+                renderChat();
+            }
+        }
+
+        function exportChatHistory() {
+            const study = getCurrentStudy();
+            if (!study) return;
+            
+            const chatHistory = appState.chatHistory[study.id] || [];
+            
+            if (chatHistory.length === 0) {
+                alert('Non ci sono messaggi da esportare');
+                return;
+            }
+            
+            let exportText = `Chat AI - ${study.name}\n`;
+            exportText += `Data: ${new Date().toLocaleDateString('it-IT')}\n`;
+            exportText += `Materia: ${study.subject}\n\n`;
+            exportText += '='.repeat(50) + '\n\n';
+            
+            chatHistory.forEach((msg, i) => {
+                const role = msg.role === 'user' ? '👤 Tu' : '🤖 AI';
+                exportText += `${role}:\n${msg.content}\n\n`;
+            });
+            
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chat_${study.name.replace(/[^a-z0-9]/gi, '_')}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('✅ Chat esportata!');
+        }
+
+        function resetApp() {
+            document.getElementById('uploadSection').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('pdfFile').value = '';
+            selectedFiles = [];
+            fileInfo.style.display = 'none';
+            uploadBtn.disabled = true;
+            uploadBtn.style.background = 'var(--gray-300)';
+        }
+
+        const categoryTabs = {
+            'comprendi': ['summary', 'highlights', 'glossary', 'conceptanalysis'],
+            'memorizza': ['flashcards', 'mindmap', 'timeline'],
+            'approfondisci': ['chat', 'quiz', 'studyguide'],
+            'personalizza': ['customformat']
+        };
+        
+        const tabIdMap = {
+            'summary': 'tabSummary',
+            'highlights': 'tabHighlights',
+            'glossary': 'tabGlossary',
+            'conceptanalysis': 'tabConceptAnalysis',
+            'flashcards': 'tabFlashcards',
+            'mindmap': 'tabMindmap',
+            'timeline': 'tabTimeline',
+            'chat': 'tabChat',
+            'quiz': 'tabQuiz',
+            'studyguide': 'tabStudyGuide',
+            'customformat': 'tabCustomFormat'
+        };
+        
+        function selectCategory(category) {
+            console.log('Categoria selezionata:', category);
+            
+            document.getElementById('categorySelection').classList.remove('active');
+            
+            const tabs = categoryTabs[category] || [];
+            
+            const allTabBtns = document.querySelectorAll('.tab-btn');
+            allTabBtns.forEach(btn => {
+                if (!btn.textContent.includes('Libreria') && !btn.textContent.includes('Categorie')) {
+                    btn.classList.add('hidden');
+                }
+            });
+            
+            tabs.forEach(tabName => {
+                const tabId = tabIdMap[tabName];
+                const tabBtn = document.getElementById(tabId);
+                if (tabBtn) {
+                    tabBtn.classList.remove('hidden');
+                } else {
+                    console.error('Tab non trovato:', tabId, 'per', tabName);
+                }
+            });
+            
+            document.getElementById('tabs').style.display = 'flex';
+            document.getElementById('contentArea').style.display = 'block';
+            document.getElementById('backToCategories').classList.remove('hidden');
+            
+            if (tabs.length > 0) {
+                switchTab(tabs[0]);
+            }
+        }
+        
+        function showCategories() {
+            document.getElementById('categorySelection').classList.add('active');
+            document.getElementById('tabs').style.display = 'none';
+            document.getElementById('contentArea').style.display = 'none';
+            document.getElementById('backToCategories').classList.add('hidden');
+            
+            const study = getCurrentStudy();
+            if (study) {
+                document.getElementById('currentStudyName').textContent = study.name;
+            }
+        }
+        
+        function showLibrary() {
+            document.getElementById('categorySelection').classList.remove('active');
+            document.getElementById('tabs').style.display = 'flex';
+            document.getElementById('contentArea').style.display = 'block';
+            switchTab('library');
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').textContent = '☀️';
+        }
+
+        if (Object.keys(appState.studies).length > 0) {
+            showMainApp();
+            switchTab('library');
+        }
+
+        console.log('🚀 MentoreStudio Multi-Formato Inizializzato!');
+        console.log('📦 Librerie caricate:');
+        console.log('  - PDF.js:', typeof pdfjsLib !== 'undefined' ? '✅' : '❌');
+        console.log('  - Mammoth.js:', typeof mammoth !== 'undefined' ? '✅' : '❌');
+        console.log('  - JSZip:', typeof JSZip !== 'undefined' ? '✅' : '❌');
+        console.log('  - Tesseract.js:', typeof Tesseract !== 'undefined' ? '✅' : '❌');
+        console.log('📄 Formati supportati: PDF, TXT, DOCX, PPTX, JPG/PNG (OCR)');
+        
+        if (typeof mammoth === 'undefined') {
+            console.error('❌ ERRORE: Mammoth.js non caricato! I file DOCX non funzioneranno.');
+        }
+        if (typeof JSZip === 'undefined') {
+            console.error('❌ ERRORE: JSZip non caricato! I file PPTX non funzioneranno.');
+        }
+        if (typeof Tesseract === 'undefined') {
+            console.error('❌ ERRORE: Tesseract.js non caricato! L\'OCR non funzionerà.');
+        }
+
+    </script>
 </body>
 </html>
