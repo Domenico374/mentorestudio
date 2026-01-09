@@ -1143,6 +1143,229 @@ body.dark-mode .toggle-btn {
 body.dark-mode .toggle-btn:hover {
     background: #2a2a3e !important;
 }
+/* === ENHANCED STUDY CARDS - STEP 1 === */
+/* === ENHANCED STUDY CARDS === */
+.study-item {
+    position: relative;
+    padding: 20px 24px !important;
+    margin: 12px 0 !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 12px !important;
+    background: white !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    overflow: hidden !important;
+}
+
+.study-item::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #e5e5e5 0%, #e5e5e5 100%);
+    transition: all 0.3s ease;
+}
+
+.study-item.has-progress::before {
+    background: linear-gradient(90deg, #3b82f6 0%, #3b82f6 var(--progress), #e5e5e5 var(--progress), #e5e5e5 100%);
+}
+
+.study-item:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08) !important;
+    border-color: #3b82f6 !important;
+}
+
+.study-item:active {
+    transform: translateY(-2px) !important;
+}
+
+body.dark-mode .study-item {
+    background: #1a1a2e !important;
+    border-color: #2a2a3e !important;
+}
+
+body.dark-mode .study-item:hover {
+    border-color: #3b82f6 !important;
+    background: #1f1f2e !important;
+}
+
+/* === STATUS BADGE === */
+.study-status {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.study-status.new {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.study-status.in-progress {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.study-status.completed {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+body.dark-mode .study-status.new {
+    background: rgba(217, 119, 6, 0.15);
+    color: #fcd34d;
+    border-color: rgba(217, 119, 6, 0.3);
+}
+
+body.dark-mode .study-status.in-progress {
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+body.dark-mode .study-status.completed {
+    background: rgba(5, 150, 105, 0.15);
+    color: #6ee7b7;
+    border-color: rgba(5, 150, 105, 0.3);
+}
+
+.study-item:hover .study-status {
+    transform: scale(1.05);
+}
+
+/* === STUDY CONTENT === */
+.study-left {
+    flex: 1;
+    padding-right: 100px;
+}
+
+.study-left strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+}
+
+body.dark-mode .study-left strong {
+    color: white;
+}
+
+.study-info {
+    font-size: 13px !important;
+    color: #64748b !important;
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+    flex-wrap: wrap;
+}
+
+/* === PROGRESS INFO === */
+.study-progress-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    color: #3b82f6;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+body.dark-mode .study-progress-text {
+    color: #60a5fa;
+}
+
+/* === CTA BUTTON === */
+.study-cta {
+    padding: 8px 16px !important;
+    background: var(--primary) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+}
+
+.study-cta:hover {
+    background: var(--primary) !important;
+    transform: translateX(2px) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+.study-cta:active {
+    transform: translateX(0) !important;
+}
+
+.study-cta.secondary {
+    background: white !important;
+    color: var(--primary) !important;
+    border: 1px solid #e5e5e5 !important;
+}
+
+.study-cta.secondary:hover {
+    background: #f8fafc !important;
+    border-color: var(--primary) !important;
+}
+
+body.dark-mode .study-cta {
+    background: white !important;
+    color: var(--primary) !important;
+}
+
+body.dark-mode .study-cta:hover {
+    background: #f0f0f0 !important;
+}
+
+/* === ACTIONS GROUP === */
+.study-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* === ANIMATION ON LOAD === */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.study-item {
+    animation: slideInUp 0.3s ease backwards;
+}
+
+.study-item:nth-child(1) { animation-delay: 0.05s; }
+.study-item:nth-child(2) { animation-delay: 0.1s; }
+.study-item:nth-child(3) { animation-delay: 0.15s; }
+.study-item:nth-child(4) { animation-delay: 0.2s; }
+.study-item:nth-child(5) { animation-delay: 0.25s; }
     </style>
 </head>
 <body>
@@ -1192,7 +1415,7 @@ body.dark-mode .toggle-btn:hover {
                 
                 <!-- NUOVA AREA DI UPLOAD MIGLIORATA -->
                 <div class="upload-area" id="uploadArea">
-                    <div style="font-size: 3em; margin-bottom: 15px;">📁</div>
+                    <div style="font-size: 3em; margin-bottom: 15px;">📄</div>
                     <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: 500;">Trascina i file qui o clicca per selezionarli</p>
                     <button class="btn" onclick="document.getElementById('pdfFile').click()" style="background: white; border: 1px solid #e5e5e5; color: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold;">
                         Scegli file
@@ -1751,7 +1974,7 @@ body.dark-mode .toggle-btn:hover {
 
         function renderLibrary() {
             let html = '<h2>Le tue lezioni</h2>';
-            html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
+            html += '<input type="text" class="search-box" id="librarySearch" placeholder="Cerca nelle lezioni..." onkeyup="filterLibrary()">';
             const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
             
             if (studies.length === 0) {
@@ -1769,15 +1992,58 @@ body.dark-mode .toggle-btn:hover {
                 `;
             } else {
                 studies.forEach(study => {
+                    // Calcola stato e progress
+                    const totalFlashcards = study.data.flashcards?.length || 0;
+                    const totalQuiz = study.data.quiz?.length || 0;
+                    const completedFlashcards = study.completedFlashcards || 0;
+                    const completedQuiz = study.completedQuiz || 0;
+                    
+                    const totalItems = totalFlashcards + totalQuiz;
+                    const completedItems = completedFlashcards + completedQuiz;
+                    const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+                    
+                    let status = 'new';
+                    let statusText = 'Nuovo';
+                    let ctaText = 'Inizia Studio →';
+                    
+                    if (progress > 0 && progress < 100) {
+                        status = 'in-progress';
+                        statusText = 'In Corso';
+                        ctaText = 'Continua →';
+                    } else if (progress === 100) {
+                        status = 'completed';
+                        statusText = 'Completato';
+                        ctaText = 'Rivedi';
+                    }
+                    
                     html += `
-                        <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
+                        <div class="study-item ${progress > 0 ? 'has-progress' : ''}" 
+                             onclick="selectStudy('${study.id}')" 
+                             style="--progress: ${progress}%"
+                             data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
+                            
+                            <span class="study-status ${status}">${statusText}</span>
+                            
                             <div class="study-left">
                                 <strong>${study.fileType || 'PDF'} ${study.name}</strong>
-                                <div class="study-info">${study.date} • ${study.subject} • ${study.data.flashcards?.length || 0} flashcard • ${study.data.quiz?.length || 0} quiz</div>
+                                <div class="study-info">
+                                    <span>${study.date}</span>
+                                    <span>•</span>
+                                    <span>${study.subject}</span>
+                                    <span>•</span>
+                                    <span>${totalFlashcards} flashcard</span>
+                                    <span>•</span>
+                                    <span>${totalQuiz} quiz</span>
+                                </div>
+                                ${progress > 0 ? `<div class="study-progress-text">📊 ${progress}% completato</div>` : ''}
                             </div>
-                            <div class="study-right">
-                                <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
-                                <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
+                            
+                            <div class="study-actions">
+                                <button class="study-cta" onclick="event.stopPropagation(); selectStudy('${study.id}')">
+                                    ${ctaText}
+                                </button>
+                                <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)" style="padding: 8px 12px; font-size: 13px;">📥</button>
+                                <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)" style="padding: 8px 12px; font-size: 13px;">🗑️</button>
                             </div>
                         </div>
                     `;
