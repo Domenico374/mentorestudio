@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MentoreStudio - Il tuo mentore personale per lo studio intelligente">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2215%22 fill=%22%233b82f6%22/><text x=%2250%22 y=%2268%22 font-family=%22system-ui%22 font-size=%2250%22 font-weight=%22700%22 fill=%22white%22 text-anchor=%22middle%22>SP</text></svg>">
     <title>StudioPro - AI Learning Platform</title>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -25,7 +24,7 @@
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: #fafafa;
+            background: #fafaf9;
             min-height: 100vh;
             padding: 20px;
         }
@@ -33,103 +32,34 @@
         .container { max-width: 1200px; margin: 0 auto; }
         .header {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
         body.dark-mode .header { background: #2a2a3e; color: #e0e0e0; }
         h1 { font-size: 1.8em; color: var(--primary); }
         body.dark-mode h1 { color: var(--accent); }
-/* === LOGO CON MONOGRAMMA === */
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-.logo-badge {
-    width: 48px;
-    height: 48px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.logo-hexagon {
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-}
-.logo-initials {
-    color: white;
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: 1px;
-    z-index: 1;
-}
-.logo-text {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-.logo-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--primary);
-    letter-spacing: -0.03em;
-    line-height: 1;
-}
-.logo-tagline {
-    font-size: 10px;
-    font-weight: 600;
-    color: #64748b;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-body.dark-mode .logo-title { color: white; }
-body.dark-mode .logo-tagline { color: #94a3b8; }
-body.dark-mode .logo-hexagon {
-    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-}
-
-/* === TYPOGRAPHY MIGLIORATA === */
-h2, h3, h4 {
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-}
-p, .card, .study-item {
-    line-height: 1.5;
-}
-
-/* === TABS MINIMAL === */
-.tab-btn-icon {
-    display: none; /* Nascondi emoji dai tab */
-}
         .header-controls { display: flex; gap: 10px; }
         .toggle-btn {
             padding: 10px 15px;
             border: none;
-            border-radius: 6px;
-            background: white; border: 1px solid #e5e5e5; color: var(--primary);
+            border-radius: 8px;
+            background: var(--primary);
             color: white;
             cursor: pointer;
             font-weight: bold;
         }
         .upload-section {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             padding: 40px;
             text-align: center;
             margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
         body.dark-mode .upload-section { background: #2a2a3e; color: #e0e0e0; }
         body.dark-mode #uploadProgress { 
@@ -174,7 +104,7 @@ p, .card, .study-item {
             margin: 20px 0;
             background: rgba(102, 126, 234, 0.05);
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.3s;
         }
         .upload-area:hover {
             background: rgba(102, 126, 234, 0.1);
@@ -206,7 +136,7 @@ p, .card, .study-item {
             padding: 12px;
             margin: 10px 0;
             border: 2px solid var(--primary);
-            border-radius: 6px;
+            border-radius: 8px;
             width: 100%;
             max-width: 400px;
         }
@@ -215,7 +145,7 @@ p, .card, .study-item {
             padding: 12px;
             margin: 10px 0;
             border: 2px solid var(--primary);
-            border-radius: 6px;
+            border-radius: 8px;
             width: 100%;
             max-width: 400px;
             font-size: 1em;
@@ -224,8 +154,8 @@ p, .card, .study-item {
         .btn {
             padding: 12px 25px;
             border: none;
-            border-radius: 6px;
-            background: white; border: 1px solid #e5e5e5; color: var(--primary);
+            border-radius: 8px;
+            background: var(--primary);
             color: white;
             cursor: pointer;
             font-weight: bold;
@@ -251,27 +181,27 @@ p, .card, .study-item {
             flex-wrap: wrap;
             margin-bottom: 20px;
             background: white;
-            padding: 18px 20px;
-            border-radius: 12px;
+            padding: 15px;
+            border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         body.dark-mode .tabs { background: #2a2a3e; }
         .tab-btn {
             padding: 10px 20px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             background: #f0f0f0;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.15s ease;
+            transition: all 0.3s;
         }
         body.dark-mode .tab-btn { background: #1a1a2e; color: #e0e0e0; }
-        .tab-btn.active { background: white; border: 1px solid #e5e5e5; color: var(--primary); color: white; }
+        .tab-btn.active { background: var(--primary); color: white; }
         .content-area {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             min-height: 500px;
         }
         body.dark-mode .content-area { background: #2a2a3e; color: #e0e0e0; }
@@ -283,11 +213,11 @@ p, .card, .study-item {
         body.dark-mode .card { background: #1a1a2e; border-left-color: var(--accent); }
         .study-item {
             background: #f5f7ff;
-            padding: 18px 20px;
+            padding: 15px;
             border-radius: 10px;
             margin: 10px 0;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.3s;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -303,7 +233,7 @@ p, .card, .study-item {
             padding: 12px;
             margin-bottom: 15px;
             border: 2px solid var(--primary);
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 1em;
         }
         body.dark-mode .search-box { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
@@ -311,7 +241,7 @@ p, .card, .study-item {
         .spinner { border: 4px solid #f0f0f0; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .progress-bar { background: #e0e0e0; height: 10px; border-radius: 5px; margin: 15px 0; overflow: hidden; }
-        .progress-fill { background: white; border: 1px solid #e5e5e5; color: var(--primary); height: 100%; transition: width 0.3s; }
+        .progress-fill { background: var(--primary); height: 100%; transition: width 0.3s; }
         
         .flashcard { 
             perspective: 1000px; 
@@ -352,11 +282,11 @@ p, .card, .study-item {
             border: 2px solid rgba(255,255,255,0.5);
             color: white;
             padding: 8px 15px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.85em;
             margin: 5px;
-            transition: all 0.15s ease;
+            transition: all 0.3s;
         }
         .expand-btn:hover {
             background: rgba(255,255,255,0.3);
@@ -365,12 +295,12 @@ p, .card, .study-item {
         .controls { display: flex; gap: 10px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
         .quiz-option { 
             background: #f5f7ff; 
-            padding: 18px 20px; 
+            padding: 15px; 
             margin: 10px 0; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             cursor: pointer; 
             border: 2px solid transparent; 
-            transition: all 0.15s ease;
+            transition: all 0.3s;
         }
         body.dark-mode .quiz-option { background: #1a1a2e; }
         .quiz-option:hover { background: #e8eaff; transform: translateX(5px); }
@@ -395,7 +325,7 @@ p, .card, .study-item {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
-        .note-section { background: #fff3cd; padding: 10px; border-radius: 6px; margin-top: 10px; border-left: 4px solid #ffc107; }
+        .note-section { background: #fff3cd; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #ffc107; }
         body.dark-mode .note-section { background: #3d3d1a; color: #e0e0e0; }
         .note-input { width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9em; }
         body.dark-mode .note-input { background: #1a1a2e; color: #e0e0e0; border-color: var(--secondary); }
@@ -413,7 +343,7 @@ p, .card, .study-item {
         body.dark-mode .back-btn { color: var(--accent); }
         .review-item {
             background: #f5f7ff;
-            padding: 18px 20px;
+            padding: 15px;
             border-radius: 10px;
             margin: 10px 0;
             border-left: 4px solid var(--primary);
@@ -428,7 +358,7 @@ p, .card, .study-item {
             margin: 15px 0;
             border-left: 4px solid var(--primary);
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.3s;
         }
         body.dark-mode .highlight-item { background: #1a1a2e; }
         .highlight-item:hover { transform: translateX(5px); background: #e8eaff; }
@@ -464,11 +394,11 @@ p, .card, .study-item {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.9em;
             font-weight: 600;
-            transition: all 0.15s ease;
+            transition: all 0.3s;
         }
         .generate-btn:hover {
             transform: translateY(-2px);
@@ -515,7 +445,7 @@ p, .card, .study-item {
         .chat-bubble {
             max-width: 70%;
             padding: 12px 16px;
-            border-radius: 12px;
+            border-radius: 15px;
             line-height: 1.5;
             word-wrap: break-word;
         }
@@ -534,7 +464,7 @@ p, .card, .study-item {
         .chat-input-container {
             display: flex;
             gap: 10px;
-            padding: 18px 20px;
+            padding: 15px;
             background: white;
             border-radius: 10px;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
@@ -544,7 +474,7 @@ p, .card, .study-item {
             flex: 1;
             padding: 12px;
             border: 2px solid var(--primary);
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 1em;
             resize: none;
             font-family: inherit;
@@ -555,10 +485,10 @@ p, .card, .study-item {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.15s ease;
+            transition: all 0.3s;
         }
         .chat-send-btn:hover:not(:disabled) {
             transform: translateY(-2px);
@@ -570,7 +500,7 @@ p, .card, .study-item {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: white; border: 1px solid #e5e5e5; color: var(--primary);
+            background: var(--primary);
             animation: typing 1.4s infinite;
         }
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
@@ -582,7 +512,7 @@ p, .card, .study-item {
         .chat-context-info {
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             margin-bottom: 15px;
             border-left: 4px solid var(--primary);
             font-size: 0.9em;
@@ -596,11 +526,11 @@ p, .card, .study-item {
             border-radius: 20px;
             font-size: 0.9em;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.3s;
         }
         body.dark-mode .chat-suggestion { background: #1a1a2e; color: #e0e0e0; }
         .chat-suggestion:hover {
-            background: white; border: 1px solid #e5e5e5; color: var(--primary);
+            background: var(--primary);
             color: white;
             transform: translateY(-2px);
         }
@@ -608,7 +538,7 @@ p, .card, .study-item {
             background: #ffebee;
             color: #c62828;
             padding: 10px;
-            border-radius: 6px;
+            border-radius: 8px;
             margin: 10px 0;
             border-left: 4px solid #c62828;
         }
@@ -659,8 +589,8 @@ p, .card, .study-item {
             align-items: center;
             padding: 10px 20px;
             border: none;
-            border-radius: 6px;
-            background: white; border: 1px solid #e5e5e5; color: var(--primary);
+            border-radius: 8px;
+            background: var(--primary);
             color: white;
             cursor: pointer;
             font-weight: 600;
@@ -691,7 +621,7 @@ p, .card, .study-item {
             padding: 48px 32px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.15s ease ease;
+            transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             position: relative;
             overflow: hidden;
@@ -794,7 +724,7 @@ p, .card, .study-item {
             border-radius: 10px;
             margin: 15px 0;
             border-left: 4px solid var(--primary);
-            transition: all 0.15s ease;
+            transition: all 0.3s;
         }
         body.dark-mode .question-card { background: #1a1a2e; }
         .question-card:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
@@ -802,7 +732,7 @@ p, .card, .study-item {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             padding: 5px 12px;
-            border-radius: 12px;
+            border-radius: 15px;
             font-weight: bold;
             font-size: 0.85em;
             display: inline-block;
@@ -821,7 +751,7 @@ p, .card, .study-item {
             border-radius: 12px;
             margin: 20px 0;
             border-left: 5px solid var(--primary);
-            transition: all 0.15s ease;
+            transition: all 0.3s;
         }
         body.dark-mode .pillar-card { background: rgba(102, 126, 234, 0.15); }
         .pillar-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
@@ -854,8 +784,8 @@ p, .card, .study-item {
         body.dark-mode .pillar-content { color: #ccc; }
         .connection-box {
             background: rgba(240, 147, 251, 0.1);
-            padding: 18px 20px;
-            border-radius: 6px;
+            padding: 15px;
+            border-radius: 8px;
             margin-top: 15px;
             border-left: 3px solid var(--accent);
         }
@@ -873,7 +803,7 @@ p, .card, .study-item {
             padding: 20px;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.3s;
             border: 2px solid transparent;
             text-align: center;
         }
@@ -910,9 +840,9 @@ p, .card, .study-item {
         body.dark-mode .custom-input-box { background: #2a2a3e; }
         .custom-textarea {
             width: 100%;
-            padding: 18px 20px;
+            padding: 15px;
             border: 2px solid var(--primary);
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 1em;
             font-family: inherit;
             resize: vertical;
@@ -938,12 +868,12 @@ p, .card, .study-item {
         }
         .history-item {
             background: #f5f7ff;
-            padding: 18px 20px;
-            border-radius: 6px;
+            padding: 15px;
+            border-radius: 8px;
             margin: 10px 0;
             border-left: 3px solid var(--secondary);
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.3s;
         }
         body.dark-mode .history-item { background: #1a1a2e; }
         .history-item:hover { transform: translateX(5px); background: #e8eaff; }
@@ -987,386 +917,63 @@ p, .card, .study-item {
             color: #555;
         }
         body.dark-mode .mindmap-leaf { color: #aaa; }
-/* === STILI PROFESSIONALI AGGIUNTIVI === */
-/* === SPACING MIGLIORATO === */
-.header {
-    padding: 18px 24px !important;
-    margin-bottom: 24px !important;
+    
+/* === LOGO BADGE ESAGONALE === */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 14px;
 }
-.upload-section {
-    padding: 48px 40px !important;
-    margin-bottom: 24px !important;
-}
-.content-area {
-    padding: 32px !important;
-}
-.study-item {
-    padding: 18px 20px !important;
-    margin: 12px 0 !important;
-}
-.card {
-    padding: 20px 24px !important;
-    margin: 12px 0 !important;
-}
-
-/* === SEARCH BAR RAFFINATA === */
-.search-box {
-    border: 1px solid #e5e5e5 !important;
-    padding: 10px 14px !important;
-    font-size: 0.9375rem !important;
-    transition: all 0.15s ease !important;
-}
-.search-box:focus {
-    outline: none !important;
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-}
-body.dark-mode .search-box {
-    background: #1a1a2e !important;
-    border-color: #2a2a3e !important;
-}
-
-/* === METADATA ELEGANTE === */
-.study-info {
-    font-size: 0.8125rem !important;
-    color: #64748b !important;
-    display: flex !important;
-    gap: 12px !important;
-    align-items: center !important;
-}
-.study-info > span:not(:last-child)::after {
-    content: "•";
-    margin-left: 12px;
-    color: #cbd5e1;
-}
-body.dark-mode .study-info {
-    color: #94a3b8 !important;
-}
-
-/* === BOTTONI RAFFINATI === */
-.btn {
-    border-radius: 6px !important;
-    font-weight: 500 !important;
-    transition: all 0.15s ease !important;
-    padding: 10px 20px !important;
-}
-.btn:hover {
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
-}
-.btn:active {
-    transform: translateY(0) !important;
-}
-
-/* === TAB BUTTONS MINIMAL === */
-.tab-btn {
-    padding: 10px 18px !important;
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
-    border: none !important;
-    background: transparent !important;
-    color: #64748b !important;
-    transition: all 0.15s ease !important;
-}
-.tab-btn:hover {
-    color: var(--primary) !important;
-    background: #f8fafc !important;
-}
-.tab-btn.active {
-    color: var(--primary) !important;
-    background: transparent !important;
-    border-bottom: 2px solid var(--primary) !important;
-    border-radius: 0 !important;
-}
-body.dark-mode .tab-btn {
-    color: #94a3b8 !important;
-}
-body.dark-mode .tab-btn:hover {
-    color: white !important;
-    background: #2a2a3e !important;
-}
-body.dark-mode .tab-btn.active {
-    color: white !important;
-    border-bottom-color: var(--accent) !important;
-}
-
-/* === CARDS PIÙ PULITE === */
-.study-item {
-    border: 1px solid #e5e5e5 !important;
-    box-shadow: none !important;
-}
-.study-item:hover {
-    border-color: var(--accent) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
-}
-body.dark-mode .study-item {
-    border-color: #2a2a3e !important;
-}
-body.dark-mode .study-item:hover {
-    border-color: var(--accent) !important;
-}
-
-/* === FORMAT BADGE MINIMAL === */
-.format-badge {
-    background: #f8fafc !important;
-    border: 1px solid #e5e5e5 !important;
-    color: #64748b !important;
-    padding: 6px 12px !important;
-    font-size: 0.75rem !important;
-    font-weight: 500 !important;
-    letter-spacing: 0.3px !important;
-}
-body.dark-mode .format-badge {
-    background: #1a1a2e !important;
-    border-color: #2a2a3e !important;
-    color: #94a3b8 !important;
-}
-
-/* === TOGGLE BUTTON MIGLIORATO === */
-.toggle-btn {
-    background: white !important;
-    border: 1px solid #e5e5e5 !important;
-    color: #64748b !important;
-    padding: 8px 14px !important;
-    font-weight: 500 !important;
-}
-.toggle-btn:hover {
-    background: #f8fafc !important;
-    border-color: #cbd5e1 !important;
-}
-body.dark-mode .toggle-btn {
-    background: #1a1a2e !important;
-    border-color: #2a2a3e !important;
-    color: #94a3b8 !important;
-}
-body.dark-mode .toggle-btn:hover {
-    background: #2a2a3e !important;
-}
-/* === ENHANCED STUDY CARDS - STEP 1 === */
-/* === ENHANCED STUDY CARDS === */
-.study-item {
+.logo-badge {
+    width: 48px;
+    height: 48px;
     position: relative;
-    padding: 20px 24px !important;
-    margin: 12px 0 !important;
-    border: 1px solid #e5e5e5 !important;
-    border-radius: 12px !important;
-    background: white !important;
-    cursor: pointer !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    overflow: hidden !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
-.study-item::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, #e5e5e5 0%, #e5e5e5 100%);
-    transition: all 0.3s ease;
+.logo-hexagon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
 }
-
-.study-item.has-progress::before {
-    background: linear-gradient(90deg, #3b82f6 0%, #3b82f6 var(--progress), #e5e5e5 var(--progress), #e5e5e5 100%);
+.logo-initials {
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 1px;
 }
-
-.study-item:hover {
-    transform: translateY(-4px) !important;
-    box-shadow: 0 12px 24px rgba(0,0,0,0.08) !important;
-    border-color: #3b82f6 !important;
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
-
-.study-item:active {
-    transform: translateY(-2px) !important;
+.logo-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: -0.03em;
+    line-height: 1;
 }
-
-body.dark-mode .study-item {
-    background: #1a1a2e !important;
-    border-color: #2a2a3e !important;
-}
-
-body.dark-mode .study-item:hover {
-    border-color: #3b82f6 !important;
-    background: #1f1f2e !important;
-}
-
-/* === STATUS BADGE === */
-.study-status {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    padding: 4px 10px;
-    border-radius: 12px;
+.logo-tagline {
     font-size: 10px;
     font-weight: 600;
+    color: #64748b;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    transition: all 0.2s ease;
+}
+body.dark-mode .logo-title { color: white; }
+body.dark-mode .logo-tagline { color: #94a3b8; }
+body.dark-mode .logo-hexagon {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
 }
 
-.study-status.new {
-    background: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fde68a;
-}
-
-.study-status.in-progress {
-    background: #dbeafe;
-    color: #1e40af;
-    border: 1px solid #bfdbfe;
-}
-
-.study-status.completed {
-    background: #d1fae5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
-}
-
-body.dark-mode .study-status.new {
-    background: rgba(217, 119, 6, 0.15);
-    color: #fcd34d;
-    border-color: rgba(217, 119, 6, 0.3);
-}
-
-body.dark-mode .study-status.in-progress {
-    background: rgba(59, 130, 246, 0.15);
-    color: #93c5fd;
-    border-color: rgba(59, 130, 246, 0.3);
-}
-
-body.dark-mode .study-status.completed {
-    background: rgba(5, 150, 105, 0.15);
-    color: #6ee7b7;
-    border-color: rgba(5, 150, 105, 0.3);
-}
-
-.study-item:hover .study-status {
-    transform: scale(1.05);
-}
-
-/* === STUDY CONTENT === */
-.study-left {
-    flex: 1;
-    padding-right: 100px;
-}
-
-.study-left strong {
-    display: block;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--primary);
-    margin-bottom: 6px;
-    letter-spacing: -0.01em;
-}
-
-body.dark-mode .study-left strong {
-    color: white;
-}
-
-.study-info {
-    font-size: 13px !important;
-    color: #64748b !important;
-    display: flex !important;
-    gap: 8px !important;
-    align-items: center !important;
-    flex-wrap: wrap;
-}
-
-/* === PROGRESS INFO === */
-.study-progress-text {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-weight: 500;
-    color: #3b82f6;
-    font-size: 12px;
-    margin-top: 4px;
-}
-
-body.dark-mode .study-progress-text {
-    color: #60a5fa;
-}
-
-/* === CTA BUTTON === */
-.study-cta {
-    padding: 8px 16px !important;
-    background: var(--primary) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 6px !important;
-    font-weight: 500 !important;
-    font-size: 14px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    transition: all 0.2s ease !important;
-    white-space: nowrap !important;
-}
-
-.study-cta:hover {
-    background: var(--primary) !important;
-    transform: translateX(2px) !important;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
-}
-
-.study-cta:active {
-    transform: translateX(0) !important;
-}
-
-.study-cta.secondary {
-    background: white !important;
-    color: var(--primary) !important;
-    border: 1px solid #e5e5e5 !important;
-}
-
-.study-cta.secondary:hover {
-    background: #f8fafc !important;
-    border-color: var(--primary) !important;
-}
-
-body.dark-mode .study-cta {
-    background: white !important;
-    color: var(--primary) !important;
-}
-
-body.dark-mode .study-cta:hover {
-    background: #f0f0f0 !important;
-}
-
-/* === ACTIONS GROUP === */
-.study-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-/* === ANIMATION ON LOAD === */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.study-item {
-    animation: slideInUp 0.3s ease backwards;
-}
-
-.study-item:nth-child(1) { animation-delay: 0.05s; }
-.study-item:nth-child(2) { animation-delay: 0.1s; }
-.study-item:nth-child(3) { animation-delay: 0.15s; }
-.study-item:nth-child(4) { animation-delay: 0.2s; }
-.study-item:nth-child(5) { animation-delay: 0.25s; }
-    </style>
+</style>
 </head>
 <body>
     <div class="container">
@@ -1389,15 +996,15 @@ body.dark-mode .study-cta:hover {
 
         <div class="upload-section" id="uploadSection">
             <div class="supported-formats">
-                <div class="format-badge">PDF</div>
-                <div class="format-badge">TXT</div>
-                <div class="format-badge">DOCX</div>
-                <div class="format-badge">PPTX</div>
-                <div class="format-badge">JPG/PNG (OCR)</div>
+                <div class="format-badge">📄 PDF</div>
+                <div class="format-badge">📝 TXT</div>
+                <div class="format-badge">📘 DOCX</div>
+                <div class="format-badge">📊 PPTX</div>
+                <div class="format-badge">🖼️ OCR (JPG/PNG)</div>
             </div>
             
             <div style="max-width: 600px; margin: 30px auto;">
-                <label style="font-weight: bold; margin-bottom: 10px; display: block;">Materia:</label>
+                <label style="font-weight: bold; margin-bottom: 10px; display: block;">📚 Materia:</label>
                 <select id="subjectSelect" class="subject-select">
                     <option value="Generale">Generale</option>
                     <option value="Storia">Storia</option>
@@ -1415,16 +1022,16 @@ body.dark-mode .study-cta:hover {
                 
                 <!-- NUOVA AREA DI UPLOAD MIGLIORATA -->
                 <div class="upload-area" id="uploadArea">
-                    <div style="font-size: 3em; margin-bottom: 15px;">📄</div>
+                    <div style="font-size: 3em; margin-bottom: 15px;">📁</div>
                     <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: 500;">Trascina i file qui o clicca per selezionarli</p>
-                    <button class="btn" onclick="document.getElementById('pdfFile').click()" style="background: white; border: 1px solid #e5e5e5; color: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                    <button class="btn" onclick="document.getElementById('pdfFile').click()" style="background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold;">
                         Scegli file
                     </button>
                     <input type="file" id="pdfFile" accept=".pdf,.txt,.docx,.pptx,image/*" multiple style="display: none;">
                     <p style="font-size: 0.9em; color: #666; margin-top: 15px;">Supporta: PDF, TXT, DOCX, PPTX, JPG, PNG</p>
                 </div>
                 
-                <div id="fileInfo" style="margin: 15px 0; padding: 10px; background: #f5f7ff; border-radius: 6px; border-left: 4px solid var(--primary); display: none;">
+                <div id="fileInfo" style="margin: 15px 0; padding: 10px; background: #f5f7ff; border-radius: 8px; border-left: 4px solid var(--primary); display: none;">
                     <strong>File selezionati:</strong>
                     <div id="selectedFilesList"></div>
                 </div>
@@ -1500,18 +1107,18 @@ body.dark-mode .study-cta:hover {
             <!-- ========== FINE NUOVE 4 CARDS ========== -->
 
             <div class="tabs" id="tabs">
-                <button class="tab-btn active" onclick="switchTab('library', event)">Libreria Studi</button>
-                <button class="tab-btn hidden" id="tabSummary" onclick="switchTab('summary', event)">Riassunto</button>
-                <button class="tab-btn hidden" id="tabHighlights" onclick="switchTab('highlights', event)">Punti Salienti</button>
-                <button class="tab-btn hidden" id="tabGlossary" onclick="switchTab('glossary', event)">Glossario</button>
-                <button class="tab-btn hidden" id="tabTimeline" onclick="switchTab('timeline', event)">Timeline</button>
+                <button class="tab-btn active" onclick="switchTab('library', event)">📚 Libreria Studi</button>
+                <button class="tab-btn hidden" id="tabSummary" onclick="switchTab('summary', event)">📝 Riassunto</button>
+                <button class="tab-btn hidden" id="tabHighlights" onclick="switchTab('highlights', event)">⭐ Punti Salienti</button>
+                <button class="tab-btn hidden" id="tabGlossary" onclick="switchTab('glossary', event)">📖 Glossario</button>
+                <button class="tab-btn hidden" id="tabTimeline" onclick="switchTab('timeline', event)">📅 Timeline</button>
                 <button class="tab-btn hidden" id="tabMindmap" onclick="switchTab('mindmap', event)">🧠 Mappa Mentale</button>
                 <button class="tab-btn hidden" id="tabStudyGuide" onclick="switchTab('studyguide', event)">📘 Guida di Studio</button>
                 <button class="tab-btn hidden" id="tabConceptAnalysis" onclick="switchTab('conceptanalysis', event)">🔍 Analisi Concetto</button>
                 <button class="tab-btn hidden" id="tabCustomFormat" onclick="switchTab('customformat', event)">✨ Crea il Tuo</button>
-                <button class="tab-btn hidden" id="tabFlashcards" onclick="switchTab('flashcards', event)">Flashcard</button>
-                <button class="tab-btn hidden" id="tabQuiz" onclick="switchTab('quiz', event)">Quiz</button>
-                <button class="tab-btn hidden" id="tabChat" onclick="switchTab('chat', event)">Chat AI</button>
+                <button class="tab-btn hidden" id="tabFlashcards" onclick="switchTab('flashcards', event)">🎴 Flashcard</button>
+                <button class="tab-btn hidden" id="tabQuiz" onclick="switchTab('quiz', event)">❓ Quiz</button>
+                <button class="tab-btn hidden" id="tabChat" onclick="switchTab('chat', event)">💬 Chat AI</button>
             </div>
             <div class="content-area" id="contentArea"></div>
         </div>
@@ -1973,8 +1580,8 @@ body.dark-mode .study-cta:hover {
         }
 
         function renderLibrary() {
-            let html = '<h2>Le tue lezioni</h2>';
-            html += '<input type="text" class="search-box" id="librarySearch" placeholder="Cerca nelle lezioni..." onkeyup="filterLibrary()">';
+            let html = '<h2>📚 Le tue lezioni</h2>';
+            html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
             const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
             
             if (studies.length === 0) {
@@ -1992,58 +1599,15 @@ body.dark-mode .study-cta:hover {
                 `;
             } else {
                 studies.forEach(study => {
-                    // Calcola stato e progress
-                    const totalFlashcards = study.data.flashcards?.length || 0;
-                    const totalQuiz = study.data.quiz?.length || 0;
-                    const completedFlashcards = study.completedFlashcards || 0;
-                    const completedQuiz = study.completedQuiz || 0;
-                    
-                    const totalItems = totalFlashcards + totalQuiz;
-                    const completedItems = completedFlashcards + completedQuiz;
-                    const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
-                    
-                    let status = 'new';
-                    let statusText = 'Nuovo';
-                    let ctaText = 'Inizia Studio →';
-                    
-                    if (progress > 0 && progress < 100) {
-                        status = 'in-progress';
-                        statusText = 'In Corso';
-                        ctaText = 'Continua →';
-                    } else if (progress === 100) {
-                        status = 'completed';
-                        statusText = 'Completato';
-                        ctaText = 'Rivedi';
-                    }
-                    
                     html += `
-                        <div class="study-item ${progress > 0 ? 'has-progress' : ''}" 
-                             onclick="selectStudy('${study.id}')" 
-                             style="--progress: ${progress}%"
-                             data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
-                            
-                            <span class="study-status ${status}">${statusText}</span>
-                            
+                        <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
                             <div class="study-left">
-                                <strong>${study.fileType || 'PDF'} ${study.name}</strong>
-                                <div class="study-info">
-                                    <span>${study.date}</span>
-                                    <span>•</span>
-                                    <span>${study.subject}</span>
-                                    <span>•</span>
-                                    <span>${totalFlashcards} flashcard</span>
-                                    <span>•</span>
-                                    <span>${totalQuiz} quiz</span>
-                                </div>
-                                ${progress > 0 ? `<div class="study-progress-text">📊 ${progress}% completato</div>` : ''}
+                                <strong>${study.fileType || '📄 PDF'} ${study.name}</strong>
+                                <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
                             </div>
-                            
-                            <div class="study-actions">
-                                <button class="study-cta" onclick="event.stopPropagation(); selectStudy('${study.id}')">
-                                    ${ctaText}
-                                </button>
-                                <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)" style="padding: 8px 12px; font-size: 13px;">📥</button>
-                                <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)" style="padding: 8px 12px; font-size: 13px;">🗑️</button>
+                            <div class="study-right">
+                                <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
+                                <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
                             </div>
                         </div>
                     `;
@@ -2076,27 +1640,27 @@ body.dark-mode .study-cta:hover {
             
             element.innerHTML = `
                 <h1>${study.name}</h1>
-                <p><strong>Tipo:</strong> ${study.fileType || 'PDF'} | <strong>Materia:</strong> ${study.subject} | <strong>Data:</strong> ${study.date}</p>
+                <p><strong>Tipo:</strong> ${study.fileType || '📄 PDF'} | <strong>Materia:</strong> ${study.subject} | <strong>Data:</strong> ${study.date}</p>
                 
-                <h2>Riassunto Breve</h2>
+                <h2>📝 Riassunto Breve</h2>
                 <p>${study.data.summary_short}</p>
                 
                 <h2>📖 Riassunto Completo</h2>
                 <p>${study.data.summary_long}</p>
                 
-                <h2>Punti Salienti</h2>
+                <h2>⭐ Punti Salienti</h2>
                 <ul>
                     ${(study.data.highlights || []).map(h => `<li>${h}</li>`).join('')}
                 </ul>
                 
-                <h2>Glossario</h2>
+                <h2>📖 Glossario</h2>
                 ${(study.data.glossary || []).map(g => `
                     <div style="margin-bottom: 10px;">
                         <strong>${g.term}:</strong> ${g.definition}
                     </div>
                 `).join('')}
                 
-                <h2>Flashcard</h2>
+                <h2>🎴 Flashcard</h2>
                 ${(study.data.flashcards || []).map((f, i) => `
                     <div style="margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
                         <strong>Domanda ${i+1}:</strong> ${f.q}<br>
@@ -2104,7 +1668,7 @@ body.dark-mode .study-cta:hover {
                     </div>
                 `).join('')}
                 
-                <h2>Quiz</h2>
+                <h2>❓ Quiz</h2>
                 ${(study.data.quiz || []).map((q, i) => `
                     <div style="margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
                         <strong>Quiz ${i+1}:</strong> ${q.q}<br>
@@ -2183,8 +1747,8 @@ body.dark-mode .study-cta:hover {
             document.getElementById('contentArea').innerHTML = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <p style="margin-bottom: 20px;"><strong>Tipo:</strong> ${study.fileType || 'PDF'}</p>
-                <div class="section"><h3>Riassunto Breve</h3><div class="card">${study.data.summary_short || 'N/A'}</div></div>
+                <p style="margin-bottom: 20px;"><strong>Tipo:</strong> ${study.fileType || '📄 PDF'}</p>
+                <div class="section"><h3>📝 Riassunto Breve</h3><div class="card">${study.data.summary_short || 'N/A'}</div></div>
                 <div class="section"><h3>📖 Riassunto Completo</h3><div class="card">${study.data.summary_long || 'N/A'}</div></div>
             `;
         }
@@ -2196,7 +1760,7 @@ body.dark-mode .study-cta:hover {
             let html = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <h3>Punti Salienti (${(study.data.highlights || []).length})</h3>
+                <h3>⭐ Punti Salienti (${(study.data.highlights || []).length})</h3>
                 <p style="color: #666; margin-bottom: 20px;">Clicca su ogni punto per vedere la spiegazione dettagliata</p>
             `;
             
@@ -2313,7 +1877,7 @@ body.dark-mode .study-cta:hover {
             let html = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <h3>Glossario (${(study.data.glossary || []).length} termini)</h3>
+                <h3>📖 Glossario (${(study.data.glossary || []).length} termini)</h3>
                 <p style="color: #666; margin-bottom: 15px;">Clicca su ogni termine per vedere definizione ed esempi</p>
             `;
             
@@ -2348,7 +1912,7 @@ body.dark-mode .study-cta:hover {
                                 <p style="margin-bottom: 15px;"><strong>Definizione:</strong> ${item.definition}</p>
                                 
                                 ${hasExample ? `
-                                    <div style="background: rgba(102, 126, 234, 0.1); padding: 12px; border-radius: 6px; margin-top: 10px;">
+                                    <div style="background: rgba(102, 126, 234, 0.1); padding: 12px; border-radius: 8px; margin-top: 10px;">
                                         <strong style="color: var(--primary);">💡 Esempio pratico:</strong>
                                         <p style="margin-top: 8px;">${study.data.glossaryExamples[i]}</p>
                                     </div>
@@ -2440,7 +2004,7 @@ body.dark-mode .study-cta:hover {
                 document.getElementById('contentArea').innerHTML = `
                     <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                     <h2>${study.name}</h2>
-                    <h3>Timeline Cronologica</h3>
+                    <h3>📅 Timeline Cronologica</h3>
                     <p style="color: #666; margin-bottom: 20px;">Clicca su ogni evento per vedere i dettagli</p>
                     <div class="card" style="text-align: center; padding: 40px;">
                         <div style="font-size: 3em; margin-bottom: 15px;">📅</div>
@@ -2456,7 +2020,7 @@ body.dark-mode .study-cta:hover {
             let html = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <h3>Timeline Cronologica (${timeline.length} eventi)</h3>
+                <h3>📅 Timeline Cronologica (${timeline.length} eventi)</h3>
                 <p style="color: #666; margin-bottom: 20px;">Clicca su ogni evento per vedere i dettagli</p>
                 <div style="position: relative; padding: 20px 0;">
                     <div style="position: absolute; left: 30px; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--primary), var(--secondary));"></div>
@@ -2468,7 +2032,7 @@ body.dark-mode .study-cta:hover {
                     <div style="display: flex; align-items: flex-start; margin: 20px 0; position: relative;">
                         <div style="position: absolute; left: 21px; width: 20px; height: 20px; background: white; border: 4px solid var(--primary); border-radius: 50%; z-index: 1;"></div>
                         <div style="margin-left: 60px; flex: 1;">
-                            <div class="timeline-item" onclick="toggleTimelineItem('${itemId}')" style="cursor: pointer; transition: all 0.15s ease;">
+                            <div class="timeline-item" onclick="toggleTimelineItem('${itemId}')" style="cursor: pointer; transition: all 0.3s;">
                                 <div class="card" style="margin: 0; border-left: 4px solid var(--primary);">
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
                                         <div style="display: flex; align-items: center; gap: 10px;">
@@ -2654,7 +2218,7 @@ body.dark-mode .study-cta:hover {
             if (study.data.quiz && study.data.quiz.length > 0) {
                 html += `
                     <div class="section">
-                        <h3 style="color: var(--primary); margin-top: 30px;">Quiz a Risposta Multipla</h3>
+                        <h3 style="color: var(--primary); margin-top: 30px;">❓ Quiz a Risposta Multipla</h3>
                         <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
                             Vai alla sezione Quiz per esercitarti con ${study.data.quiz.length} domande
                         </p>
@@ -2708,12 +2272,12 @@ body.dark-mode .study-cta:hover {
             if (study.data.glossary && study.data.glossary.length > 0) {
                 html += `
                     <div class="section">
-                        <h3 style="color: var(--primary); margin-top: 30px;">Glossario dei Termini</h3>
+                        <h3 style="color: var(--primary); margin-top: 30px;">📖 Glossario dei Termini</h3>
                         <p style="color: #666; font-size: 0.95em; margin-bottom: 15px;">
                             ${study.data.glossary.length} termini chiave da conoscere
                         </p>
                         <button class="btn" onclick="switchTab('glossary')">
-                            Vai al Glossario
+                            📚 Vai al Glossario
                         </button>
                     </div>
                 `;
@@ -3057,7 +2621,7 @@ Contenuto: {content}`
                 title: 'Schema di Studio Avanzato',
                 prompt: `Crea uno schema di studio completo e strutturato:
 
-ARGOMENTO PRINCIPALE
+📚 ARGOMENTO PRINCIPALE
 ━━━━━━━━━━━━━━━━━
 
 🎯 OBIETTIVI DI APPRENDIMENTO
@@ -3354,7 +2918,7 @@ Contenuto: {content}`
                 
                 if (study.data.glossary && study.data.glossary.length > 0) {
                     slide = pptx.addSlide();
-                    slide.addText('Glossario', {
+                    slide.addText('📖 Glossario', {
                         x: 0.5, y: 0.5, fontSize: 32, bold: true, color: '667eea'
                     });
                     
@@ -3424,7 +2988,7 @@ Contenuto: {content}`
                 document.getElementById('contentArea').innerHTML = `
                     <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                     <h2>${study.name}</h2>
-                    <h3>Flashcard</h3>
+                    <h3>🎴 Flashcard</h3>
                     <div class="card" style="text-align: center;">
                         <p>Nessuna flashcard trovata per il filtro selezionato.</p>
                         <button class="btn" onclick="appState.flashcardMode = 'all'; renderFlashcardsAdvanced()">Mostra Tutte</button>
@@ -3440,10 +3004,10 @@ Contenuto: {content}`
             let html = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <h3>Flashcard (${appState.currentFlashcardFiltered + 1}/${filteredFlashcards.length})</h3>
+                <h3>🎴 Flashcard (${appState.currentFlashcardFiltered + 1}/${filteredFlashcards.length})</h3>
                 
                 <div style="display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap;">
-                    <button class="btn ${appState.flashcardMode === 'all' ? 'active' : ''}" onclick="changeFlashcardMode('all')">Tutte</button>
+                    <button class="btn ${appState.flashcardMode === 'all' ? 'active' : ''}" onclick="changeFlashcardMode('all')">📚 Tutte</button>
                     <button class="btn ${appState.flashcardMode === 'difficult' ? 'active' : ''}" onclick="changeFlashcardMode('difficult')">🔴 Difficili</button>
                     <button class="btn ${appState.flashcardMode === 'medium' ? 'active' : ''}" onclick="changeFlashcardMode('medium')">🟠 Medie</button>
                     <button class="btn ${appState.flashcardMode === 'easy' ? 'active' : ''}" onclick="changeFlashcardMode('easy')">🟢 Facili</button>
@@ -3470,7 +3034,7 @@ Contenuto: {content}`
                                 
                                 ${currentCard.example ? `
                                     <div class="flashcard-extra">
-                                        <div class="flashcard-extra-title">Esempio Pratico:</div>
+                                        <div class="flashcard-extra-title">📚 Esempio Pratico:</div>
                                         <div>${currentCard.example}</div>
                                     </div>
                                 ` : ''}
@@ -3485,7 +3049,7 @@ Contenuto: {content}`
                             
                             <div style="margin-top: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px;" onclick="event.stopPropagation()">
                                 ${!currentCard.explanation ? `<button class="expand-btn" onclick="generateExplanation('${currentCardId}', event)">💡 Spiega Semplice</button>` : ''}
-                                ${!currentCard.example ? `<button class="expand-btn" onclick="generateExample('${currentCardId}', event)">Genera Esempio</button>` : ''}
+                                ${!currentCard.example ? `<button class="expand-btn" onclick="generateExample('${currentCardId}', event)">📚 Esempio</button>` : ''}
                                 ${!currentCard.essay ? `<button class="expand-btn" onclick="generateEssay('${currentCardId}', event)">✏️ Domanda Saggio</button>` : ''}
                             </div>
                         </div>
@@ -3656,7 +3220,7 @@ Contenuto: {content}`
             } catch (error) {
                 alert('❌ Errore: ' + error.message);
                 btn.disabled = false;
-                btn.textContent = 'Genera Esempio';
+                btn.textContent = '📚 Esempio';
             }
         }
         
@@ -3711,7 +3275,7 @@ Contenuto: {content}`
                 document.getElementById('contentArea').innerHTML = `
                     <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                     <h2>${study.name}</h2>
-                    <h3>Quiz</h3>
+                    <h3>❓ Quiz</h3>
                     <div class="card" style="text-align: center;">
                         <p>Nessuna domanda trovata per il filtro selezionato.</p>
                         <button class="btn" onclick="appState.quizMode = 'all'; renderQuizAdvanced()">Mostra Tutte</button>
@@ -3729,10 +3293,10 @@ Contenuto: {content}`
             let html = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
                 <h2>${study.name}</h2>
-                <h3>Quiz (${appState.currentQuizFiltered + 1}/${filteredQuestions.length})</h3>
+                <h3>❓ Quiz (${appState.currentQuizFiltered + 1}/${filteredQuestions.length})</h3>
 
                 <div style="display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap;">
-                    <button class="btn ${appState.quizMode === 'all' ? 'active' : ''}" onclick="changeQuizMode('all')">Tutte</button>
+                    <button class="btn ${appState.quizMode === 'all' ? 'active' : ''}" onclick="changeQuizMode('all')">📚 Tutte</button>
                     <button class="btn ${appState.quizMode === 'wrong' ? 'active' : ''}" onclick="changeQuizMode('wrong')">❌ Sbagliate</button>
                     <button class="btn ${appState.quizMode === 'correct' ? 'active' : ''}" onclick="changeQuizMode('correct')">✅ Corrette</button>
                     <button class="btn ${appState.quizMode === 'unseen' ? 'active' : ''}" onclick="changeQuizMode('unseen')">👁️ Non Viste</button>
@@ -3979,7 +3543,7 @@ Contenuto: {content}`
             
             let html = `
                 <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
-                <h2>Chat AI - ${study.name}</h2>
+                <h2>💬 Chat AI - ${study.name}</h2>
                 
                 <div class="chat-context-info">
                     <strong>ℹ️ Contesto attivo:</strong> ${study.subject} - ${study.name}
@@ -3992,7 +3556,7 @@ Contenuto: {content}`
                         💡 Concetti principali
                     </div>
                     <div class="chat-suggestion" onclick="sendSuggestedQuestion('Crea un piano di studio per questa lezione')">
-                        Piano di studio
+                        📅 Piano di studio
                     </div>
                     <div class="chat-suggestion" onclick="sendSuggestedQuestion('Quali sono le domande d\\'esame più probabili?')">
                         🎯 Domande d'esame
