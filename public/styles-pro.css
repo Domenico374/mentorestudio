@@ -1,0 +1,174 @@
+/* public/styles-pro.css */
+
+/* 1) Design tokens */
+:root{
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --surface-2: #fafbff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e5e7eb;
+
+  --brand: #5b5ce2;       /* viola accent */
+  --brand-2: #4a4bd6;
+  --success: #16a34a;
+
+  --radius: 18px;
+  --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+  --shadow-sm: 0 6px 18px rgba(15, 23, 42, .08);
+
+  --container: 1120px;
+}
+
+/* 2) Global */
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height:1.5;
+}
+
+a{ color: inherit; text-decoration: none; }
+
+.container{
+  width: min(var(--container), calc(100% - 32px));
+  margin: 0 auto;
+}
+
+/* 3) Header */
+.app-header{
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(246,247,251, .85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 14px 0;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.brand img{ width: 34px; height: 34px; }
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+/* 4) Buttons */
+.btn{
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 14px;
+  cursor:pointer;
+  font-weight: 600;
+  box-shadow: none;
+  transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.btn:hover{
+  border-color: #d7dbe3;
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+.btn:active{ transform: translateY(0px); box-shadow:none; }
+
+.btn-primary{
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+.btn-primary:hover{ background: var(--brand-2); border-color: var(--brand-2); }
+
+.btn-ghost{
+  background: transparent;
+  border-color: transparent;
+}
+
+/* 5) Cards / sections */
+.card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.section{
+  padding: 24px 0;
+}
+
+.page-title{
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 18px 0 8px;
+}
+
+.page-subtitle{
+  color: var(--muted);
+  margin: 0 0 18px;
+}
+
+/* 6) Pills / tabs */
+.pillbar{
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 14px;
+}
+
+.pill{
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  font-weight: 700;
+  color: var(--text);
+}
+.pill.is-active{
+  background: rgba(91,92,226,.12);
+  border-color: rgba(91,92,226,.35);
+  color: var(--brand);
+}
+
+/* 7) Dropzone */
+.dropzone{
+  border: 2px dashed rgba(91,92,226,.35);
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 26px;
+  text-align:center;
+}
+.dropzone strong{ font-size: 16px; }
+.dropzone small{ display:block; color: var(--muted); margin-top: 6px; }
+
+/* 8) Pro badge (già pronto) */
+.badge-pro{
+  display:inline-flex;
+  align-items:center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  background: rgba(245, 158, 11, .14);
+  border: 1px solid rgba(245, 158, 11, .35);
+  color: #b45309;
+}
