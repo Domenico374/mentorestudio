@@ -3320,6 +3320,295 @@ img.lazy.loaded {
     isolation: isolate;
 }
 
+
+/* === PROFESSIONAL MINDMAP === */
+
+/* === PROFESSIONAL MINDMAP === */
+
+.mindmap-container {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    padding: 40px;
+    margin: 24px 0;
+    min-height: 500px;
+    position: relative;
+    overflow: hidden;
+}
+
+body.dark-mode .mindmap-container {
+    background: #0f0f0f;
+    border-color: #262626;
+}
+
+.mindmap-canvas {
+    width: 100%;
+    height: 600px;
+    position: relative;
+    overflow: visible;
+}
+
+.mindmap-svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Nodi della mappa */
+.mindmap-node {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mindmap-node:hover {
+    filter: brightness(1.1);
+    transform: scale(1.05);
+}
+
+.mindmap-node-circle {
+    fill: var(--accent);
+    stroke: white;
+    stroke-width: 3;
+    transition: all 0.3s ease;
+}
+
+.mindmap-node.level-0 .mindmap-node-circle {
+    fill: var(--primary);
+    r: 60;
+}
+
+.mindmap-node.level-1 .mindmap-node-circle {
+    fill: #3b82f6;
+    r: 45;
+}
+
+.mindmap-node.level-2 .mindmap-node-circle {
+    fill: #60a5fa;
+    r: 35;
+}
+
+.mindmap-node.level-3 .mindmap-node-circle {
+    fill: #93c5fd;
+    r: 28;
+}
+
+body.dark-mode .mindmap-node-circle {
+    stroke: #1a1a1a;
+}
+
+.mindmap-node-text {
+    fill: white;
+    font-size: 13px;
+    font-weight: 600;
+    text-anchor: middle;
+    pointer-events: none;
+    user-select: none;
+}
+
+.mindmap-node.level-0 .mindmap-node-text {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* Connessioni */
+.mindmap-connection {
+    fill: none;
+    stroke: #cbd5e1;
+    stroke-width: 2;
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .mindmap-connection {
+    stroke: #3f3f46;
+}
+
+.mindmap-connection.active {
+    stroke: var(--accent);
+    stroke-width: 3;
+}
+
+/* Badge contatore */
+.mindmap-badge {
+    fill: #ef4444;
+    stroke: white;
+    stroke-width: 2;
+}
+
+.mindmap-badge-text {
+    fill: white;
+    font-size: 10px;
+    font-weight: 700;
+    text-anchor: middle;
+}
+
+/* Tooltip */
+.mindmap-tooltip {
+    position: absolute;
+    background: var(--primary);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-width: 250px;
+}
+
+.mindmap-tooltip.show {
+    opacity: 1;
+}
+
+.mindmap-tooltip-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.mindmap-tooltip-content {
+    font-size: 12px;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+/* Controlli */
+.mindmap-controls {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.mindmap-control-btn {
+    width: 36px;
+    height: 36px;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+}
+
+.mindmap-control-btn:hover {
+    background: #f8fafc;
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+body.dark-mode .mindmap-control-btn {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+    color: white;
+}
+
+body.dark-mode .mindmap-control-btn:hover {
+    background: #2a2a2a;
+}
+
+/* Animazioni */
+@keyframes nodeAppear {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.mindmap-node {
+    animation: nodeAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.mindmap-node:nth-child(1) { animation-delay: 0.1s; }
+.mindmap-node:nth-child(2) { animation-delay: 0.15s; }
+.mindmap-node:nth-child(3) { animation-delay: 0.2s; }
+.mindmap-node:nth-child(4) { animation-delay: 0.25s; }
+.mindmap-node:nth-child(5) { animation-delay: 0.3s; }
+
+@keyframes connectionDraw {
+    from {
+        stroke-dashoffset: 1000;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.mindmap-connection {
+    stroke-dasharray: 1000;
+    animation: connectionDraw 0.8s ease forwards;
+}
+
+/* Expanded state */
+.mindmap-node.collapsed .mindmap-node-children {
+    display: none;
+}
+
+.mindmap-node.expanded .mindmap-expand-indicator {
+    transform: rotate(90deg);
+}
+
+/* Legend */
+.mindmap-legend {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+}
+
+body.dark-mode .mindmap-legend {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+}
+
+.mindmap-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mindmap-legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mindmap-container {
+        padding: 20px;
+    }
+    
+    .mindmap-canvas {
+        height: 400px;
+    }
+    
+    .mindmap-controls {
+        top: 8px;
+        right: 8px;
+    }
+    
+    .mindmap-legend {
+        flex-direction: column;
+        gap: 8px;
+        font-size: 11px;
+    }
+}
+
 </style>
 </head>
 <body>
@@ -4480,39 +4769,48 @@ img.lazy.loaded {
             if (!study) return;
             
             let html = `
-                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
-                <h2>${study.name}</h2>
-                <h3>🧠 Mappa Mentale Completa</h3>
-                <p style="color: #666; margin-bottom: 20px;">Struttura gerarchica con rami e collegamenti</p>
+                <div class="study-focus-mode">
+                    <div class="study-breadcrumb">
+                        <a href="#" onclick="goBack(); return false;">Libreria</a>
+                        <span>›</span>
+                        <span>${study.name}</span>
+                    </div>
+                    
+                    <h2>🧠 Mappa Mentale Interattiva</h2>
+                    <p style="color: #71717a; margin-bottom: 32px;">Esplora visualmente i concetti e le loro connessioni</p>
             `;
             
             const mindmap = study.data.mindmapDetailed;
             
             if (!mindmap) {
                 html += `
-                    <div class="card" style="text-align: center; padding: 40px;">
-                        <div style="font-size: 3em; margin-bottom: 20px;">🧠</div>
-                        <h3>Mappa Mentale non ancora generata</h3>
-                        <p style="color: #666; margin: 20px 0;">
-                            Genera una mappa mentale dettagliata con struttura gerarchica,<br>
-                            sotto-concetti e collegamenti tra i vari rami.
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🧠</div>
+                        <h3 class="empty-state-title">Mappa Mentale non ancora generata</h3>
+                        <p class="empty-state-description">
+                            Genera una mappa mentale interattiva con struttura gerarchica,
+                            nodi colorati, connessioni visive e navigazione intuitiva.
                         </p>
-                        <button class="btn" onclick="generateDetailedMindmap()">
+                        <button class="btn btn-ripple" onclick="generateDetailedMindmap()">
                             🤖 Genera Mappa Mentale Completa
                         </button>
                     </div>
                 `;
             } else {
                 html += `
-                    <div class="mindmap-container">
-                        <div class="mindmap-tree">
-                            ${mindmap}
+                    <div class="context-tip">
+                        <span class="context-tip-icon">💡</span>
+                        <div>
+                            <strong>Come usarla:</strong> Clicca sui nodi per evidenziare le connessioni, 
+                            passa il mouse per vedere i dettagli, usa i controlli per zoom e export.
                         </div>
                     </div>
                     
-                    <div class="export-buttons">
-                        <button class="btn" onclick="copyMindmap()">
-                            📋 Copia Mappa
+                    <div class="mindmap-container" id="mindmapCanvas"></div>
+                    
+                    <div class="export-buttons" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button class="btn" onclick="copyMindmapText()">
+                            📋 Copia come Testo
                         </button>
                         <button class="btn" onclick="downloadMindmap()">
                             📥 Scarica TXT
@@ -4521,11 +4819,99 @@ img.lazy.loaded {
                             🔄 Rigenera Mappa
                         </button>
                     </div>
-                `;
-            }
+                </div>
+            `;
             
             document.getElementById('contentArea').innerHTML = html;
+            
+            // Se c'è la mappa, inizializzala
+            if (mindmap) {
+                setTimeout(() => {
+                    const mindmapData = parseMindmapText(mindmap);
+                    window.currentMindmap = new ProfessionalMindMap('mindmapCanvas', mindmapData);
+                }, 100);
+            }
         }
+
+        function parseMindmapText(text) {
+            // Estrae il titolo principale (tra le linee ===)
+            const lines = text.split('\n');
+            let title = 'Concetto Centrale';
+            const children = [];
+            
+            // Cerca il titolo tra le linee di uguale
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line && !line.match(/^[━═─]+$/)) {
+                    const nextLine = lines[i + 1]?.trim() || '';
+                    if (nextLine.match(/^[━═─]+$/)) {
+                        title = line;
+                        break;
+                    }
+                }
+            }
+            
+            // Analizza i rami principali e sotto-concetti
+            let currentBranch = null;
+            let currentSubBranch = null;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmed = line.trim();
+                
+                // Skip linee vuote e separatori
+                if (!trimmed || trimmed.match(/^[━═─│├└]+$/) || trimmed.includes('Collegamenti:')) {
+                    continue;
+                }
+                
+                // Ramo principale (inizia con ├─ o └─)
+                if (line.match(/^[├└]─\s+/)) {
+                    const text = trimmed.replace(/^[├└]─\s+/, '').trim();
+                    if (text) {
+                        currentBranch = { text, children: [] };
+                        children.push(currentBranch);
+                        currentSubBranch = null;
+                    }
+                }
+                // Sotto-concetto di primo livello (│  ├─ o │  └─)
+                else if (line.match(/^│\s+[├└]─\s+/) && currentBranch) {
+                    const text = trimmed.replace(/^[│├└]─\s+/, '').trim();
+                    if (text) {
+                        currentSubBranch = { text, children: [] };
+                        currentBranch.children.push(currentSubBranch);
+                    }
+                }
+                // Sotto-concetto di secondo livello (│  │  ├─)
+                else if (line.match(/^│\s+│\s+[├└]─\s+/) && currentSubBranch) {
+                    const text = trimmed.replace(/^[│├└─\s]+/, '').trim();
+                    if (text) {
+                        currentSubBranch.children.push(text);
+                    }
+                }
+            }
+            
+            // Se non ha trovato rami, crea una struttura base
+            if (children.length === 0) {
+                const words = title.split(' ');
+                const mid = Math.ceil(words.length / 3);
+                children.push({ text: words.slice(0, mid).join(' '), children: [] });
+                children.push({ text: words.slice(mid, mid * 2).join(' '), children: [] });
+                children.push({ text: words.slice(mid * 2).join(' '), children: [] });
+            }
+            
+            return { title, children };
+        }
+
+        function copyMindmapText() {
+            const study = getCurrentStudy();
+            const mindmap = study.data.mindmapDetailed;
+            if (mindmap) {
+                navigator.clipboard.writeText(mindmap).then(() => {
+                    alert('✅ Mappa mentale copiata negli appunti!');
+                });
+            }
+        }
+
 
         async function generateDetailedMindmap() {
             const study = getCurrentStudy();
@@ -6862,6 +7248,349 @@ window.addEventListener('DOMContentLoaded', () => {
     initKeyboardShortcuts();
     initPerformanceOptimizations();
 });
+
+
+
+
+// === PROFESSIONAL MINDMAP GENERATOR ===
+
+class ProfessionalMindMap {
+    constructor(containerId, data) {
+        this.container = document.getElementById(containerId);
+        this.data = data;
+        this.width = 1000;
+        this.height = 600;
+        this.nodeRadius = { 0: 60, 1: 45, 2: 35, 3: 28 };
+        this.colors = {
+            0: '#0f172a',
+            1: '#3b82f6',
+            2: '#60a5fa',
+            3: '#93c5fd'
+        };
+        this.nodes = [];
+        this.connections = [];
+        this.expandedNodes = new Set();
+        
+        this.init();
+    }
+    
+    init() {
+        this.createSVG();
+        this.processData();
+        this.render();
+        this.setupControls();
+    }
+    
+    createSVG() {
+        this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        this.svg.setAttribute('class', 'mindmap-svg');
+        this.svg.setAttribute('viewBox', `0 0 ${this.width} ${this.height}`);
+        
+        // Gruppo per connessioni
+        this.connectionsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        this.svg.appendChild(this.connectionsGroup);
+        
+        // Gruppo per nodi
+        this.nodesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        this.svg.appendChild(this.nodesGroup);
+        
+        this.container.appendChild(this.svg);
+    }
+    
+    processData() {
+        // Converte i dati gerarchici in posizioni (x, y)
+        const centerX = this.width / 2;
+        const centerY = this.height / 2;
+        
+        // Nodo centrale
+        this.nodes.push({
+            id: 'root',
+            text: this.data.title,
+            level: 0,
+            x: centerX,
+            y: centerY,
+            children: this.data.children || []
+        });
+        
+        // Calcola posizioni per i figli
+        this.calculateChildrenPositions(this.nodes[0], centerX, centerY, 0);
+    }
+    
+    calculateChildrenPositions(parent, x, y, level) {
+        const children = parent.children;
+        if (!children || children.length === 0) return;
+        
+        const radius = 200 - (level * 40);
+        const angleStep = (2 * Math.PI) / children.length;
+        const startAngle = level === 0 ? -Math.PI / 2 : 0;
+        
+        children.forEach((child, i) => {
+            const angle = startAngle + (i * angleStep);
+            const childX = x + radius * Math.cos(angle);
+            const childY = y + radius * Math.sin(angle);
+            
+            const nodeData = {
+                id: `node-${level}-${i}`,
+                text: typeof child === 'string' ? child : child.text,
+                level: level + 1,
+                x: childX,
+                y: childY,
+                parent: parent.id,
+                children: typeof child === 'object' ? child.children : []
+            };
+            
+            this.nodes.push(nodeData);
+            
+            // Connessione
+            this.connections.push({
+                from: { x, y },
+                to: { x: childX, y: childY },
+                fromNode: parent.id,
+                toNode: nodeData.id
+            });
+            
+            // Ricorsione per i figli
+            if (nodeData.children && nodeData.children.length > 0) {
+                this.calculateChildrenPositions(nodeData, childX, childY, level + 1);
+            }
+        });
+    }
+    
+    render() {
+        // Disegna connessioni
+        this.connections.forEach(conn => {
+            this.drawConnection(conn);
+        });
+        
+        // Disegna nodi
+        this.nodes.forEach((node, index) => {
+            setTimeout(() => {
+                this.drawNode(node);
+            }, index * 50);
+        });
+    }
+    
+    drawConnection(conn) {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        
+        // Curva bezier per connessioni smooth
+        const midX = (conn.from.x + conn.to.x) / 2;
+        const midY = (conn.from.y + conn.to.y) / 2;
+        
+        const d = `M ${conn.from.x} ${conn.from.y} Q ${midX} ${midY} ${conn.to.x} ${conn.to.y}`;
+        
+        path.setAttribute('d', d);
+        path.setAttribute('class', 'mindmap-connection');
+        path.setAttribute('data-from', conn.fromNode);
+        path.setAttribute('data-to', conn.toNode);
+        
+        this.connectionsGroup.appendChild(path);
+    }
+    
+    drawNode(node) {
+        const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        group.setAttribute('class', `mindmap-node level-${node.level}`);
+        group.setAttribute('transform', `translate(${node.x}, ${node.y})`);
+        group.setAttribute('data-node-id', node.id);
+        
+        // Cerchio
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('class', 'mindmap-node-circle');
+        circle.setAttribute('r', this.nodeRadius[node.level] || 28);
+        circle.setAttribute('cx', 0);
+        circle.setAttribute('cy', 0);
+        
+        // Testo
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('class', 'mindmap-node-text');
+        text.setAttribute('x', 0);
+        text.setAttribute('y', 5);
+        
+        // Spezza il testo su più righe se troppo lungo
+        const words = node.text.split(' ');
+        const maxCharsPerLine = node.level === 0 ? 15 : 12;
+        let lines = [];
+        let currentLine = '';
+        
+        words.forEach(word => {
+            if ((currentLine + word).length > maxCharsPerLine && currentLine) {
+                lines.push(currentLine.trim());
+                currentLine = word + ' ';
+            } else {
+                currentLine += word + ' ';
+            }
+        });
+        if (currentLine) lines.push(currentLine.trim());
+        
+        // Limita a 2 righe
+        lines = lines.slice(0, 2);
+        if (lines.length === 1) {
+            text.textContent = lines[0];
+        } else {
+            const tspan1 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+            tspan1.setAttribute('x', 0);
+            tspan1.setAttribute('dy', -8);
+            tspan1.textContent = lines[0];
+            
+            const tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+            tspan2.setAttribute('x', 0);
+            tspan2.setAttribute('dy', 14);
+            tspan2.textContent = lines[1];
+            
+            text.appendChild(tspan1);
+            text.appendChild(tspan2);
+        }
+        
+        // Badge se ha figli
+        if (node.children && node.children.length > 0) {
+            const badge = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            badge.setAttribute('class', 'mindmap-badge');
+            badge.setAttribute('cx', this.nodeRadius[node.level] * 0.6);
+            badge.setAttribute('cy', -this.nodeRadius[node.level] * 0.6);
+            badge.setAttribute('r', 12);
+            
+            const badgeText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            badgeText.setAttribute('class', 'mindmap-badge-text');
+            badgeText.setAttribute('x', this.nodeRadius[node.level] * 0.6);
+            badgeText.setAttribute('y', -this.nodeRadius[node.level] * 0.6 + 4);
+            badgeText.textContent = node.children.length;
+            
+            group.appendChild(badge);
+            group.appendChild(badgeText);
+        }
+        
+        group.appendChild(circle);
+        group.appendChild(text);
+        
+        // Eventi
+        group.addEventListener('click', () => this.handleNodeClick(node));
+        group.addEventListener('mouseenter', (e) => this.showTooltip(node, e));
+        group.addEventListener('mouseleave', () => this.hideTooltip());
+        
+        this.nodesGroup.appendChild(group);
+    }
+    
+    handleNodeClick(node) {
+        console.log('Node clicked:', node.text);
+        // Highlight connessioni
+        this.highlightPath(node.id);
+    }
+    
+    highlightPath(nodeId) {
+        // Reset all
+        document.querySelectorAll('.mindmap-connection').forEach(c => c.classList.remove('active'));
+        
+        // Highlight path to root
+        let currentId = nodeId;
+        while (currentId !== 'root') {
+            const conn = this.connections.find(c => c.toNode === currentId);
+            if (!conn) break;
+            
+            const pathEl = document.querySelector(`[data-to="${currentId}"]`);
+            if (pathEl) pathEl.classList.add('active');
+            
+            currentId = conn.fromNode;
+        }
+    }
+    
+    showTooltip(node, event) {
+        let tooltip = document.querySelector('.mindmap-tooltip');
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.className = 'mindmap-tooltip';
+            this.container.appendChild(tooltip);
+        }
+        
+        const childrenInfo = node.children && node.children.length > 0 
+            ? `${node.children.length} concetti collegati` 
+            : 'Nodo finale';
+        
+        tooltip.innerHTML = `
+            <div class="mindmap-tooltip-title">${node.text}</div>
+            <div class="mindmap-tooltip-content">${childrenInfo}</div>
+        `;
+        
+        const rect = this.container.getBoundingClientRect();
+        tooltip.style.left = (event.clientX - rect.left + 10) + 'px';
+        tooltip.style.top = (event.clientY - rect.top + 10) + 'px';
+        tooltip.classList.add('show');
+    }
+    
+    hideTooltip() {
+        const tooltip = document.querySelector('.mindmap-tooltip');
+        if (tooltip) {
+            tooltip.classList.remove('show');
+        }
+    }
+    
+    setupControls() {
+        const controls = document.createElement('div');
+        controls.className = 'mindmap-controls';
+        controls.innerHTML = `
+            <button class="mindmap-control-btn" onclick="window.currentMindmap.zoomIn()" data-tooltip="Zoom In">+</button>
+            <button class="mindmap-control-btn" onclick="window.currentMindmap.zoomOut()" data-tooltip="Zoom Out">−</button>
+            <button class="mindmap-control-btn" onclick="window.currentMindmap.resetView()" data-tooltip="Reset">⟲</button>
+            <button class="mindmap-control-btn" onclick="window.currentMindmap.exportPNG()" data-tooltip="Export">💾</button>
+        `;
+        this.container.appendChild(controls);
+    }
+    
+    zoomIn() {
+        const currentScale = this.svg.style.transform.match(/scale\(([\d.]+)\)/);
+        const scale = currentScale ? parseFloat(currentScale[1]) * 1.2 : 1.2;
+        this.svg.style.transform = `scale(${scale})`;
+        this.svg.style.transformOrigin = 'center center';
+    }
+    
+    zoomOut() {
+        const currentScale = this.svg.style.transform.match(/scale\(([\d.]+)\)/);
+        const scale = currentScale ? parseFloat(currentScale[1]) / 1.2 : 0.8;
+        this.svg.style.transform = `scale(${Math.max(0.5, scale)})`;
+    }
+    
+    resetView() {
+        this.svg.style.transform = 'scale(1)';
+    }
+    
+    exportPNG() {
+        // Crea un canvas e converte SVG in immagine
+        alert('Feature Export PNG in sviluppo! 🚀');
+    }
+}
+
+// Funzione helper per generare la mappa da testo
+function generateMindMapFromText(text) {
+    const lines = text.split('\n').filter(line => line.trim());
+    const root = {
+        title: lines[0].replace(/```|═+/g, '').trim(),
+        children: []
+    };
+    
+    let currentParent = null;
+    let currentLevel = 0;
+    
+    lines.slice(1).forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('```')) return;
+        
+        // Conta il livello di indentazione
+        const indent = line.search(/\S/);
+        const level = Math.floor(indent / 2);
+        
+        // Pulisci il testo
+        const text = trimmed.replace(/[├─│└┐┘┌┬┴┼╭╮╯╰│─]/g, '').trim();
+        if (!text) return;
+        
+        if (level === 0) {
+            currentParent = { text, children: [] };
+            root.children.push(currentParent);
+        } else if (level === 1 && currentParent) {
+            currentParent.children.push(text);
+        }
+    });
+    
+    return root;
+}
 
 
 </script>
