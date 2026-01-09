@@ -973,6 +973,332 @@ body.dark-mode .logo-hexagon {
     background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
 }
 
+
+/* === STEP 1: ENHANCED STUDY CARDS === */
+.study-item {
+    position: relative !important;
+    padding: 20px 24px !important;
+    margin: 12px 0 !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 12px !important;
+    background: white !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    overflow: hidden !important;
+}
+
+.study-item::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6 0%, #3b82f6 var(--progress, 0%), #e5e5e5 var(--progress, 0%), #e5e5e5 100%);
+    transition: all 0.3s ease;
+}
+
+.study-item:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08) !important;
+    border-color: #3b82f6 !important;
+}
+
+.study-status {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.study-status.new {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.study-status.in-progress {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.study-status.completed {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.study-item:hover .study-status {
+    transform: scale(1.05);
+}
+
+.study-left {
+    flex: 1;
+    padding-right: 100px;
+}
+
+.study-progress-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    color: #3b82f6;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.study-cta {
+    padding: 8px 16px !important;
+    background: var(--primary) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: all 0.2s ease !important;
+}
+
+.study-cta:hover {
+    transform: translateX(2px) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+.study-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.study-item {
+    animation: slideInUp 0.3s ease backwards;
+}
+
+.study-item:nth-child(1) { animation-delay: 0.05s; }
+.study-item:nth-child(2) { animation-delay: 0.1s; }
+.study-item:nth-child(3) { animation-delay: 0.15s; }
+
+
+/* === STEP 2: ZEN STUDY MODE === */
+.content-area {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding: 48px 40px !important;
+    background: #fafaf9 !important;
+    min-height: calc(100vh - 120px) !important;
+}
+
+body.dark-mode .content-area {
+    background: #0a0a0a !important;
+}
+
+.content-area h2 {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1.2 !important;
+    margin-bottom: 12px !important;
+}
+
+.content-area h3 {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.02em !important;
+    margin-top: 32px !important;
+    margin-bottom: 16px !important;
+}
+
+.content-area p,
+.content-area li {
+    font-size: 17px !important;
+    line-height: 1.8 !important;
+    color: #3f3f46 !important;
+    margin-bottom: 16px !important;
+}
+
+body.dark-mode .content-area p,
+body.dark-mode .content-area li {
+    color: #d4d4d4 !important;
+}
+
+.card {
+    background: white !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 12px !important;
+    padding: 28px 32px !important;
+    margin: 24px 0 !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+}
+
+body.dark-mode .card {
+    background: #0f0f0f !important;
+    border-color: #262626 !important;
+}
+
+.highlight-item {
+    background: white !important;
+    border: 1px solid #e5e5e5 !important;
+    border-left: 4px solid #3b82f6 !important;
+    border-radius: 8px !important;
+    padding: 24px 28px !important;
+    margin: 20px 0 !important;
+}
+
+.highlight-item:hover {
+    border-left-color: #2563eb !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08) !important;
+}
+
+body.dark-mode .highlight-item {
+    background: #0f0f0f !important;
+    border-color: #262626 !important;
+}
+
+.highlight-title {
+    font-size: 17px !important;
+    font-weight: 600 !important;
+    line-height: 1.6 !important;
+    margin-bottom: 12px !important;
+}
+
+.highlight-details {
+    font-size: 16px !important;
+    line-height: 1.8 !important;
+    color: #52525b !important;
+    margin-top: 16px !important;
+    padding-top: 16px !important;
+    border-top: 1px solid #f4f4f5 !important;
+}
+
+body.dark-mode .highlight-details {
+    color: #a1a1aa !important;
+    border-top-color: #262626 !important;
+}
+
+.study-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #71717a;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f4f4f5;
+}
+
+.study-breadcrumb a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.study-breadcrumb a:hover {
+    color: #2563eb;
+}
+
+.back-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #71717a !important;
+    margin-bottom: 24px !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+}
+
+.back-btn:hover {
+    color: var(--primary) !important;
+    background: #f8fafc !important;
+}
+
+.section {
+    margin-bottom: 48px !important;
+}
+
+.study-focus-mode {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.category-card {
+    background: white !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 16px !important;
+    padding: 32px 28px !important;
+}
+
+.category-card:hover {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important;
+    transform: translateY(-4px) !important;
+}
+
+body.dark-mode .category-card {
+    background: #0f0f0f !important;
+    border-color: #262626 !important;
+}
+
+@media (max-width: 768px) {
+    .content-area {
+        padding: 32px 20px !important;
+    }
+    .content-area p,
+    .content-area li {
+        font-size: 16px !important;
+    }
+}
+
+
+/* === STEP 3: BADGE PRO DISCRETO === */
+.pro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+    transition: all 0.2s ease;
+}
+
+.pro-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.pro-badge-icon {
+    font-size: 12px;
+}
+
+body.dark-mode .pro-badge {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
+}
+
+body.dark-mode .pro-badge:hover {
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+}
+
 </style>
 </head>
 <body>
@@ -990,6 +1316,10 @@ body.dark-mode .logo-hexagon {
                 </div>
             </div>
             <div class="header-controls">
+                <span class="pro-badge">
+                    <span class="pro-badge-icon">✨</span>
+                    Pro
+                </span>
                 <button class="toggle-btn" onclick="toggleDarkMode()">🌙</button>
             </div>
         </div>
@@ -1580,8 +1910,8 @@ body.dark-mode .logo-hexagon {
         }
 
         function renderLibrary() {
-            let html = '<h2>📚 Le tue lezioni</h2>';
-            html += '<input type="text" class="search-box" id="librarySearch" placeholder="🔍 Cerca un termine in tutte le lezioni..." onkeyup="filterLibrary()">';
+            let html = '<h2>Le tue lezioni</h2>';
+            html += '<input type="text" class="search-box" id="librarySearch" placeholder="Cerca nelle lezioni..." onkeyup="filterLibrary()">';
             const studies = Object.values(appState.studies).sort((a, b) => b.id - a.id);
             
             if (studies.length === 0) {
@@ -1599,15 +1929,57 @@ body.dark-mode .logo-hexagon {
                 `;
             } else {
                 studies.forEach(study => {
+                    const totalFlashcards = study.data.flashcards?.length || 0;
+                    const totalQuiz = study.data.quiz?.length || 0;
+                    const completedFlashcards = study.completedFlashcards || 0;
+                    const completedQuiz = study.completedQuiz || 0;
+                    
+                    const totalItems = totalFlashcards + totalQuiz;
+                    const completedItems = completedFlashcards + completedQuiz;
+                    const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+                    
+                    let status = 'new';
+                    let statusText = 'Nuovo';
+                    let ctaText = 'Inizia Studio →';
+                    
+                    if (progress > 0 && progress < 100) {
+                        status = 'in-progress';
+                        statusText = 'In Corso';
+                        ctaText = 'Continua →';
+                    } else if (progress === 100) {
+                        status = 'completed';
+                        statusText = 'Completato';
+                        ctaText = 'Rivedi';
+                    }
+                    
                     html += `
-                        <div class="study-item" onclick="selectStudy('${study.id}')" data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
+                        <div class="study-item" 
+                             onclick="selectStudy('${study.id}')" 
+                             style="--progress: ${progress}%"
+                             data-search="${study.name.toLowerCase()} ${(study.data.highlights || []).join(' ').toLowerCase()} ${(study.data.glossary || []).map(g => g.term.toLowerCase()).join(' ')}">
+                            
+                            <span class="study-status ${status}">${statusText}</span>
+                            
                             <div class="study-left">
-                                <strong>${study.fileType || '📄 PDF'} ${study.name}</strong>
-                                <div class="study-info">📅 ${study.date} • 📚 ${study.subject} • 🎴 ${study.data.flashcards?.length || 0} flashcard • ❓ ${study.data.quiz?.length || 0} quiz</div>
+                                <strong>${study.fileType || 'PDF'} ${study.name}</strong>
+                                <div class="study-info">
+                                    <span>${study.date}</span>
+                                    <span>•</span>
+                                    <span>${study.subject}</span>
+                                    <span>•</span>
+                                    <span>${totalFlashcards} flashcard</span>
+                                    <span>•</span>
+                                    <span>${totalQuiz} quiz</span>
+                                </div>
+                                ${progress > 0 ? `<div class="study-progress-text">📊 ${progress}% completato</div>` : ''}
                             </div>
-                            <div class="study-right">
-                                <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)">📥 PDF</button>
-                                <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)">🗑️</button>
+                            
+                            <div class="study-actions">
+                                <button class="study-cta" onclick="event.stopPropagation(); selectStudy('${study.id}')">
+                                    ${ctaText}
+                                </button>
+                                <button class="btn btn-export" onclick="exportStudyPDF('${study.id}', event)" style="padding: 8px 12px; font-size: 13px;">📥</button>
+                                <button class="btn btn-delete" onclick="deleteStudy('${study.id}', event)" style="padding: 8px 12px; font-size: 13px;">🗑️</button>
                             </div>
                         </div>
                     `;
@@ -1745,11 +2117,26 @@ body.dark-mode .logo-hexagon {
             if (!study) return;
             
             document.getElementById('contentArea').innerHTML = `
-                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
-                <h2>${study.name}</h2>
-                <p style="margin-bottom: 20px;"><strong>Tipo:</strong> ${study.fileType || '📄 PDF'}</p>
-                <div class="section"><h3>📝 Riassunto Breve</h3><div class="card">${study.data.summary_short || 'N/A'}</div></div>
-                <div class="section"><h3>📖 Riassunto Completo</h3><div class="card">${study.data.summary_long || 'N/A'}</div></div>
+                <div class="study-focus-mode">
+                    <div class="study-breadcrumb">
+                        <a href="#" onclick="goBack(); return false;">Libreria</a>
+                        <span>›</span>
+                        <span>${study.name}</span>
+                    </div>
+                    
+                    <h2>Riassunto</h2>
+                    <p style="color: #71717a; margin-bottom: 32px;">${study.fileType || 'PDF'} • ${study.subject}</p>
+                    
+                    <div class="section">
+                        <h3>Sintesi Breve</h3>
+                        <div class="card">${study.data.summary_short || 'Contenuto non disponibile'}</div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>Analisi Completa</h3>
+                        <div class="card">${study.data.summary_long || 'Contenuto non disponibile'}</div>
+                    </div>
+                </div>
             `;
         }
 
@@ -1758,19 +2145,24 @@ body.dark-mode .logo-hexagon {
             if (!study) return;
             
             let html = `
-                <div class="back-btn" onclick="goBack()">← Torna alla Libreria</div>
-                <h2>${study.name}</h2>
-                <h3>⭐ Punti Salienti (${(study.data.highlights || []).length})</h3>
-                <p style="color: #666; margin-bottom: 20px;">Clicca su ogni punto per vedere la spiegazione dettagliata</p>
+                <div class="study-focus-mode">
+                    <div class="study-breadcrumb">
+                        <a href="#" onclick="goBack(); return false;">Libreria</a>
+                        <span>›</span>
+                        <span>${study.name}</span>
+                    </div>
+                    
+                    <h2>Punti Chiave</h2>
+                    <p style="color: #71717a; margin-bottom: 32px;">${(study.data.highlights || []).length} concetti principali identificati</p>
             `;
             
             if (!study.data.highlights || study.data.highlights.length === 0) {
                 html += `
-                    <div class="card" style="text-align: center; padding: 40px;">
-                        <div style="font-size: 3em; margin-bottom: 15px;">⭐</div>
-                        <h3>Nessun punto saliente trovato</h3>
-                        <p style="margin-top: 10px; color: #666;">
-                            I punti chiave verranno estratti automaticamente dal contenuto.
+                    <div class="card" style="text-align: center; padding: 60px 40px;">
+                        <div style="font-size: 3em; margin-bottom: 15px; opacity: 0.3;">✨</div>
+                        <h3 style="margin-bottom: 12px;">Nessun punto chiave trovato</h3>
+                        <p style="margin-top: 10px; color: #71717a;">
+                            I concetti principali verranno estratti automaticamente dal contenuto.
                         </p>
                     </div>
                 `;
@@ -1782,30 +2174,18 @@ body.dark-mode .logo-hexagon {
                     html += `
                         <div class="highlight-item" onclick="toggleHighlight('${highlightId}')">
                             <div class="highlight-header">
-                                <div class="highlight-title">
-                                    <strong style="color: var(--primary);">${i + 1}.</strong> 
-                                    <span class="key-concept" style="display: inline; padding: 4px 10px;">${h}</span>
-                                </div>
-                                <span class="highlight-icon" id="${highlightId}_icon">▼</span>
+                                <div class="highlight-title">${h}</div>
+                                <span class="highlight-icon" style="color: #3b82f6;">${hasExplanation ? '−' : '+'}</span>
                             </div>
-                            
-                            <div class="highlight-details" id="${highlightId}_details">
-                                ${hasExplanation ? `
-                                    <p>${study.data.highlightDetails[i]}</p>
-                                ` : `
-                                    <p style="color: #999; font-style: italic;">
-                                        Nessuna spiegazione disponibile. Generane una con l'AI!
-                                    </p>
-                                    <button class="generate-btn" onclick="generateHighlightExplanation(${i}, event)">
-                                        🤖 Genera Spiegazione Dettagliata
-                                    </button>
-                                `}
+                            <div class="highlight-details" id="${highlightId}" style="${hasExplanation ? '' : 'display: none;'}">
+                                ${hasExplanation || '<em style="color: #a1a1aa;">Spiegazione in caricamento...</em>'}
                             </div>
                         </div>
                     `;
                 });
             }
             
+            html += `</div>`;
             document.getElementById('contentArea').innerHTML = html;
         }
 
