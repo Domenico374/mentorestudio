@@ -2380,6 +2380,946 @@ body.dark-mode .bottom-nav-item:active {
     }
 }
 
+
+/* === ENHANCEMENTS 6-10 === */
+
+/* === ENHANCEMENT 6: DARK MODE PERFEZIONATO === */
+
+/* True Black for OLED */
+body.dark-mode.true-black {
+    background: #000000 !important;
+}
+
+body.dark-mode.true-black .content-area {
+    background: #000000 !important;
+}
+
+body.dark-mode.true-black .card,
+body.dark-mode.true-black .study-item,
+body.dark-mode.true-black .category-card {
+    background: #0a0a0a !important;
+    border-color: #1a1a1a !important;
+}
+
+/* Smooth Transition */
+body,
+.header,
+.content-area,
+.card,
+.study-item,
+.category-card,
+.btn,
+.tab-btn {
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Dark Mode Toggle Enhanced */
+.dark-mode-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: none;
+    z-index: 1000;
+    min-width: 200px;
+}
+
+body.dark-mode .dark-mode-options {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+}
+
+.dark-mode-options.show {
+    display: block;
+    animation: fadeInDown 0.2s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dark-mode-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 14px;
+}
+
+.dark-mode-option:hover {
+    background: #f8fafc;
+}
+
+body.dark-mode .dark-mode-option:hover {
+    background: #2a2a2a;
+}
+
+.dark-mode-option.active {
+    background: #eff6ff;
+    color: var(--accent);
+}
+
+body.dark-mode .dark-mode-option.active {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.dark-mode-option-icon {
+    font-size: 18px;
+}
+
+.dark-mode-option-text {
+    flex: 1;
+}
+
+/* Schedule Indicator */
+.schedule-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--accent);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+/* Improved Contrast */
+body.dark-mode .highlight-details,
+body.dark-mode .study-info {
+    color: #c7c7c7 !important;
+}
+
+body.dark-mode .content-area p,
+body.dark-mode .content-area li {
+    color: #e0e0e0 !important;
+}
+
+/* === ENHANCEMENT 7: EXPORT E SHARING === */
+
+/* Export Menu */
+.export-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: none;
+    z-index: 1000;
+    min-width: 180px;
+}
+
+body.dark-mode .export-menu {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+}
+
+.export-menu.show {
+    display: block;
+    animation: fadeInDown 0.2s ease;
+}
+
+.export-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 14px;
+    color: var(--primary);
+}
+
+.export-option:hover {
+    background: #f8fafc;
+}
+
+body.dark-mode .export-option {
+    color: white;
+}
+
+body.dark-mode .export-option:hover {
+    background: #2a2a2a;
+}
+
+.export-option-icon {
+    font-size: 16px;
+}
+
+/* Share Modal */
+.share-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+}
+
+.share-modal.show {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.share-modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dark-mode .share-modal-content {
+    background: #1a1a1a;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.share-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.share-modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+body.dark-mode .share-modal-title {
+    color: white;
+}
+
+.share-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #71717a;
+    padding: 4px;
+    line-height: 1;
+}
+
+.share-modal-close:hover {
+    color: var(--primary);
+}
+
+.share-link-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.share-link-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #f8fafc;
+}
+
+body.dark-mode .share-link-input {
+    background: #0f0f0f;
+    border-color: #2a2a2a;
+    color: white;
+}
+
+.share-copy-btn {
+    padding: 12px 20px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.share-copy-btn:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.share-copy-btn.copied {
+    background: #059669;
+}
+
+/* Print-Friendly Styles */
+@media print {
+    .header,
+    .tabs,
+    .back-btn,
+    .btn,
+    .study-actions,
+    .bottom-nav,
+    .fab,
+    .pro-badge {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .content-area {
+        max-width: 100% !important;
+        padding: 20px !important;
+    }
+    
+    .card {
+        border: 1px solid #ddd !important;
+        page-break-inside: avoid;
+    }
+}
+
+/* QR Code Display */
+.qr-code-container {
+    text-align: center;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+body.dark-mode .qr-code-container {
+    background: #0f0f0f;
+}
+
+.qr-code-image {
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+/* === ENHANCEMENT 8: AI FEATURES ENHANCED === */
+
+/* Smart Suggestions */
+.ai-suggestion {
+    background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+    border: 1px solid #bfdbfe;
+    border-left: 4px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    animation: slideInRight 0.4s ease;
+}
+
+body.dark-mode .ai-suggestion {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.ai-suggestion-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.ai-suggestion-content {
+    flex: 1;
+}
+
+.ai-suggestion-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 6px;
+}
+
+.ai-suggestion-text {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+body.dark-mode .ai-suggestion-text {
+    color: #a1a1aa;
+}
+
+.ai-suggestion-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.ai-suggestion-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.ai-suggestion-btn:hover {
+    background: var(--accent);
+    color: white;
+}
+
+.ai-suggestion-btn.dismiss {
+    border-color: #e5e5e5;
+    color: #71717a;
+}
+
+.ai-suggestion-btn.dismiss:hover {
+    background: #f8fafc;
+    color: var(--primary);
+}
+
+/* Auto-Category Badge */
+.auto-category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+    color: white;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+/* Difficulty Indicator */
+.difficulty-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.difficulty-badge.easy {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.difficulty-badge.medium {
+    background: #fed7aa;
+    color: #92400e;
+}
+
+.difficulty-badge.hard {
+    background: #fecaca;
+    color: #991b1b;
+}
+
+body.dark-mode .difficulty-badge.easy {
+    background: rgba(5, 150, 105, 0.2);
+    color: #6ee7b7;
+}
+
+body.dark-mode .difficulty-badge.medium {
+    background: rgba(251, 146, 60, 0.2);
+    color: #fdba74;
+}
+
+body.dark-mode .difficulty-badge.hard {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+}
+
+/* AI Processing Indicator */
+.ai-processing {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #71717a;
+}
+
+body.dark-mode .ai-processing {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+    color: #a1a1aa;
+}
+
+.ai-processing-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #e5e5e5;
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Smart Highlights Priority */
+.highlight-item.priority-high {
+    border-left-width: 6px;
+    border-left-color: #dc2626;
+}
+
+.highlight-item.priority-medium {
+    border-left-width: 5px;
+    border-left-color: #f59e0b;
+}
+
+.highlight-item.priority-low {
+    border-left-width: 4px;
+    border-left-color: #3b82f6;
+}
+
+/* === ENHANCEMENT 9: ACCESSIBILITÀ === */
+
+/* Focus Indicators Enhanced */
+*:focus {
+    outline: 3px solid var(--accent) !important;
+    outline-offset: 2px !important;
+}
+
+button:focus,
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 3px solid var(--accent) !important;
+    outline-offset: 2px !important;
+}
+
+/* Skip to Content Link */
+.skip-to-content {
+    position: fixed;
+    top: -100px;
+    left: 20px;
+    background: var(--accent);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 10000;
+    font-weight: 600;
+    transition: top 0.3s ease;
+}
+
+.skip-to-content:focus {
+    top: 20px;
+}
+
+/* Screen Reader Only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Keyboard Navigation Hints */
+.keyboard-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    background: #f8fafc;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #71717a;
+    font-family: 'Monaco', 'Courier New', monospace;
+}
+
+body.dark-mode .keyboard-hint {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+    color: #a1a1aa;
+}
+
+/* High Contrast Mode */
+body.high-contrast {
+    background: #ffffff !important;
+    color: #000000 !important;
+}
+
+body.high-contrast * {
+    border-color: #000000 !important;
+}
+
+body.high-contrast .btn,
+body.high-contrast .card,
+body.high-contrast .study-item {
+    border: 2px solid #000000 !important;
+}
+
+body.high-contrast a,
+body.high-contrast .btn {
+    color: #0000ff !important;
+    text-decoration: underline;
+}
+
+body.high-contrast .btn:hover {
+    background: #0000ff !important;
+    color: #ffffff !important;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Keyboard Shortcuts Help */
+.shortcuts-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+}
+
+.shortcuts-modal.show {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.shortcuts-content {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .shortcuts-content {
+    background: #1a1a1a;
+}
+
+.shortcuts-grid {
+    display: grid;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.shortcut-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+body.dark-mode .shortcut-item {
+    background: #0f0f0f;
+}
+
+.shortcut-description {
+    font-size: 14px;
+    color: var(--primary);
+}
+
+body.dark-mode .shortcut-description {
+    color: white;
+}
+
+.shortcut-keys {
+    display: flex;
+    gap: 4px;
+}
+
+/* ARIA Live Region */
+.live-region {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Focus Trap for Modals */
+.modal-open {
+    overflow: hidden;
+}
+
+/* Larger Touch Targets on Mobile */
+@media (max-width: 768px) {
+    button,
+    a,
+    input,
+    select {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* Contrast Enhancement */
+body.enhanced-contrast {
+    filter: contrast(1.2);
+}
+
+/* Text Spacing Override */
+body.relaxed-spacing p,
+body.relaxed-spacing li {
+    line-height: 2 !important;
+    letter-spacing: 0.05em !important;
+    word-spacing: 0.1em !important;
+}
+
+/* === ENHANCEMENT 10: PERFORMANCE OPTIMIZATION === */
+
+/* Lazy Loading Placeholder */
+.lazy-load {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.lazy-load.loaded {
+    opacity: 1;
+}
+
+.lazy-placeholder {
+    background: #f0f0f0;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+body.dark-mode .lazy-placeholder {
+    background: #1a1a1a;
+}
+
+/* Virtual Scroll Container */
+.virtual-scroll-container {
+    height: 600px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.virtual-scroll-spacer {
+    width: 100%;
+}
+
+.virtual-scroll-viewport {
+    position: relative;
+}
+
+/* Content Visibility for Performance */
+.content-section {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+}
+
+/* Will-Change for Animations */
+.animated-element {
+    will-change: transform, opacity;
+}
+
+.animated-element.animating {
+    transform: translateZ(0);
+}
+
+/* GPU Acceleration */
+.gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Image Optimization */
+img {
+    content-visibility: auto;
+}
+
+img.lazy {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+img.lazy.loaded {
+    opacity: 1;
+}
+
+/* Reduce Layout Shifts */
+.aspect-ratio-box {
+    position: relative;
+    width: 100%;
+}
+
+.aspect-ratio-box::before {
+    content: '';
+    display: block;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
+}
+
+.aspect-ratio-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Optimize Repaints */
+.no-repaint {
+    contain: layout style paint;
+}
+
+/* Defer Non-Critical CSS */
+.deferred-content {
+    display: none;
+}
+
+.deferred-content.loaded {
+    display: block;
+}
+
+/* Smooth Scrolling with Performance */
+.smooth-scroll {
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .smooth-scroll {
+        scroll-behavior: auto;
+    }
+}
+
+/* Intersection Observer Visibility */
+.fade-in-viewport {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in-viewport.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Optimize Shadows */
+.optimized-shadow {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.optimized-shadow:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+/* CSS Containment */
+.contained-element {
+    contain: layout style;
+}
+
+/* Reduce JavaScript Reflow */
+.no-reflow {
+    transform: translateZ(0);
+}
+
+/* Debounced Resize Indicator */
+.resize-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--accent);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 9999;
+}
+
+.resize-indicator.show {
+    opacity: 1;
+}
+
+/* Loading State Optimization */
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+/* Reduce Paint Area */
+.isolated-layer {
+    isolation: isolate;
+}
+
 </style>
 </head>
 <body>
@@ -5542,6 +6482,385 @@ window.addEventListener('resize', () => {
         initMobileNav();
         initFAB();
     }, 250);
+});
+
+
+
+
+// === ENHANCEMENTS 6-10 JAVASCRIPT ===
+
+// 6. DARK MODE PERFEZIONATO
+let darkModeSettings = {
+    mode: 'auto', // auto, light, dark, true-black
+    schedule: { start: '20:00', end: '08:00' },
+    enabled: false
+};
+
+function initDarkMode() {
+    // Load saved settings
+    const saved = localStorage.getItem('darkModeSettings');
+    if (saved) {
+        darkModeSettings = JSON.parse(saved);
+    }
+    
+    // Apply saved mode
+    applyDarkMode();
+    
+    // Setup schedule if auto
+    if (darkModeSettings.mode === 'auto') {
+        checkSchedule();
+        setInterval(checkSchedule, 60000); // Check every minute
+    }
+}
+
+function toggleDarkModeAdvanced() {
+    const options = document.querySelector('.dark-mode-options');
+    if (options) {
+        options.classList.toggle('show');
+    } else {
+        createDarkModeOptions();
+    }
+}
+
+function createDarkModeOptions() {
+    const container = document.querySelector('.header-controls');
+    const options = document.createElement('div');
+    options.className = 'dark-mode-options show';
+    options.innerHTML = `
+        <div class="dark-mode-option ${darkModeSettings.mode === 'light' ? 'active' : ''}" onclick="setDarkMode('light')">
+            <span class="dark-mode-option-icon">☀️</span>
+            <span class="dark-mode-option-text">Light</span>
+        </div>
+        <div class="dark-mode-option ${darkModeSettings.mode === 'dark' ? 'active' : ''}" onclick="setDarkMode('dark')">
+            <span class="dark-mode-option-icon">🌙</span>
+            <span class="dark-mode-option-text">Dark</span>
+        </div>
+        <div class="dark-mode-option ${darkModeSettings.mode === 'true-black' ? 'active' : ''}" onclick="setDarkMode('true-black')">
+            <span class="dark-mode-option-icon">⬛</span>
+            <span class="dark-mode-option-text">True Black</span>
+        </div>
+        <div class="dark-mode-option ${darkModeSettings.mode === 'auto' ? 'active' : ''}" onclick="setDarkMode('auto')">
+            <span class="dark-mode-option-icon">🔄</span>
+            <span class="dark-mode-option-text">Auto <span class="schedule-badge">20:00-08:00</span></span>
+        </div>
+    `;
+    container.style.position = 'relative';
+    container.appendChild(options);
+    
+    // Close on click outside
+    setTimeout(() => {
+        document.addEventListener('click', (e) => {
+            if (!container.contains(e.target)) {
+                options.remove();
+            }
+        }, { once: true });
+    }, 100);
+}
+
+function setDarkMode(mode) {
+    darkModeSettings.mode = mode;
+    localStorage.setItem('darkModeSettings', JSON.stringify(darkModeSettings));
+    applyDarkMode();
+    document.querySelector('.dark-mode-options')?.remove();
+}
+
+function applyDarkMode() {
+    const body = document.body;
+    body.classList.remove('dark-mode', 'true-black');
+    
+    if (darkModeSettings.mode === 'dark') {
+        body.classList.add('dark-mode');
+    } else if (darkModeSettings.mode === 'true-black') {
+        body.classList.add('dark-mode', 'true-black');
+    } else if (darkModeSettings.mode === 'auto') {
+        if (isNightTime()) {
+            body.classList.add('dark-mode');
+        }
+    }
+}
+
+function checkSchedule() {
+    if (darkModeSettings.mode === 'auto') {
+        applyDarkMode();
+    }
+}
+
+function isNightTime() {
+    const now = new Date();
+    const hour = now.getHours();
+    return hour >= 20 || hour < 8; // 20:00 - 08:00
+}
+
+// 7. EXPORT E SHARING
+function showExportMenu(studyId, event) {
+    event.stopPropagation();
+    
+    const button = event.target;
+    const menu = document.createElement('div');
+    menu.className = 'export-menu show';
+    menu.innerHTML = `
+        <div class="export-option" onclick="exportAs('${studyId}', 'pdf')">
+            <span class="export-option-icon">📄</span>
+            <span>Export PDF</span>
+        </div>
+        <div class="export-option" onclick="exportAs('${studyId}', 'markdown')">
+            <span class="export-option-icon">📝</span>
+            <span>Export Markdown</span>
+        </div>
+        <div class="export-option" onclick="exportAs('${studyId}', 'notion')">
+            <span class="export-option-icon">📋</span>
+            <span>Copy for Notion</span>
+        </div>
+        <div class="export-option" onclick="showShareModal('${studyId}')">
+            <span class="export-option-icon">🔗</span>
+            <span>Share Link</span>
+        </div>
+        <div class="export-option" onclick="window.print()">
+            <span class="export-option-icon">🖨️</span>
+            <span>Print</span>
+        </div>
+    `;
+    
+    button.parentElement.style.position = 'relative';
+    button.parentElement.appendChild(menu);
+    
+    setTimeout(() => {
+        document.addEventListener('click', () => menu.remove(), { once: true });
+    }, 100);
+}
+
+function exportAs(studyId, format) {
+    const study = appState.studies[studyId];
+    if (!study) return;
+    
+    let content = '';
+    const date = new Date().toLocaleDateString('it-IT');
+    
+    if (format === 'markdown') {
+        content = `# ${study.name}\n\n`;
+        content += `**Data:** ${date}\n`;
+        content += `**Materia:** ${study.subject}\n\n`;
+        content += `## Riassunto\n\n${study.data.summary_short || ''}\n\n`;
+        
+        if (study.data.highlights) {
+            content += `## Punti Chiave\n\n`;
+            study.data.highlights.forEach((h, i) => {
+                content += `${i+1}. ${h}\n`;
+            });
+        }
+        
+        const blob = new Blob([content], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${study.name}.md`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+    
+    if (format === 'notion') {
+        content = `${study.name}\n\n`;
+        content += `${study.data.summary_short || ''}`;
+        navigator.clipboard.writeText(content);
+        alert('✅ Copiato negli appunti! Incolla in Notion.');
+    }
+}
+
+function showShareModal(studyId) {
+    const study = appState.studies[studyId];
+    if (!study) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'share-modal show';
+    
+    // Generate shareable link (base64 encoded study data)
+    const shareData = btoa(JSON.stringify({
+        name: study.name,
+        subject: study.subject,
+        summary: study.data.summary_short
+    }));
+    const shareLink = `${window.location.origin}${window.location.pathname}?share=${shareData}`;
+    
+    modal.innerHTML = `
+        <div class="share-modal-content">
+            <div class="share-modal-header">
+                <h3 class="share-modal-title">Condividi Lezione</h3>
+                <button class="share-modal-close" onclick="this.closest('.share-modal').remove()">×</button>
+            </div>
+            <div class="share-link-box">
+                <input type="text" class="share-link-input" value="${shareLink}" readonly>
+                <button class="share-copy-btn" onclick="copyShareLink(this)">Copia</button>
+            </div>
+            <div class="qr-code-container">
+                <p style="margin-bottom: 12px; font-size: 13px; color: #71717a;">Scansiona con smartphone</p>
+                <div style="background: white; padding: 16px; display: inline-block; border-radius: 8px;">
+                    <div style="width: 150px; height: 150px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px;">📱</div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function copyShareLink(button) {
+    const input = button.previousElementSibling;
+    input.select();
+    document.execCommand('copy');
+    
+    button.textContent = '✅ Copiato!';
+    button.classList.add('copied');
+    
+    setTimeout(() => {
+        button.textContent = 'Copia';
+        button.classList.remove('copied');
+    }, 2000);
+}
+
+// 8. AI FEATURES ENHANCED
+function showAISuggestions() {
+    const studies = Object.values(appState.studies);
+    if (studies.length === 0) return;
+    
+    // Calculate suggestions
+    const suggestions = [];
+    
+    studies.forEach(study => {
+        const progress = calculateProgress(study);
+        if (progress < 50 && progress > 0) {
+            suggestions.push({
+                type: 'continue',
+                studyId: study.id,
+                text: `Continua a studiare "${study.name}" - Sei al ${progress}%!`,
+                action: 'Riprendi'
+            });
+        }
+    });
+    
+    return suggestions;
+}
+
+function calculateProgress(study) {
+    const total = (study.data.flashcards?.length || 0) + (study.data.quiz?.length || 0);
+    const completed = (study.completedFlashcards || 0) + (study.completedQuiz || 0);
+    return total > 0 ? Math.round((completed / total) * 100) : 0;
+}
+
+function estimateDifficulty(study) {
+    // Simple heuristic based on content length and complexity
+    const textLength = study.data.summary_long?.length || 0;
+    const highlightsCount = study.data.highlights?.length || 0;
+    
+    if (textLength > 5000 || highlightsCount > 10) return 'hard';
+    if (textLength > 2000 || highlightsCount > 5) return 'medium';
+    return 'easy';
+}
+
+// 9. ACCESSIBILITY
+const keyboardShortcuts = {
+    'l': () => switchTab('library'),
+    'n': () => resetApp(),
+    's': () => document.getElementById('librarySearch')?.focus(),
+    '?': () => showKeyboardShortcuts(),
+    'Escape': () => closeAllModals()
+};
+
+function initKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        // Don't trigger if typing in input
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        
+        const handler = keyboardShortcuts[e.key];
+        if (handler) {
+            e.preventDefault();
+            handler();
+        }
+    });
+}
+
+function showKeyboardShortcuts() {
+    const modal = document.createElement('div');
+    modal.className = 'shortcuts-modal show';
+    modal.innerHTML = `
+        <div class="shortcuts-content">
+            <div class="share-modal-header">
+                <h3 class="share-modal-title">Keyboard Shortcuts</h3>
+                <button class="share-modal-close" onclick="this.closest('.shortcuts-modal').remove()">×</button>
+            </div>
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <span class="shortcut-description">Libreria</span>
+                    <div class="shortcut-keys"><span class="keyboard-hint">L</span></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-description">Nuovo Documento</span>
+                    <div class="shortcut-keys"><span class="keyboard-hint">N</span></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-description">Cerca</span>
+                    <div class="shortcut-keys"><span class="keyboard-hint">S</span></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-description">Aiuto</span>
+                    <div class="shortcut-keys"><span class="keyboard-hint">?</span></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-description">Chiudi</span>
+                    <div class="shortcut-keys"><span class="keyboard-hint">ESC</span></div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function closeAllModals() {
+    document.querySelectorAll('.share-modal, .shortcuts-modal, .dark-mode-options, .export-menu').forEach(el => el.remove());
+}
+
+// 10. PERFORMANCE OPTIMIZATION
+function initPerformanceOptimizations() {
+    // Lazy load images
+    const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.add('loaded');
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+    
+    document.querySelectorAll('img[data-src]').forEach(img => imageObserver.observe(img));
+    
+    // Intersection observer for fade-in animations
+    const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                fadeObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.fade-in-viewport').forEach(el => fadeObserver.observe(el));
+    
+    // Debounce resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            console.log('Resize complete');
+        }, 250);
+    });
+}
+
+// Initialize all enhancements
+window.addEventListener('DOMContentLoaded', () => {
+    initDarkMode();
+    initKeyboardShortcuts();
+    initPerformanceOptimizations();
 });
 
 
